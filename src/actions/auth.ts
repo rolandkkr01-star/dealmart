@@ -203,14 +203,22 @@ export async function registerAction(formData: {
       otpCode,
     });
 
+    let warningMessage: string | undefined;
     if (!emailResult.success) {
       console.warn('⚠️ Échec envoi email Resend:', emailResult.error);
+      if (emailResult.error?.includes('only send testing emails')) {
+        const ownerEmail = emailResult.error.match(/to your own email address \(([^)]+)\)/)?.[1] || 'propriétaire';
+        warningMessage = `Avertissement Resend (mode test gratuit) : L'email ne peut être envoyé qu'à l'adresse ${ownerEmail}. Pour envoyer à tous les clients sans restriction, ajoutez un nom de domaine vérifié sur resend.com/domains.`;
+      } else {
+        warningMessage = `Avertissement envoi email : ${emailResult.error}`;
+      }
     }
 
     return {
       success: true,
       requireOtp: true,
       email: newUser.email,
+      warning: warningMessage,
     };
   } catch (error: any) {
     if (error instanceof z.ZodError) {
@@ -323,11 +331,22 @@ export async function resendRegistrationOtpAction(email: string) {
       },
     });
 
-    await sendOtpVerificationEmail({
+    const emailResult = await sendOtpVerificationEmail({
       to: user.email,
       userName: user.firstName,
       otpCode: newOtpCode,
     });
+
+    if (!emailResult.success) {
+      if (emailResult.error?.includes('only send testing emails')) {
+        const ownerEmail = emailResult.error.match(/to your own email address \(([^)]+)\)/)?.[1] || 'propriétaire';
+        return {
+          success: false,
+          error: `Resend (mode test gratuit) : L'email ne peut être envoyé qu'à l'adresse de votre compte Resend (${ownerEmail}).`,
+        };
+      }
+      return { success: false, error: `Échec d'envoi : ${emailResult.error}` };
+    }
 
     return {
       success: true,

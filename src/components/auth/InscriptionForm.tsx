@@ -71,6 +71,9 @@ export function InscriptionForm({ redirectTarget }: { redirectTarget: string }) 
       setStep('otp');
       setCountdown(60);
       setCanResend(false);
+      if (result.warning) {
+        setError(result.warning);
+      }
     } else {
       setError(result.error || 'Erreur lors de la création du compte');
     }
