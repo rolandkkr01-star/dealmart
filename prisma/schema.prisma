@@ -1,0 +1,225 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id              String       @id @default(cuid())
+  email           String       @unique
+  passwordHash    String
+  role            String       @default("CLIENT") // "CLIENT" | "ADMIN" | "SUPERADMIN"
+  firstName       String
+  lastName        String
+  phone           String?
+  emailVerified   Boolean      @default(false)
+  twoFactorSecret String?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  addresses       Address[]
+  orders          Order[]
+  favorites       Favorite[]
+  sessions        Session[]
+  tradeOffers     TradeOffer[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Address {
+  id        String   @id @default(cuid())
+  userId    String
+  label     String
+  city      String
+  district  String?
+  street    String
+  phone     String
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Category {
+  id        String    @id @default(cuid())
+  slug      String    @unique
+  name      String
+  products  Product[]
+  createdAt DateTime  @default(now())
+}
+
+model Product {
+  id            String           @id @default(cuid())
+  slug          String           @unique
+  name          String
+  description   String
+  brand         String           // "IPHONE" | "SAMSUNG" | "ACCESSOIRE"
+  categoryId    String
+  condition     String           // "NEUF_SCELLE" | "NEUF_NON_SCELLE" | "OCCASION"
+  tradeEligible Boolean          @default(false)
+  basePrice     Int              // FCFA entier, jamais de float
+  promoPrice    Int?             // FCFA
+  isActive      Boolean          @default(true)
+  isFeatured    Boolean          @default(false)
+  rating        Float            @default(5.0)
+  reviewsCount  Int              @default(0)
+  warrantyMonths Int             @default(12)
+  specsJson     String?          // Données JSON stringifiées pour spécifications techniques
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  category      Category         @relation(fields: [categoryId], references: [id])
+  variants      ProductVariant[]
+  images        ProductImage[]
+  favorites     Favorite[]
+  orderItems    OrderItem[]
+  tradeOffers   TradeOffer[]
+  reviews       Review[]
+}
+
+model ProductVariant {
+  id            String   @id @default(cuid())
+  productId     String
+  color         String?
+  colorCode     String?
+  storage       String?  // Ex: "256 Go"
+  priceOverride Int?     // FCFA
+  promoPrice    Int?     // FCFA
+  stock         Int      @default(0)
+  sku           String   @unique
+  imagesJson    String?  // Liste JSON d'images spécifiques à cette couleur/variante
+  product       Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model ProductImage {
+  id        String   @id @default(cuid())
+  productId String
+  url       String
+  altText   String   // Obligatoire SEO & Accessibilité
+  color     String?  // Couleur associée (optionnel)
+  position  Int      @default(0)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model TradeOffer {
+  id                       String    @id @default(cuid())
+  userId                   String?
+  customerName             String
+  customerPhone            String
+  customerEmail            String?
+  customerCity             String
+  productId                String
+  offeredDeviceModel       String
+  offeredDeviceDescription String
+  offeredDeviceCondition   String    // "NEUF_SCELLE" | "NEUF_NON_SCELLE" | "OCCASION"
+  offeredDevicePhotosJson  String    // URLs en JSON stringifié
+  cashComplement           Int?      // FCFA
+  status                   String    @default("PENDING") // "PENDING" | "ACCEPTED" | "COUNTERED" | "REJECTED" | "COMPLETED"
+  adminNote                String?   // Réponse boutique
+  counterOfferAmount       Int?      // FCFA
+  createdAt                DateTime  @default(now())
+  updatedAt                DateTime  @updatedAt
+  user                     User?     @relation(fields: [userId], references: [id])
+  product                  Product   @relation(fields: [productId], references: [id])
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+}
+
+model Order {
+  id                String             @id @default(cuid())
+  orderNumber       String             @unique // Référence client (ex: TP229-849201)
+  userId            String?
+  customerName      String
+  customerEmail     String?
+  customerPhone     String
+  city              String
+  district          String
+  streetDetails     String
+  notes             String?
+  status            String             @default("PENDING") // "PENDING" | "PAID" | "PROCESSING" | "SHIPPED" | "DELIVERED" | "CANCELLED" | "REFUNDED"
+  totalAmount       Int                // FCFA
+  shippingFee       Int                @default(0) // FCFA
+  discountAmount    Int                @default(0) // FCFA
+  promoCode         String?
+  paymentProvider   String             // "kkiapay" | "mtn_momo" | "moov_money"
+  paymentRef        String?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  user              User?              @relation(fields: [userId], references: [id])
+  items             OrderItem[]
+  statusHistory     OrderStatusEvent[]
+}
+
+model OrderItem {
+  id          String   @id @default(cuid())
+  orderId     String
+  productId   String
+  variantId   String?
+  productName String
+  variantInfo String?
+  quantity    Int
+  unitPrice   Int      // Prix figé au moment de la commande
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product     Product  @relation(fields: [productId], references: [id])
+}
+
+model OrderStatusEvent {
+  id        String   @id @default(cuid())
+  orderId   String
+  status    String   // "PENDING" | "PAID" | "PROCESSING" | "SHIPPED" | "DELIVERED" | "CANCELLED"
+  note      String?
+  createdAt DateTime @default(now())
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+model PromoCode {
+  id            String   @id @default(cuid())
+  code          String   @unique
+  discountType  String   // "PERCENTAGE" | "FIXED_AMOUNT"
+  discountValue Int
+  minOrderAmount Int?
+  isActive      Boolean  @default(true)
+  timesUsed     Int      @default(0)
+  createdAt     DateTime @default(now())
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  adminUserId String
+  adminEmail  String?
+  action      String   // Ex: "product.price_changed", "order.status_updated", "trade.countered"
+  targetType  String   // "Product" | "Order" | "TradeOffer" | "User"
+  targetId    String
+  metadata    String?  // Données JSON stringifiées des valeurs avant/après
+  createdAt   DateTime @default(now())
+}
+
+model Review {
+  id             String   @id @default(cuid())
+  productId      String
+  authorName     String
+  city           String?
+  rating         Int      @default(5)
+  comment        String
+  isApproved     Boolean  @default(true)
+  isFeaturedHome Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  product        Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+

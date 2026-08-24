@@ -1,0 +1,161 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { getAdminOrdersAction, updateOrderStatusAction } from '@/actions/orders';
+import { formatFCFA, getOrderStatusInfo } from '@/lib/utils';
+import { OrderStatus } from '@/types';
+import { Icons } from '@/components/ui/Icons';
+
+export default function AdminCommandesPage() {
+  const [orders, setOrders] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
+
+  const fetchOrders = async () => {
+    setLoading(true);
+    const res = await getAdminOrdersAction();
+    if (res.success && Array.isArray(res.orders)) {
+      setOrders(res.orders);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
+  const handleStatusChange = async (orderId: string, newStatus: OrderStatus) => {
+    setUpdatingId(orderId);
+    const res = await updateOrderStatusAction(orderId, newStatus);
+    if (res.success) {
+      await fetchOrders();
+    }
+    setUpdatingId(null);
+  };
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <nav className="flex items-center gap-2 text-xs text-gray-500 mb-6">
+        <Link href="/admin" className="hover:text-[#0062BD]">Administration</Link>
+        <span>/</span>
+        <span className="text-gray-900 font-bold">Gestion des Commandes</span>
+      </nav>
+
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div>
+          <h1 className="font-heading font-black text-2xl text-gray-900 tracking-tight">
+            Commandes Clients ({orders.length})
+          </h1>
+          <p className="text-xs text-gray-500 mt-0.5">
+            Suivi des ventes, gestion des statuts de préparation et historique de livraison.
+          </p>
+        </div>
+
+        <button
+          onClick={fetchOrders}
+          className="bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold px-4 py-2 rounded-xl flex items-center gap-2 transition-colors cursor-pointer self-start"
+        >
+          <Icons.Repeat size={14} />
+          <span>Actualiser</span>
+        </button>
+      </div>
+
+      {loading ? (
+        <div className="p-16 text-center text-xs text-gray-500 bg-white border border-[#E2E5E8] rounded-2xl">
+          <div className="w-8 h-8 border-3 border-[#FED700] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+          <p>Chargement des commandes depuis la base de données...</p>
+        </div>
+      ) : orders.length === 0 ? (
+        <div className="bg-white border border-[#E2E5E8] rounded-2xl p-16 text-center shadow-xs">
+          <div className="w-14 h-14 rounded-2xl bg-gray-50 text-gray-400 flex items-center justify-center mx-auto mb-3">
+            <Icons.ShoppingBag size={28} />
+          </div>
+          <h3 className="font-heading font-bold text-base text-gray-900 mb-1">
+            Aucune commande enregistrée en base
+          </h3>
+          <p className="text-xs text-gray-500 max-w-sm mx-auto">
+            Les commandes passées par vos clients apparaîtront ici avec leurs coordonnées et options de gestion.
+          </p>
+        </div>
+      ) : (
+        <div className="bg-white border border-[#E2E5E8] rounded-2xl shadow-xs overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs">
+              <thead className="bg-[#F8F9FA] border-b border-[#E2E5E8] text-gray-700 uppercase font-black tracking-wider text-[11px]">
+                <tr>
+                  <th className="p-4">Réf. Commande</th>
+                  <th className="p-4">Client</th>
+                  <th className="p-4">Destination</th>
+                  <th className="p-4">Articles</th>
+                  <th className="p-4">Montant Total</th>
+                  <th className="p-4">Paiement</th>
+                  <th className="p-4">Statut Actuel</th>
+                  <th className="p-4">Modifier Statut</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {orders.map((ord) => {
+                  const statusInfo = getOrderStatusInfo(ord.status);
+                  return (
+                    <tr key={ord.id} className="hover:bg-gray-50/80 transition-colors">
+                      <td className="p-4 font-heading font-bold text-gray-900 font-price">
+                        <Link href={`/commande/${ord.orderNumber}`} className="text-[#0062BD] hover:underline">
+                          {ord.orderNumber}
+                        </Link>
+                      </td>
+                      <td className="p-4">
+                        <div className="font-bold text-gray-900">{ord.customerName}</div>
+                        <div className="text-[11px] text-gray-500">{ord.customerPhone}</div>
+                        {ord.customerEmail && <div className="text-[10px] text-gray-400">{ord.customerEmail}</div>}
+                      </td>
+                      <td className="p-4 text-gray-700">
+                        <div>{ord.city} {ord.district ? `(${ord.district})` : ''}</div>
+                        {ord.streetDetails && <div className="text-[10px] text-gray-400">{ord.streetDetails}</div>}
+                      </td>
+                      <td className="p-4 text-gray-700">
+                        <span className="font-bold">{ord.items.length} article(s)</span>
+                        <div className="text-[11px] text-gray-500 truncate max-w-[160px]">
+                          {ord.items.map((i: any) => i.productName).join(', ')}
+                        </div>
+                      </td>
+                      <td className="p-4 font-black text-[#DC3545] font-price">
+                        {formatFCFA(ord.totalAmount)}
+                      </td>
+                      <td className="p-4">
+                        <span className="font-bold text-[11px] bg-gray-100 px-2 py-0.5 rounded text-gray-700">
+                          {ord.paymentProvider.toUpperCase()}
+                        </span>
+                      </td>
+                      <td className="p-4">
+                        <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full border ${statusInfo.className}`}>
+                          {statusInfo.label}
+                        </span>
+                      </td>
+                      <td className="p-4">
+                        <select
+                          value={ord.status}
+                          disabled={updatingId === ord.id}
+                          onChange={(e) => handleStatusChange(ord.id, e.target.value as OrderStatus)}
+                          className="border border-gray-300 rounded-lg p-1.5 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#0062BD] bg-white cursor-pointer disabled:opacity-50"
+                        >
+                          <option value="PENDING">PENDING</option>
+                          <option value="PAID">PAID</option>
+                          <option value="PROCESSING">PROCESSING</option>
+                          <option value="SHIPPED">SHIPPED</option>
+                          <option value="DELIVERED">DELIVERED</option>
+                          <option value="CANCELLED">CANCELLED</option>
+                          <option value="REFUNDED">REFUNDED</option>
+                        </select>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

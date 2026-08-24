@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 80" fill="none">
+  <!-- Coins Icon -->
+  <g transform="translate(10, 10)">
+    <!-- Back Coin -->
+    <ellipse cx="28" cy="28" rx="24" ry="24" fill="#E6AF00" />
+    <ellipse cx="28" cy="27" rx="22" ry="22" fill="#FED700" />
+    <path d="M22 18 L22 36 M22 27 L32 18 M24 25 L34 36" stroke="#C89600" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+    
+    <!-- Front Coin -->
+    <ellipse cx="48" cy="38" rx="26" ry="26" fill="#E6AF00" />
+    <ellipse cx="48" cy="37" rx="24" ry="24" fill="#FFDF20" />
+    <path d="M42 27 L42 47 M42 37 L53 27 M44 35 L55 47" stroke="#DCA200" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+  
+  <!-- Text 'kkiapay' -->
+  <text x="95" y="54" font-family="Inter, -apple-system, sans-serif" font-weight="900" font-size="40" letter-spacing="-1">
+    <tspan fill="#FFFFFF">kkia</tspan><tspan fill="#DC3545">pay</tspan>
+  </text>
+</svg>

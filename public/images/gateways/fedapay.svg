@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 70" fill="none">
+  <!-- FedaPay Cards Icon -->
+  <g transform="translate(5, 5)">
+    <!-- Stack of cards in isometric blue -->
+    <path d="M30 4 L55 18 L30 32 L5 18 Z" fill="#60A5FA" />
+    <path d="M30 10 L55 24 L30 38 L5 24 Z" fill="#3B82F6" />
+    <path d="M30 16 L55 30 L30 44 L5 30 Z" fill="#2563EB" />
+    <path d="M30 22 L55 36 L30 50 L5 36 Z" fill="#1D4ED8" />
+    <!-- White band / strap -->
+    <path d="M36 7 L43 11 L24 47 L17 43 Z" fill="#FFFFFF" fill-opacity="0.9" />
+  </g>
+
+  <!-- Text 'FedaPay' -->
+  <text x="75" y="46" font-family="Inter, -apple-system, sans-serif" font-weight="800" font-size="36" letter-spacing="-0.5" fill="#38BDF8">
+    Feda<tspan fill="#0062BD">Pay</tspan>
+  </text>
+</svg>
