@@ -16,18 +16,18 @@ export const TopUtilityBar: React.FC = () => {
           <span className="hidden md:inline">Livraison Express {siteConfig.city}, Calavi & tout le {siteConfig.country}</span>
         </div>
 
-        <div className="flex items-center gap-5 font-medium">
+        <div className="flex flex-wrap justify-center sm:justify-end items-center gap-2.5 sm:gap-5 font-medium">
           <Link
             href="/suivi"
-            className="hover:text-[#0062BD] transition-colors flex items-center gap-1.5"
+            className="hover:text-[#0062BD] transition-colors flex items-center gap-1.5 whitespace-nowrap"
           >
             <Icons.Truck size={14} className="text-[#0062BD]" />
-            <span>Suivi de commande</span>
+            <span>Suivi</span>
           </Link>
           <span className="text-gray-300">|</span>
           <Link
             href="/boutique"
-            className="hover:text-[#0062BD] transition-colors flex items-center gap-1.5"
+            className="hover:text-[#0062BD] transition-colors flex items-center gap-1.5 whitespace-nowrap"
           >
             <Icons.ShoppingBag size={14} className="text-[#0062BD]" />
             <span>Boutique</span>
@@ -35,7 +35,7 @@ export const TopUtilityBar: React.FC = () => {
           <span className="text-gray-300">|</span>
           <a
             href={`tel:${siteConfig.phone.replace(/\s+/g, '')}`}
-            className="hover:text-[#0062BD] transition-colors flex items-center gap-1.5 font-bold text-gray-900"
+            className="hover:text-[#0062BD] transition-colors flex items-center gap-1.5 font-bold text-gray-900 whitespace-nowrap"
           >
             <Icons.Phone size={14} className="text-emerald-600" />
             <span>{siteConfig.phone}</span>

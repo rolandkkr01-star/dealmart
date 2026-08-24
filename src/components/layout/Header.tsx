@@ -34,16 +34,16 @@ export const Header: React.FC = () => {
     <header className="bg-white border-b border-[#E2E5E8] sticky top-0 z-30 shadow-xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between gap-4 sm:gap-8">
         {/* 1. Logo & Identité Boutique */}
-        <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
+        <Link href="/" className="flex items-center gap-2 sm:gap-3 group flex-shrink-0">
           <Icons.BrandCart
-            size={42}
-            className="text-[#1D2129] group-hover:text-[#0062BD] transition-all flex-shrink-0 hover:scale-105"
+            size={36}
+            className="text-[#1D2129] group-hover:text-[#0062BD] transition-all flex-shrink-0 sm:w-[42px] sm:h-[42px]"
           />
           <div className="flex flex-col">
-            <span className="font-heading font-black text-2xl tracking-tight text-[#1D2129] group-hover:text-[#0062BD] leading-none transition-colors">
+            <span className="font-heading font-black text-xl sm:text-2xl tracking-tight text-[#1D2129] group-hover:text-[#0062BD] leading-none transition-colors">
               {siteConfig.name}
             </span>
-            <span className="text-[10px] text-gray-500 font-semibold tracking-wider uppercase mt-0.5">
+            <span className="text-[9px] sm:text-[10px] text-gray-500 font-semibold tracking-wider uppercase mt-0.5">
               {siteConfig.country} • 100% Original
             </span>
           </div>

@@ -28,7 +28,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <Header />
       <MainNav />
 
-      <main className="flex-1 bg-[#F8F9FA]">
+      <main className="flex-1 bg-[#F8F9FA] w-full max-w-full overflow-x-hidden">
         {children}
       </main>
 

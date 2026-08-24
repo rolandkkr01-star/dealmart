@@ -121,7 +121,7 @@ export const Footer: React.FC = () => {
             </p>
 
             {/* Passerelles en version éteinte / feutrée monochrome */}
-            <div className="flex items-center gap-5 my-4">
+            <div className="flex flex-wrap items-center gap-4 my-4">
               <img
                 src="/images/gateways/kkiapay.svg"
                 alt="Kkiapay"
@@ -145,8 +145,8 @@ export const Footer: React.FC = () => {
 
         {/* Copyright & Mentions */}
         <div className="pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-[11px] text-gray-500">
-          <p>© {new Date().getFullYear()} {siteConfig.name}. Tous droits réservés. {siteConfig.city}, République du {siteConfig.country}.</p>
-          <div className="flex items-center gap-4 text-gray-500">
+          <p className="text-center sm:text-left">© {new Date().getFullYear()} {siteConfig.name}. Tous droits réservés. {siteConfig.city}, République du {siteConfig.country}.</p>
+          <div className="flex flex-wrap justify-center sm:justify-end items-center gap-x-4 gap-y-2 text-gray-500 text-center sm:text-right">
             <Link href="/cgv" className="hover:text-gray-300 transition-colors">Conditions Générales de Vente</Link>
             <span>•</span>
             <Link href="/confidentialite" className="hover:text-gray-300 transition-colors">Politique de Confidentialité</Link>

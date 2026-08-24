@@ -16,13 +16,13 @@ export const NewsletterSection: React.FC = () => {
 
   return (
     <section className="mb-14">
-      <div className="bg-[#FED700] rounded-2xl p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm border border-[#E8C400]">
-        <div className="flex items-center gap-4 text-[#1D2129] max-w-lg">
+      <div className="bg-[#FED700] rounded-2xl p-5 sm:p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm border border-[#E8C400]">
+        <div className="flex items-center gap-4 text-[#1D2129] max-w-lg w-full">
           <div className="w-12 h-12 rounded-xl bg-[#1D2129] text-[#FED700] flex items-center justify-center flex-shrink-0">
             <Icons.Send size={24} />
           </div>
           <div>
-            <h3 className="font-heading font-black text-xl text-[#1D2129] mb-1">
+            <h3 className="font-heading font-black text-lg sm:text-xl text-[#1D2129] mb-1">
               Inscrivez-vous aux Ventes Privées
             </h3>
             <p className="text-xs text-gray-800 font-medium">
@@ -31,7 +31,7 @@ export const NewsletterSection: React.FC = () => {
           </div>
         </div>
 
-        <div className="w-full md:w-auto min-w-[320px]">
+        <div className="w-full md:w-auto max-w-md">
           {subscribed ? (
             <div className="bg-[#1D2129] text-[#FED700] p-4 rounded-xl text-center text-xs font-bold shadow-md">
               🎉 Félicitations ! Votre code promo : <span className="underline text-white">COTONOU229</span>
