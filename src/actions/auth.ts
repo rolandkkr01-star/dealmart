@@ -138,6 +138,8 @@ export async function setupMasterAdminAction(formData: {
   }
 }
 
+import { sendOtpVerificationEmail } from '@/lib/email-service';
+
 export async function registerAction(formData: {
   email: string;
   password: string;
@@ -153,8 +155,10 @@ export async function registerAction(formData: {
       return { success: false, error: emailCheck.error || 'Adresse email invalide ou injoignable.' };
     }
 
+    const normalizedEmail = validated.email.toLowerCase().trim();
+
     const existingUser = await prisma.user.findUnique({
-      where: { email: validated.email.toLowerCase() },
+      where: { email: normalizedEmail },
     });
 
     if (existingUser) {
@@ -165,27 +169,45 @@ export async function registerAction(formData: {
 
     const newUser = await prisma.user.create({
       data: {
-        email: validated.email.toLowerCase(),
+        email: normalizedEmail,
         passwordHash,
-        firstName: validated.firstName,
-        lastName: validated.lastName,
-        phone: validated.phone || null,
+        firstName: validated.firstName.trim(),
+        lastName: validated.lastName.trim(),
+        phone: validated.phone?.trim() || null,
         role: 'CLIENT',
         emailVerified: false,
       },
     });
 
-    await createSession(newUser.id);
+    // Génération du code OTP à 6 chiffres
+    const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24h
+
+    // Supprimer les éventuels anciens tokens pour cet email
+    await prisma.verificationToken.deleteMany({
+      where: { identifier: newUser.email },
+    });
+
+    await prisma.verificationToken.create({
+      data: {
+        identifier: newUser.email,
+        token: otpCode,
+        expiresAt,
+      },
+    });
+
+    // Envoi de l'email via Resend (ou simulation console si pas encore de clé)
+    await sendOtpVerificationEmail({
+      to: newUser.email,
+      userName: newUser.firstName,
+      otpCode,
+    });
 
     return {
       success: true,
-      user: {
-        id: newUser.id,
-        email: newUser.email,
-        firstName: newUser.firstName,
-        lastName: newUser.lastName,
-        role: newUser.role,
-      },
+      requireOtp: true,
+      email: newUser.email,
+      simulatedCode: process.env.NODE_ENV !== 'production' && !process.env.RESEND_API_KEY ? otpCode : undefined,
     };
   } catch (error: any) {
     if (error instanceof z.ZodError) {
@@ -193,6 +215,125 @@ export async function registerAction(formData: {
     }
     console.error('Erreur inscription:', error);
     return { success: false, error: 'Une erreur est survenue lors de la création du compte.' };
+  }
+}
+
+/**
+ * Validation du code OTP saisi par l'utilisateur lors de l'inscription
+ */
+export async function verifyRegistrationOtpAction(data: { email: string; code: string }) {
+  try {
+    const normalizedEmail = data.email.toLowerCase().trim();
+    const inputCode = data.code.trim();
+
+    if (!inputCode || inputCode.length !== 6) {
+      return { success: false, error: 'Le code de confirmation doit contenir 6 chiffres.' };
+    }
+
+    const verification = await prisma.verificationToken.findFirst({
+      where: {
+        identifier: normalizedEmail,
+        token: inputCode,
+      },
+    });
+
+    if (!verification || verification.expiresAt < new Date()) {
+      return { success: false, error: 'Code de confirmation invalide ou expiré.' };
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { email: normalizedEmail },
+    });
+
+    if (!user) {
+      return { success: false, error: 'Compte utilisateur introuvable.' };
+    }
+
+    // Mise à jour du statut vérifié
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { emailVerified: true },
+    });
+
+    // Suppression du token consommé
+    await prisma.verificationToken.delete({
+      where: { id: verification.id },
+    });
+
+    // Création de la session sécurisée
+    await createSession(user.id);
+
+    return {
+      success: true,
+      user: {
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        role: user.role,
+      },
+    };
+  } catch (error: any) {
+    console.error('Erreur verifyRegistrationOtpAction:', error);
+    return { success: false, error: 'Erreur lors de la validation du code OTP.' };
+  }
+}
+
+/**
+ * Renvoi d'un nouveau code OTP d'inscription
+ */
+export async function resendRegistrationOtpAction(email: string) {
+  try {
+    const normalizedEmail = email.toLowerCase().trim();
+    const user = await prisma.user.findUnique({
+      where: { email: normalizedEmail },
+    });
+
+    if (!user) {
+      return { success: false, error: 'Compte utilisateur introuvable.' };
+    }
+
+    if (user.emailVerified) {
+      return { success: false, error: 'Votre adresse email est déjà vérifiée. Vous pouvez vous connecter.' };
+    }
+
+    // Rate limiting: 3 renvois max par 10 minutes
+    const rateLimitKey = `resend_otp_${user.id}`;
+    const limit = checkRateLimit(rateLimitKey, { maxRequests: 3, windowMs: 10 * 60 * 1000 });
+    if (!limit.isAllowed) {
+      const minutesRemaining = Math.ceil(limit.resetInMs / (60 * 1000));
+      return { success: false, error: `Trop de renvois consécutifs. Veuillez patienter ${minutesRemaining} minute(s).` };
+    }
+
+    const newOtpCode = Math.floor(100000 + Math.random() * 900000).toString();
+    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24h
+
+    await prisma.verificationToken.deleteMany({
+      where: { identifier: normalizedEmail },
+    });
+
+    await prisma.verificationToken.create({
+      data: {
+        identifier: normalizedEmail,
+        token: newOtpCode,
+        expiresAt,
+      },
+    });
+
+    await sendOtpVerificationEmail({
+      to: user.email,
+      userName: user.firstName,
+      otpCode: newOtpCode,
+    });
+
+    return {
+      success: true,
+      message: 'Un nouveau code de confirmation vous a été envoyé.',
+      simulatedCode: process.env.NODE_ENV !== 'production' && !process.env.RESEND_API_KEY ? newOtpCode : undefined,
+    };
+  } catch (error: any) {
+    console.error('Erreur resendRegistrationOtpAction:', error);
+    return { success: false, error: 'Impossible de renvoyer le code OTP.' };
   }
 }
 
