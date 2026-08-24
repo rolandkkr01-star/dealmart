@@ -65,6 +65,51 @@ export async function initCheckoutPaymentAction(data: CheckoutPayload) {
       } catch (_) {}
     }
 
+    // 1. Recalcul strict et intègre des prix depuis la base de données
+    if (!data.items || data.items.length === 0) {
+      return { success: false, error: 'Votre panier ne contient aucun article.' };
+    }
+
+    const productIds = data.items.map((i) => i.productId);
+    const dbProducts = await prisma.product.findMany({
+      where: { id: { in: productIds }, isActive: true },
+      include: { variants: true },
+    });
+
+    const dbProductMap = new Map(dbProducts.map((p) => [p.id, p]));
+
+    let calculatedItemsTotal = 0;
+    const validatedItems = data.items.map((item) => {
+      const dbProd = dbProductMap.get(item.productId);
+      if (!dbProd) {
+        throw new Error(`Produit indisponible ou introuvable : ${item.productName}`);
+      }
+
+      let realPrice = dbProd.promoPrice || dbProd.basePrice;
+      if (item.variantId) {
+        const variant = dbProd.variants.find((v) => v.id === item.variantId);
+        if (variant) {
+          realPrice = variant.promoPrice || variant.priceOverride || realPrice;
+        }
+      }
+
+      const qty = Math.max(1, Math.floor(item.quantity));
+      calculatedItemsTotal += realPrice * qty;
+
+      return {
+        productId: item.productId,
+        variantId: item.variantId || null,
+        productName: dbProd.name,
+        variantInfo: item.variantInfo || null,
+        quantity: qty,
+        unitPrice: realPrice,
+      };
+    });
+
+    const realShipping = Math.max(0, Math.floor(data.shippingFee || 0));
+    const realDiscount = Math.max(0, Math.floor(data.discountAmount || 0));
+    const calculatedTotalAmount = Math.max(0, calculatedItemsTotal + realShipping - realDiscount);
+
     const orderNumber = generateOrderNumber();
 
     // Création initiale de la commande en statut PENDING
@@ -80,21 +125,14 @@ export async function initCheckoutPaymentAction(data: CheckoutPayload) {
         streetDetails: data.streetDetails,
         notes: data.notes || null,
         status: 'PENDING',
-        totalAmount: data.totalAmount,
-        shippingFee: data.shippingFee,
-        discountAmount: data.discountAmount,
+        totalAmount: calculatedTotalAmount,
+        shippingFee: realShipping,
+        discountAmount: realDiscount,
         promoCode: data.promoCode || null,
         paymentProvider: data.paymentProvider,
         paymentRef: `${data.paymentProvider.toUpperCase()}-INIT-${Date.now().toString().slice(-6)}`,
         items: {
-          create: data.items.map((item) => ({
-            productId: item.productId,
-            variantId: item.variantId || null,
-            productName: item.productName,
-            variantInfo: item.variantInfo || null,
-            quantity: item.quantity,
-            unitPrice: item.unitPrice,
-          })),
+          create: validatedItems,
         },
         statusHistory: {
           create: [
@@ -199,6 +237,14 @@ export async function verifyOrderPaymentAction(params: {
       return {
         success: false,
         error: verificationResult.message || 'Le paiement n\'a pas pu être validé par la passerelle.',
+      };
+    }
+
+    // Vérification de concordance du montant payé vs montant de la commande
+    if (verificationResult.amount && Number(verificationResult.amount) < order.totalAmount) {
+      return {
+        success: false,
+        error: `Montant réglé (${verificationResult.amount} FCFA) inférieur au total de la commande (${order.totalAmount} FCFA).`,
       };
     }
 

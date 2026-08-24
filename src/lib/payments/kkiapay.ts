@@ -9,12 +9,12 @@ export async function verifyKkiapayTransaction(transactionId: string): Promise<P
   const isSandbox = process.env.NEXT_PUBLIC_KKIAPAY_SANDBOX === 'true';
 
   if (!privateKey) {
-    console.warn('⚠️ KKIAPAY_PRIVATE_KEY manquante dans .env - validation en mode simulation');
+    console.error('❌ KKIAPAY_PRIVATE_KEY manquante dans .env. Impossible de valider la transaction.');
     return {
-      success: true,
-      status: 'PAID',
+      success: false,
+      status: 'FAILED',
       transactionId,
-      message: 'Validation locale (clé API non configurée)',
+      message: 'Passerelle Kkiapay non configurée sur le serveur.',
     };
   }
 

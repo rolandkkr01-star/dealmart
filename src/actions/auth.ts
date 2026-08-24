@@ -5,6 +5,7 @@ import { prisma } from '@/lib/prisma';
 import { hashPassword, verifyPassword, createSession, destroySession, getCurrentUser } from '@/lib/auth';
 import { revalidatePath } from 'next/cache';
 import { validateEmailDeliverability } from '@/lib/email-validator';
+import { checkRateLimit, resetRateLimit } from '@/lib/rate-limiter';
 
 const RegisterSchema = z.object({
   email: z.string().email('Format d\'email invalide'),
@@ -198,8 +199,20 @@ export async function loginAction(formData: {
       password: formData.password,
     });
 
+    const normalizedEmail = validated.email.toLowerCase().trim();
+    const rateLimitKey = `login_${normalizedEmail}`;
+    const limit = checkRateLimit(rateLimitKey, { maxRequests: 5, windowMs: 15 * 60 * 1000 });
+
+    if (!limit.isAllowed) {
+      const minutesRemaining = Math.ceil(limit.resetInMs / (60 * 1000));
+      return {
+        success: false,
+        error: `Trop de tentatives de connexion échouées. Par mesure de sécurité, veuillez patienter ${minutesRemaining} minute(s).`,
+      };
+    }
+
     const user = await prisma.user.findUnique({
-      where: { email: validated.email.toLowerCase() },
+      where: { email: normalizedEmail },
     });
 
     if (!user) {
@@ -223,6 +236,9 @@ export async function loginAction(formData: {
         };
       }
     }
+
+    // Réinitialisation du compteur de tentatives après succès
+    resetRateLimit(rateLimitKey);
 
     await createSession(user.id);
 

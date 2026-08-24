@@ -59,6 +59,51 @@ export async function createOrderAction(data: {
       } catch (_) {}
     }
 
+    // Recalcul strict des prix et vérification des produits en base de données
+    if (!data.items || data.items.length === 0) {
+      return { success: false, error: 'Aucun article dans la commande.' };
+    }
+
+    const productIds = data.items.map((i) => i.productId);
+    const dbProducts = await prisma.product.findMany({
+      where: { id: { in: productIds }, isActive: true },
+      include: { variants: true },
+    });
+
+    const dbProductMap = new Map(dbProducts.map((p) => [p.id, p]));
+
+    let calculatedItemsTotal = 0;
+    const validatedItems = data.items.map((item) => {
+      const dbProd = dbProductMap.get(item.productId);
+      if (!dbProd) {
+        throw new Error(`Produit indisponible ou introuvable : ${item.productName}`);
+      }
+
+      let realPrice = dbProd.promoPrice || dbProd.basePrice;
+      if (item.variantId) {
+        const variant = dbProd.variants.find((v) => v.id === item.variantId);
+        if (variant) {
+          realPrice = variant.promoPrice || variant.priceOverride || realPrice;
+        }
+      }
+
+      const qty = Math.max(1, Math.floor(item.quantity));
+      calculatedItemsTotal += realPrice * qty;
+
+      return {
+        productId: item.productId,
+        variantId: item.variantId || null,
+        productName: dbProd.name,
+        variantInfo: item.variantInfo || null,
+        quantity: qty,
+        unitPrice: realPrice,
+      };
+    });
+
+    const realShipping = Math.max(0, Math.floor(data.shippingFee || 0));
+    const realDiscount = Math.max(0, Math.floor(data.discountAmount || 0));
+    const calculatedTotalAmount = Math.max(0, calculatedItemsTotal + realShipping - realDiscount);
+
     const orderNumber = generateOrderNumber();
 
     const order = await prisma.order.create({
@@ -72,27 +117,19 @@ export async function createOrderAction(data: {
         district: data.district,
         streetDetails: data.streetDetails,
         notes: data.notes || null,
-        status: 'PAID',
-        totalAmount: data.totalAmount,
-        shippingFee: data.shippingFee,
-        discountAmount: data.discountAmount,
+        status: 'PENDING',
+        totalAmount: calculatedTotalAmount,
+        shippingFee: realShipping,
+        discountAmount: realDiscount,
         promoCode: data.promoCode || null,
         paymentProvider: data.paymentProvider,
-        paymentRef: data.paymentRef || `${data.paymentProvider.toUpperCase()}-BJ-${Math.floor(100000 + Math.random() * 900000)}`,
+        paymentRef: data.paymentRef || `${data.paymentProvider.toUpperCase()}-INIT-${Date.now().toString().slice(-6)}`,
         items: {
-          create: data.items.map((item) => ({
-            productId: item.productId,
-            variantId: item.variantId || null,
-            productName: item.productName,
-            variantInfo: item.variantInfo || null,
-            quantity: item.quantity,
-            unitPrice: item.unitPrice,
-          })),
+          create: validatedItems,
         },
         statusHistory: {
           create: [
-            { status: 'PENDING', note: `Commande enregistrée sur ${siteConfig.name}` },
-            { status: 'PAID', note: `Paiement ${data.paymentProvider.toUpperCase()} validé avec succès` },
+            { status: 'PENDING', note: `Commande enregistrée sur ${siteConfig.name} - En attente de paiement` },
           ],
         },
       },
@@ -103,7 +140,8 @@ export async function createOrderAction(data: {
 
     return { success: true, orderNumber: order.orderNumber };
   } catch (error: any) {
-    return { success: false, error: 'Impossible d\'enregistrer la commande.' };
+    console.error('Erreur createOrderAction:', error);
+    return { success: false, error: error.message || 'Impossible d\'enregistrer la commande.' };
   }
 }
 

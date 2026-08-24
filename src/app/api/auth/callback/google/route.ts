@@ -92,22 +92,27 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  // 2. Mode Démonstration (quand GOOGLE_CLIENT_ID n'est pas encore renseigné dans .env)
+  // 2. Mode Démonstration (uniquement autorisé en environnement de développement local)
   if (isDemo) {
+    if (process.env.NODE_ENV === 'production') {
+      console.warn('⚠️ Tentative d\'accès au mode démo OAuth bloquée en production.');
+      return NextResponse.redirect(`${baseUrl}/connexion?error=demo_disabled_in_production`);
+    }
+
     try {
-      const demoEmail = 'client.google@gmail.com';
+      const demoEmail = 'client.demo@techphone229.bj';
       let user = await prisma.user.findUnique({
         where: { email: demoEmail },
       });
 
       if (!user) {
-        const randomPass = await hashPassword('GoogleOAuthDemoSecurePass2026!');
+        const randomPass = await hashPassword('DemoClientLocalTestPass2026!');
         user = await prisma.user.create({
           data: {
             email: demoEmail,
             passwordHash: randomPass,
-            firstName: 'Roland',
-            lastName: 'Koffi (Google)',
+            firstName: 'Client',
+            lastName: 'Démo Test',
             role: 'CLIENT',
             emailVerified: true,
           },
@@ -118,9 +123,9 @@ export async function GET(request: NextRequest) {
       return NextResponse.redirect(`${baseUrl}${redirectTarget}`);
     } catch (error) {
       console.error('Erreur Démo Google Auth:', error);
-      return NextResponse.redirect(`${baseUrl}/connexion`);
+      return NextResponse.redirect(`${baseUrl}/connexion?error=demo_failed`);
     }
   }
 
-  return NextResponse.redirect(`${baseUrl}/connexion`);
+  return NextResponse.redirect(`${baseUrl}/connexion?error=invalid_oauth_request`);
 }

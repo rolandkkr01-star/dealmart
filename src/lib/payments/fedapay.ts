@@ -139,12 +139,12 @@ export async function verifyFedaPayTransaction(transactionId: string | number): 
   const baseUrl = getFedaPayBaseUrl();
 
   if (!secretKey) {
-    console.warn('⚠️ FEDAPAY_SECRET_KEY manquante dans .env - validation locale');
+    console.error('❌ FEDAPAY_SECRET_KEY manquante dans .env. Impossible de valider la transaction.');
     return {
-      success: true,
-      status: 'PAID',
+      success: false,
+      status: 'FAILED',
       transactionId: String(transactionId),
-      message: 'Validation locale (clé API non configurée)',
+      message: 'Passerelle FedaPay non configurée sur le serveur.',
     };
   }
 

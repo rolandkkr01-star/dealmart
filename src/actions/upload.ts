@@ -8,6 +8,26 @@ import { requireAdmin, getCurrentUser } from '@/lib/auth';
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif', 'image/gif'];
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 Mo
 
+function isValidImageMagicBytes(buffer: Buffer): boolean {
+  if (buffer.length < 4) return false;
+  // JPEG: FF D8 FF
+  if (buffer[0] === 0xff && buffer[1] === 0xd8 && buffer[2] === 0xff) return true;
+  // PNG: 89 50 4E 47
+  if (buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4e && buffer[3] === 0x47) return true;
+  // GIF: 47 49 46 38
+  if (buffer[0] === 0x47 && buffer[1] === 0x49 && buffer[2] === 0x46 && buffer[3] === 0x38) return true;
+  // WEBP: RIFF ... WEBP
+  if (
+    buffer.length >= 12 &&
+    buffer[0] === 0x52 && buffer[1] === 0x49 && buffer[2] === 0x46 && buffer[3] === 0x46 &&
+    buffer[8] === 0x57 && buffer[9] === 0x45 && buffer[10] === 0x42 && buffer[11] === 0x50
+  ) return true;
+  // AVIF / HEIF: ftyp
+  if (buffer.length >= 12 && buffer.subarray(4, 8).toString('ascii') === 'ftyp') return true;
+
+  return false;
+}
+
 export async function uploadProductImageAction(formData: FormData) {
   try {
     const user = await getCurrentUser();
@@ -36,6 +56,13 @@ export async function uploadProductImageAction(formData: FormData) {
 
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
+
+    if (!isValidImageMagicBytes(buffer)) {
+      return {
+        success: false,
+        error: 'Contenu binaire de fichier invalide ou corrompu (signature d\'image non reconnue).',
+      };
+    }
 
     // Définir le dossier de destination dans public/uploads/products
     const uploadsDir = path.join(process.cwd(), 'public', 'uploads', 'products');
