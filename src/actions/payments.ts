@@ -21,6 +21,7 @@ export interface OrderItemInput {
 }
 
 export interface CheckoutPayload {
+  existingOrderNumber?: string;
   customerName: string;
   customerEmail: string;
   customerPhone: string;
@@ -51,9 +52,9 @@ export async function initCheckoutPaymentAction(data: CheckoutPayload) {
       };
     }
 
-    // Rate limiting: 10 initialisations de paiement par 10 minutes max par compte
+    // Rate limiting: 15 initialisations de paiement par 10 minutes max par compte
     const rateLimitKey = `checkout_init_${user.id}`;
-    const limit = checkRateLimit(rateLimitKey, { maxRequests: 10, windowMs: 10 * 60 * 1000 });
+    const limit = checkRateLimit(rateLimitKey, { maxRequests: 15, windowMs: 10 * 60 * 1000 });
     if (!limit.isAllowed) {
       const minutesRemaining = Math.ceil(limit.resetInMs / (60 * 1000));
       return {
@@ -124,40 +125,93 @@ export async function initCheckoutPaymentAction(data: CheckoutPayload) {
     const realDiscount = Math.max(0, Math.floor(data.discountAmount || 0));
     const calculatedTotalAmount = Math.max(0, calculatedItemsTotal + realShipping - realDiscount);
 
-    const orderNumber = generateOrderNumber();
+    // Vérifier si une commande PENDING existe déjà pour cette session de checkout
+    let existingPendingOrder = null;
+    if (data.existingOrderNumber) {
+      existingPendingOrder = await prisma.order.findFirst({
+        where: {
+          orderNumber: data.existingOrderNumber,
+          userId: user.id,
+          status: 'PENDING',
+        },
+      });
+    }
 
-    // Création initiale de la commande en statut PENDING
-    const order = await prisma.order.create({
-      data: {
-        orderNumber,
-        userId: user.id,
-        customerName: data.customerName,
-        customerEmail: data.customerEmail || user.email,
-        customerPhone: data.customerPhone,
-        city: data.city,
-        district: data.district,
-        streetDetails: data.streetDetails,
-        notes: data.notes || null,
-        status: 'PENDING',
-        totalAmount: calculatedTotalAmount,
-        shippingFee: realShipping,
-        discountAmount: realDiscount,
-        promoCode: data.promoCode || null,
-        paymentProvider: data.paymentProvider,
-        paymentRef: `${data.paymentProvider.toUpperCase()}-INIT-${Date.now().toString().slice(-6)}`,
-        items: {
-          create: validatedItems,
+    let order;
+    let orderNumber: string;
+
+    if (existingPendingOrder) {
+      orderNumber = existingPendingOrder.orderNumber;
+      // Mise à jour de la commande PENDING existante sans créer de doublon
+      await prisma.orderItem.deleteMany({
+        where: { orderId: existingPendingOrder.id },
+      });
+
+      order = await prisma.order.update({
+        where: { id: existingPendingOrder.id },
+        data: {
+          customerName: data.customerName,
+          customerEmail: data.customerEmail || user.email,
+          customerPhone: data.customerPhone,
+          city: data.city,
+          district: data.district,
+          streetDetails: data.streetDetails,
+          notes: data.notes || null,
+          totalAmount: calculatedTotalAmount,
+          shippingFee: realShipping,
+          discountAmount: realDiscount,
+          promoCode: data.promoCode || null,
+          paymentProvider: data.paymentProvider,
+          paymentRef: `${data.paymentProvider.toUpperCase()}-RETRY-${Date.now().toString().slice(-6)}`,
+          items: {
+            create: validatedItems,
+          },
+          statusHistory: {
+            create: [
+              {
+                status: 'PENDING',
+                note: `Nouvelle tentative de règlement via ${data.paymentProvider.toUpperCase()}`,
+              },
+            ],
+          },
         },
-        statusHistory: {
-          create: [
-            {
-              status: 'PENDING',
-              note: `Commande initiée via ${data.paymentProvider.toUpperCase()} - En attente de règlement`,
-            },
-          ],
+      });
+    } else {
+      orderNumber = generateOrderNumber();
+
+      // Création initiale de la commande en statut PENDING
+      order = await prisma.order.create({
+        data: {
+          orderNumber,
+          userId: user.id,
+          customerName: data.customerName,
+          customerEmail: data.customerEmail || user.email,
+          customerPhone: data.customerPhone,
+          city: data.city,
+          district: data.district,
+          streetDetails: data.streetDetails,
+          notes: data.notes || null,
+          status: 'PENDING',
+          totalAmount: calculatedTotalAmount,
+          shippingFee: realShipping,
+          discountAmount: realDiscount,
+          promoCode: data.promoCode || null,
+          paymentProvider: data.paymentProvider,
+          paymentRef: `${data.paymentProvider.toUpperCase()}-INIT-${Date.now().toString().slice(-6)}`,
+          items: {
+            create: validatedItems,
+          },
+          statusHistory: {
+            create: [
+              {
+                status: 'PENDING',
+                note: `Commande initiée via ${data.paymentProvider.toUpperCase()} - En attente de règlement`,
+              },
+            ],
+          },
         },
-      },
-    });
+      });
+    }
 
     // Enregistrement optionnel dans le carnet d'adresses du client
     if (data.saveAddress && data.streetDetails && data.streetDetails.trim()) {

@@ -41,6 +41,9 @@ export default function CheckoutPage() {
   const [saveAddress, setSaveAddress] = useState(true);
   const [addressLabel, setAddressLabel] = useState('');
 
+  // Identifiant de la commande en cours de règlement (évite les doublons en cas d'échec / re-tentative)
+  const [pendingOrderNumber, setPendingOrderNumber] = useState<string | null>(null);
+
   // Champs de localisation (sans aucune valeur fictive pré-remplie)
   const [city, setCity] = useState('Cotonou');
   const [district, setDistrict] = useState('');
@@ -233,6 +236,7 @@ export default function CheckoutPage() {
 
       // 1. Initialisation de la commande et préparation du flux de paiement
       const initResult = await initCheckoutPaymentAction({
+        existingOrderNumber: pendingOrderNumber || undefined,
         customerName,
         customerEmail: customerEmail || user.email,
         customerPhone,
@@ -257,6 +261,7 @@ export default function CheckoutPage() {
       }
 
       const orderNumber = initResult.orderNumber;
+      setPendingOrderNumber(orderNumber);
 
       // Synchronisation état local
       createOrder({
