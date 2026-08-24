@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { formatFCFA, getConditionBadgeInfo } from '@/lib/utils';
 import { Icons } from '@/components/ui/Icons';
 import { getAdminProductsAction, deleteProductAction, toggleProductStatusAction } from '@/actions/admin-products';
+import { DialogModal } from '@/components/ui/DialogModal';
 
 import { useRouter } from 'next/navigation';
 
@@ -18,6 +19,23 @@ export default function AdminProductsPage() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [actionSuccess, setActionSuccess] = useState<string | null>(null);
+
+  // Modal Dialog
+  const [dialogState, setDialogState] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    type: 'danger' | 'warning' | 'info' | 'success';
+    confirmText?: string;
+    cancelText?: string;
+    isConfirmOnly?: boolean;
+    onConfirm?: () => void;
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    type: 'warning',
+  });
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -38,24 +56,39 @@ export default function AdminProductsPage() {
     fetchProducts();
   }, []);
 
-  const handleDelete = async (id: string, name: string) => {
-    if (!confirm(`Êtes-vous sûr de vouloir supprimer définitivement le produit "${name}" ?`)) {
-      return;
-    }
+  const handleDelete = (id: string, name: string) => {
+    setDialogState({
+      isOpen: true,
+      title: 'Supprimer ce produit ?',
+      message: `Êtes-vous certain de vouloir supprimer définitivement "${name}" du catalogue ? Cette action est irréversible.`,
+      type: 'danger',
+      confirmText: 'Supprimer',
+      cancelText: 'Conserver',
+      onConfirm: async () => {
+        setDialogState((prev) => ({ ...prev, isOpen: false }));
+        setDeletingId(id);
+        setActionError(null);
+        setActionSuccess(null);
 
-    setDeletingId(id);
-    setActionError(null);
-    setActionSuccess(null);
+        const res = await deleteProductAction(id);
+        setDeletingId(null);
 
-    const res = await deleteProductAction(id);
-    setDeletingId(null);
-
-    if (res.success) {
-      setActionSuccess(`Le produit "${name}" a été supprimé.`);
-      setProducts((prev) => prev.filter((p) => p.id !== id));
-    } else {
-      setActionError(res.error || 'Impossible de supprimer ce produit.');
-    }
+        if (res.success) {
+          setActionSuccess(`Le produit "${name}" a été supprimé avec succès.`);
+          setProducts((prev) => prev.filter((p) => p.id !== id));
+          setTimeout(() => setActionSuccess(null), 3500);
+        } else {
+          setDialogState({
+            isOpen: true,
+            title: 'Échec de suppression',
+            message: res.error || 'Impossible de supprimer ce produit.',
+            type: 'warning',
+            isConfirmOnly: true,
+            confirmText: 'Compris',
+          });
+        }
+      },
+    });
   };
 
   const handleToggleStatus = async (id: string, currentStatus: boolean) => {
@@ -67,7 +100,14 @@ export default function AdminProductsPage() {
         prev.map((p) => (p.id === id ? { ...p, isActive: nextStatus } : p))
       );
     } else {
-      alert(res.error || 'Erreur modification statut');
+      setDialogState({
+        isOpen: true,
+        title: 'Erreur',
+        message: res.error || 'Impossible de modifier le statut du produit.',
+        type: 'warning',
+        isConfirmOnly: true,
+        confirmText: 'Fermer',
+      });
     }
   };
 
@@ -85,6 +125,11 @@ export default function AdminProductsPage() {
 
   return (
     <div className="p-4 sm:p-8 max-w-7xl mx-auto space-y-6">
+      <DialogModal
+        {...dialogState}
+        onClose={() => setDialogState((prev) => ({ ...prev, isOpen: false }))}
+      />
+
       {/* En-tête */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-gray-200 shadow-xs">
         <div>

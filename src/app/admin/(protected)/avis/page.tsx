@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Icons } from '@/components/ui/Icons';
+import { DialogModal } from '@/components/ui/DialogModal';
 import { getAllReviewsAdminAction, toggleFeatureReviewAction, deleteReviewAction } from '@/actions/reviews';
 
 export default function AdminReviewsPage() {
@@ -10,6 +11,17 @@ export default function AdminReviewsPage() {
   const [loading, setLoading] = useState(true);
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  const [deleteConfirmState, setDeleteConfirmState] = useState<{
+    isOpen: boolean;
+    reviewId: string | null;
+    userName: string;
+  }>({
+    isOpen: false,
+    reviewId: null,
+    userName: '',
+  });
 
   const loadReviews = async () => {
     setLoading(true);
@@ -24,6 +36,7 @@ export default function AdminReviewsPage() {
 
   const handleToggleFeature = async (reviewId: string) => {
     setErrorMessage(null);
+    setSuccessMessage(null);
     setActionLoadingId(reviewId);
     const res = await toggleFeatureReviewAction(reviewId);
     setActionLoadingId(null);
@@ -37,14 +50,27 @@ export default function AdminReviewsPage() {
     }
   };
 
-  const handleDelete = async (reviewId: string) => {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer définitivement cet avis ?')) return;
+  const handleDelete = (reviewId: string, userName: string) => {
+    setDeleteConfirmState({
+      isOpen: true,
+      reviewId,
+      userName,
+    });
+  };
+
+  const confirmDeleteReview = async () => {
+    if (!deleteConfirmState.reviewId) return;
+    const reviewId = deleteConfirmState.reviewId;
+    setDeleteConfirmState({ isOpen: false, reviewId: null, userName: '' });
+
     setActionLoadingId(reviewId);
     const res = await deleteReviewAction(reviewId);
     setActionLoadingId(null);
 
     if (res.success) {
       setReviews((prev) => prev.filter((r) => r.id !== reviewId));
+      setSuccessMessage('Avis supprimé avec succès.');
+      setTimeout(() => setSuccessMessage(null), 3000);
     } else {
       setErrorMessage(res.error || 'Erreur lors de la suppression.');
     }
@@ -57,6 +83,17 @@ export default function AdminReviewsPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <DialogModal
+        isOpen={deleteConfirmState.isOpen}
+        onClose={() => setDeleteConfirmState({ isOpen: false, reviewId: null, userName: '' })}
+        onConfirm={confirmDeleteReview}
+        title="Supprimer cet avis ?"
+        message={`Êtes-vous certain de vouloir supprimer définitivement l'avis de ${deleteConfirmState.userName} ?`}
+        type="danger"
+        confirmText="Supprimer"
+        cancelText="Conserver"
+      />
+
       {/* En-tête de la page */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-gray-200 mb-8">
         <div>
@@ -218,7 +255,7 @@ export default function AdminReviewsPage() {
                   </button>
 
                   <button
-                    onClick={() => handleDelete(rev.id)}
+                    onClick={() => handleDelete(rev.id, rev.userName)}
                     disabled={actionLoadingId === rev.id}
                     className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors cursor-pointer"
                     title="Supprimer cet avis"

@@ -11,6 +11,7 @@ import {
 } from '@/actions/address';
 import { UserAddress } from '@/types';
 import { Icons } from '@/components/ui/Icons';
+import { DialogModal } from '@/components/ui/DialogModal';
 
 export default function ClientAddressesPage() {
   const { user } = useAuth();
@@ -20,6 +21,17 @@ export default function ClientAddressesPage() {
   const [actionError, setActionError] = useState<string | null>(null);
   const [actionSuccess, setActionSuccess] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+
+  // Modal de confirmation de suppression
+  const [deleteConfirmState, setDeleteConfirmState] = useState<{
+    isOpen: boolean;
+    addressId: string | null;
+    label: string;
+  }>({
+    isOpen: false,
+    addressId: null,
+    label: '',
+  });
 
   // Formulaire d'ajout
   const [label, setLabel] = useState('');
@@ -79,11 +91,22 @@ export default function ClientAddressesPage() {
     }
   };
 
-  const handleDeleteAddress = async (id: string) => {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer cette adresse de livraison ?')) return;
+  const handleDeleteAddress = (id: string, addrLabel: string) => {
+    setDeleteConfirmState({
+      isOpen: true,
+      addressId: id,
+      label: addrLabel,
+    });
+  };
+
+  const confirmDeleteAddress = async () => {
+    if (!deleteConfirmState.addressId) return;
+    const id = deleteConfirmState.addressId;
+    setDeleteConfirmState({ isOpen: false, addressId: null, label: '' });
+
     const res = await deleteUserAddressAction(id);
     if (res.success) {
-      setActionSuccess('Adresse supprimée.');
+      setActionSuccess('Adresse supprimée avec succès.');
       loadAddresses();
       setTimeout(() => setActionSuccess(null), 3000);
     } else {
@@ -102,6 +125,17 @@ export default function ClientAddressesPage() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Dialog de confirmation de suppression */}
+      <DialogModal
+        isOpen={deleteConfirmState.isOpen}
+        onClose={() => setDeleteConfirmState({ isOpen: false, addressId: null, label: '' })}
+        onConfirm={confirmDeleteAddress}
+        title="Supprimer cette adresse ?"
+        message={`Êtes-vous certain de vouloir supprimer "${deleteConfirmState.label}" de votre carnet d'adresses ?`}
+        type="danger"
+        confirmText="Supprimer"
+        cancelText="Conserver"
+      />
       {/* Fil d'Ariane */}
       <nav className="flex items-center gap-2 text-xs text-gray-500 mb-6">
         <Link href="/" className="hover:text-[#0062BD]">Accueil</Link>
@@ -217,7 +251,7 @@ export default function ClientAddressesPage() {
 
               <div className="flex items-center justify-end gap-3 pt-3 border-t border-gray-100 text-xs">
                 <button
-                  onClick={() => handleDeleteAddress(addr.id)}
+                  onClick={() => handleDeleteAddress(addr.id, addr.label)}
                   className="text-red-600 hover:text-red-800 hover:bg-red-50 px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
                 >
                   <Icons.Trash2 size={14} />

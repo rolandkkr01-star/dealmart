@@ -131,7 +131,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     });
 
-    showToast(`"${product.name}" a été ajouté au panier !`);
     setIsCartDrawerOpen(true);
   };
 

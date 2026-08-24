@@ -5,11 +5,29 @@ import Link from 'next/link';
 import { getUserOrdersAction, cancelPendingOrderAction } from '@/actions/orders';
 import { formatFCFA, getOrderStatusInfo } from '@/lib/utils';
 import { Icons } from '@/components/ui/Icons';
+import { DialogModal } from '@/components/ui/DialogModal';
 
 export default function MesCommandesPage() {
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [cancellingId, setCancellingId] = useState<string | null>(null);
+
+  // Modal de confirmation / alerte
+  const [dialogState, setDialogState] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    type: 'danger' | 'warning' | 'info' | 'success';
+    confirmText?: string;
+    cancelText?: string;
+    isConfirmOnly?: boolean;
+    onConfirm?: () => void;
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    type: 'warning',
+  });
 
   const loadOrders = async () => {
     setLoading(true);
@@ -24,22 +42,41 @@ export default function MesCommandesPage() {
     loadOrders();
   }, []);
 
-  const handleCancelOrder = async (orderNumber: string) => {
-    if (!confirm(`Êtes-vous sûr de vouloir annuler la commande ${orderNumber} ?`)) {
-      return;
-    }
-    setCancellingId(orderNumber);
-    const res = await cancelPendingOrderAction(orderNumber);
-    if (res.success) {
-      await loadOrders();
-    } else {
-      alert(res.error || 'Impossible d\'annuler la commande.');
-    }
-    setCancellingId(null);
+  const handleCancelOrder = (orderNumber: string) => {
+    setDialogState({
+      isOpen: true,
+      title: 'Annuler cette commande ?',
+      message: `Êtes-vous certain de vouloir annuler la commande ${orderNumber} ? Cette action est définitive.`,
+      type: 'danger',
+      confirmText: 'Oui, annuler',
+      cancelText: 'Non, conserver',
+      onConfirm: async () => {
+        setCancellingId(orderNumber);
+        setDialogState((prev) => ({ ...prev, isOpen: false }));
+        const res = await cancelPendingOrderAction(orderNumber);
+        if (res.success) {
+          await loadOrders();
+        } else {
+          setDialogState({
+            isOpen: true,
+            title: 'Échec de l\'annulation',
+            message: res.error || 'Impossible d\'annuler cette commande.',
+            type: 'warning',
+            isConfirmOnly: true,
+            confirmText: 'Compris',
+          });
+        }
+        setCancellingId(null);
+      },
+    });
   };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <DialogModal
+        {...dialogState}
+        onClose={() => setDialogState((prev) => ({ ...prev, isOpen: false }))}
+      />
       <nav className="flex items-center gap-2 text-xs text-gray-500 mb-6">
         <Link href="/" className="hover:text-[#0062BD]">Accueil</Link>
         <span>/</span>

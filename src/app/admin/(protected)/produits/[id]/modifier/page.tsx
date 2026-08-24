@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Icons } from '@/components/ui/Icons';
 import { getCategoriesAction, getAdminProductByIdAction, updateProductAction } from '@/actions/admin-products';
 import { uploadProductImageAction } from '@/actions/upload';
+import { DialogModal } from '@/components/ui/DialogModal';
 
 interface VariantImage {
   url: string;
@@ -48,6 +49,22 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
   const [uploading, setUploading] = useState(false);
   const [variantUploadingIdx, setVariantUploadingIdx] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  // Dialog Modal
+  const [dialogState, setDialogState] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    type: 'danger' | 'warning' | 'info' | 'success';
+    confirmText?: string;
+    isConfirmOnly?: boolean;
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    type: 'warning',
+    isConfirmOnly: true,
+  });
 
   // Form states
   const [name, setName] = useState('');
@@ -176,7 +193,14 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
 
   const removeVariant = (index: number) => {
     if (variants.length <= 1) {
-      alert('Vous devez conserver au moins une couleur pour ce produit.');
+      setDialogState({
+        isOpen: true,
+        title: 'Action impossible',
+        message: 'Vous devez conserver au moins une couleur pour ce produit.',
+        type: 'warning',
+        isConfirmOnly: true,
+        confirmText: 'Compris',
+      });
       return;
     }
     setVariants((prev) => prev.filter((_, i) => i !== index));
@@ -389,6 +413,11 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
 
   return (
     <div className="p-4 sm:p-8 max-w-5xl mx-auto space-y-6">
+      <DialogModal
+        {...dialogState}
+        onClose={() => setDialogState((prev) => ({ ...prev, isOpen: false }))}
+      />
+
       <div className="flex items-center justify-between">
         <Link
           href="/admin/produits"
