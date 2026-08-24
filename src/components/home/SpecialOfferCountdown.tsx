@@ -41,9 +41,9 @@ export const SpecialOfferCountdown: React.FC<SpecialOfferCountdownProps> = ({ pr
   const currentPrice = product.promoPrice ?? product.basePrice;
 
   return (
-    <div className="border-2 border-[#FED700] rounded-2xl p-6 relative bg-white shadow-sm flex flex-col justify-between h-full">
+    <div className="border-2 border-[#FED700] rounded-2xl p-6 relative bg-white flex flex-col justify-between h-full">
       {/* Badge Offre Spéciale */}
-      <div className="absolute -top-3.5 left-6 bg-[#DC3545] text-white font-extrabold text-[11px] uppercase tracking-wider px-3.5 py-1 rounded-full shadow-md flex items-center gap-1.5">
+      <div className="absolute -top-3.5 left-6 bg-[#DC3545] text-white font-extrabold text-[11px] uppercase tracking-wider px-3.5 py-1 rounded-full flex items-center gap-1.5">
         <Icons.Flame size={13} className="text-white" />
         <span>Offre Spéciale du Jour</span>
       </div>
@@ -129,7 +129,7 @@ export const SpecialOfferCountdown: React.FC<SpecialOfferCountdownProps> = ({ pr
       <div className="space-y-2 mt-2">
         <button
           onClick={() => addToCart(product)}
-          className="w-full bg-[#FED700] hover:bg-[#E8C400] text-[#1D2129] font-heading font-black text-xs uppercase tracking-wider py-3 rounded-xl flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
+          className="w-full bg-[#FED700] hover:bg-[#E8C400] text-[#1D2129] font-heading font-black text-xs uppercase tracking-wider py-3 rounded-lg flex items-center justify-center gap-2 transition-colors cursor-pointer"
         >
           <Icons.ShoppingCart size={16} />
           <span>Ajouter au Panier</span>
@@ -138,7 +138,7 @@ export const SpecialOfferCountdown: React.FC<SpecialOfferCountdownProps> = ({ pr
         {product.tradeEligible && onOpenTrade && (
           <button
             onClick={() => onOpenTrade(product)}
-            className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-semibold py-2 rounded-xl flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+            className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-semibold py-2 rounded-lg flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
           >
             <Icons.Repeat size={14} className="text-[#0062BD]" />
             <span>Échanger mon ancien smartphone</span>

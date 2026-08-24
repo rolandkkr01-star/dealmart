@@ -104,7 +104,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onOpenTrade }
               {formatFCFA(currentPrice)}
             </div>
             {product.promoPrice && (
-              <div className="text-[11px] text-gray-400 line-through font-medium">
+              <div className="text-[11px] text-gray-500 line-through font-medium">
                 {formatFCFA(product.basePrice)}
               </div>
             )}

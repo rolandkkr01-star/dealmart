@@ -7,7 +7,7 @@ export const BrandShowcase: React.FC = () => {
     <section className="mb-12">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Espace Apple */}
-        <div className="bg-gradient-to-br from-gray-900 to-black text-white rounded-2xl p-6 sm:p-8 relative overflow-hidden flex flex-col justify-between shadow-md group">
+        <div className="bg-gradient-to-br from-gray-900 to-black text-white rounded-2xl p-6 sm:p-8 relative overflow-hidden flex flex-col justify-between border border-gray-800 group">
           <div className="relative z-10">
             <span className="text-[11px] font-bold text-[#FED700] uppercase tracking-widest block mb-2">
               Univers Apple Officiel
@@ -20,7 +20,7 @@ export const BrandShowcase: React.FC = () => {
             </p>
             <Link
               href="/boutique?brand=IPHONE"
-              className="inline-flex items-center gap-2 bg-[#FED700] hover:bg-[#E8C400] text-[#1D2129] font-heading font-black text-xs uppercase px-5 py-2.5 rounded-lg shadow-sm transition-transform group-hover:translate-x-1"
+              className="inline-flex items-center gap-2 bg-[#FED700] hover:bg-[#E8C400] text-[#1D2129] font-heading font-black text-xs uppercase px-5 py-2.5 rounded-lg transition-transform group-hover:translate-x-0.5"
             >
               <span>Voir les iPhones</span>
               <Icons.ChevronRight size={14} />
@@ -36,7 +36,7 @@ export const BrandShowcase: React.FC = () => {
         </div>
 
         {/* Espace Samsung */}
-        <div className="bg-gradient-to-br from-[#0B1E38] to-[#040C18] text-white rounded-2xl p-6 sm:p-8 relative overflow-hidden flex flex-col justify-between shadow-md group">
+        <div className="bg-gradient-to-br from-[#0B1E38] to-[#040C18] text-white rounded-2xl p-6 sm:p-8 relative overflow-hidden flex flex-col justify-between border border-[#0F2D54] group">
           <div className="relative z-10">
             <span className="text-[11px] font-bold text-[#5D9EFD] uppercase tracking-widest block mb-2">
               Univers Samsung Galaxy
@@ -49,7 +49,7 @@ export const BrandShowcase: React.FC = () => {
             </p>
             <Link
               href="/boutique?brand=SAMSUNG"
-              className="inline-flex items-center gap-2 bg-[#0062BD] hover:bg-[#004F99] text-white font-heading font-black text-xs uppercase px-5 py-2.5 rounded-lg shadow-sm transition-transform group-hover:translate-x-1"
+              className="inline-flex items-center gap-2 bg-[#0062BD] hover:bg-[#004F99] text-white font-heading font-black text-xs uppercase px-5 py-2.5 rounded-lg transition-transform group-hover:translate-x-0.5"
             >
               <span>Voir les Galaxy</span>
               <Icons.ChevronRight size={14} />

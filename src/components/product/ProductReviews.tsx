@@ -115,9 +115,16 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
 
         <button
           onClick={() => setIsFormOpen(!isFormOpen)}
-          className="bg-[#FED700] hover:bg-[#E8C400] text-[#1D2129] font-heading font-black text-xs uppercase tracking-wider px-5 py-2.5 rounded-xl shadow-xs transition-colors self-start sm:self-auto cursor-pointer"
+          className="bg-[#FED700] hover:bg-[#E8C400] text-[#1D2129] font-heading font-black text-xs uppercase tracking-wider px-5 py-2.5 rounded-xl shadow-xs transition-colors self-start sm:self-auto cursor-pointer inline-flex items-center gap-1.5"
         >
-          {isFormOpen ? 'Fermer le formulaire' : '⭐ Donner votre avis'}
+          {isFormOpen ? (
+            'Fermer le formulaire'
+          ) : (
+            <>
+              <Icons.Star size={14} fill="#1D2129" />
+              <span>Donner votre avis</span>
+            </>
+          )}
         </button>
       </div>
 
