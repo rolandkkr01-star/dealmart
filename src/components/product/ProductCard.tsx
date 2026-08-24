@@ -55,7 +55,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onOpenTrade }
       </div>
 
       {/* Image du produit */}
-      <Link href={`/produit/${product.slug}`} className="block relative aspect-square mb-3 overflow-hidden rounded-lg bg-gray-50 p-2">
+      <Link href={`/produit/${product.slug}`} className="block relative aspect-square max-h-60 sm:max-h-none mb-3 overflow-hidden rounded-lg bg-gray-50 p-3 flex items-center justify-center">
         <img
           src={product.images[0]?.url}
           alt={product.images[0]?.altText || product.name}
@@ -63,8 +63,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onOpenTrade }
           loading="lazy"
         />
         {product.tradeEligible && (
-          <span className="absolute bottom-1.5 left-1.5 bg-[#1D2129] text-[#FED700] text-[9px] font-bold px-2 py-0.5 rounded flex items-center gap-1">
-            <Icons.Repeat size={10} />
+          <span className="absolute bottom-2 left-2 bg-[#1D2129] text-[#FED700] text-[10px] font-bold px-2.5 py-0.5 rounded-md flex items-center gap-1 shadow-xs">
+            <Icons.Repeat size={11} />
             Troc possible
           </span>
         )}
@@ -78,7 +78,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onOpenTrade }
 
         <Link
           href={`/produit/${product.slug}`}
-          className="text-xs font-bold text-gray-900 group-hover:text-[#0062BD] transition-colors line-clamp-2 mb-2 leading-snug"
+          className="text-sm sm:text-xs font-bold text-gray-900 group-hover:text-[#0062BD] transition-colors line-clamp-2 mb-2 leading-snug"
         >
           {product.name}
         </Link>
@@ -89,22 +89,22 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onOpenTrade }
             {[...Array(5)].map((_, i) => (
               <Icons.Star
                 key={i}
-                size={12}
+                size={13}
                 className={i < Math.floor(product.rating || 5) ? 'text-amber-400 fill-amber-400' : 'text-gray-300 fill-gray-200'}
               />
             ))}
           </div>
-          <span className="text-[10px] text-gray-500 font-medium">({product.reviewsCount || 0})</span>
+          <span className="text-[11px] sm:text-[10px] text-gray-500 font-medium">({product.reviewsCount || 0})</span>
         </div>
 
         {/* Prix en FCFA */}
-        <div className="mt-auto pt-2 border-t border-gray-100 flex items-baseline justify-between">
+        <div className="mt-auto pt-2.5 border-t border-gray-100 flex items-baseline justify-between">
           <div>
-            <div className="text-sm sm:text-base font-black text-[#DC3545] font-price">
+            <div className="text-base sm:text-lg font-black text-[#DC3545] font-price">
               {formatFCFA(currentPrice)}
             </div>
             {product.promoPrice && (
-              <div className="text-[11px] text-gray-500 line-through font-medium">
+              <div className="text-xs text-gray-500 line-through font-medium">
                 {formatFCFA(product.basePrice)}
               </div>
             )}
@@ -113,21 +113,21 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onOpenTrade }
       </div>
 
       {/* Bouton d'ajout rapide & Troc */}
-      <div className="mt-3 grid grid-cols-1 gap-1.5 pt-1">
+      <div className="mt-3.5 grid grid-cols-1 gap-2 pt-1">
         <button
           onClick={() => addToCart(product)}
-          className="w-full bg-[#FED700] hover:bg-[#E8C400] text-[#1D2129] font-bold text-xs py-2 px-3 rounded-lg flex items-center justify-center gap-2 shadow-xs transition-colors cursor-pointer"
+          className="w-full bg-[#FED700] hover:bg-[#E8C400] text-[#1D2129] font-heading font-black text-xs uppercase py-2.5 px-3 rounded-xl flex items-center justify-center gap-2 shadow-xs transition-colors cursor-pointer"
         >
-          <Icons.ShoppingCart size={14} />
-          <span>Ajouter</span>
+          <Icons.ShoppingCart size={15} />
+          <span>Ajouter au Panier</span>
         </button>
 
         {product.tradeEligible && onOpenTrade && (
           <button
             onClick={() => onOpenTrade(product)}
-            className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 text-[11px] font-semibold py-1.5 px-2 rounded-lg flex items-center justify-center gap-1 transition-colors cursor-pointer"
+            className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-bold py-2 px-2 rounded-xl flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
           >
-            <Icons.Repeat size={12} className="text-[#0062BD]" />
+            <Icons.Repeat size={13} className="text-[#0062BD]" />
             <span>Proposer un troc</span>
           </button>
         )}
