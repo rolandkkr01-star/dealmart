@@ -1,8 +1,6 @@
 import { getCurrentUser } from '@/lib/auth';
 import { redirect } from 'next/navigation';
-import { AdminHeader } from '@/components/admin/AdminHeader';
-
-import { siteConfig } from '@/lib/site-config';
+import { AdminSidebar } from '@/components/admin/AdminSidebar';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,14 +12,16 @@ export default async function AdminProtectedLayout({ children }: { children: Rea
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F1F5F9]">
-      <AdminHeader />
-      <main className="flex-1">
-        {children}
-      </main>
-      <footer className="bg-[#1E293B] border-t border-gray-800 text-gray-400 text-center py-4 text-xs">
-        {siteConfig.name} • Console d'Administration Interne
-      </footer>
+    <div className="min-h-screen bg-[#F8F9FA] text-[#1D2129] flex">
+      {/* Sidebar de navigation Desktop & Mobile Drawer */}
+      <AdminSidebar />
+
+      {/* Zone de contenu principale */}
+      <div className="flex-1 md:ml-64 flex flex-col min-h-screen pt-16 md:pt-0">
+        <main className="flex-1">
+          {children}
+        </main>
+      </div>
     </div>
   );
 }
