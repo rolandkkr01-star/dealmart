@@ -65,36 +65,29 @@ export async function sendOtpVerificationEmail({
     </html>
   `;
 
-  // 1. Envoi réel si la clé API Resend est configurée
-  if (apiKey) {
-    try {
-      const resend = new Resend(apiKey);
-      const { data, error } = await resend.emails.send({
-        from: fromEmail,
-        to: [to],
-        subject: `${otpCode} est votre code de confirmation ${siteConfig.name}`,
-        html: htmlContent,
-      });
-
-      if (error) {
-        console.error('❌ Erreur API Resend:', error);
-        return { success: false, error: error.message };
-      }
-
-      console.log(`✅ Email OTP envoyé avec succès via Resend à ${to} (ID: ${data?.id})`);
-      return { success: true, messageId: data?.id };
-    } catch (err: any) {
-      console.error('❌ Exception envoi Resend:', err);
-      return { success: false, error: err.message || 'Erreur lors de l\'envoi de l\'email' };
-    }
+  if (!apiKey) {
+    console.error('❌ RESEND_API_KEY absente dans les variables d\'environnement.');
+    return { success: false, error: 'Service d\'envoi d\'email non configuré sur le serveur.' };
   }
 
-  // 2. Mode Démo / Fallback si pas de clé API encore renseignée
-  console.log(`\n==================================================`);
-  console.log(`✉️ [SIMULATION RESEND] Aucun RESEND_API_KEY dans .env`);
-  console.log(`Destinataire : ${to}`);
-  console.log(`Code OTP     : ${otpCode}`);
-  console.log(`==================================================\n`);
+  try {
+    const resend = new Resend(apiKey);
+    const { data, error } = await resend.emails.send({
+      from: fromEmail,
+      to: [to],
+      subject: `${otpCode} est votre code de confirmation ${siteConfig.name}`,
+      html: htmlContent,
+    });
 
-  return { success: true };
+    if (error) {
+      console.error('❌ Erreur API Resend:', error);
+      return { success: false, error: error.message };
+    }
+
+    console.log(`✅ Email OTP envoyé avec succès via Resend à ${to} (ID: ${data?.id})`);
+    return { success: true, messageId: data?.id };
+  } catch (err: any) {
+    console.error('❌ Exception envoi Resend:', err);
+    return { success: false, error: err.message || 'Erreur lors de l\'envoi de l\'email.' };
+  }
 }

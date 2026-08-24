@@ -196,18 +196,21 @@ export async function registerAction(formData: {
       },
     });
 
-    // Envoi de l'email via Resend (ou simulation console si pas encore de clé)
-    await sendOtpVerificationEmail({
+    // Envoi de l'email via Resend
+    const emailResult = await sendOtpVerificationEmail({
       to: newUser.email,
       userName: newUser.firstName,
       otpCode,
     });
 
+    if (!emailResult.success) {
+      console.warn('⚠️ Échec envoi email Resend:', emailResult.error);
+    }
+
     return {
       success: true,
       requireOtp: true,
       email: newUser.email,
-      simulatedCode: process.env.NODE_ENV !== 'production' && !process.env.RESEND_API_KEY ? otpCode : undefined,
     };
   } catch (error: any) {
     if (error instanceof z.ZodError) {
@@ -329,7 +332,6 @@ export async function resendRegistrationOtpAction(email: string) {
     return {
       success: true,
       message: 'Un nouveau code de confirmation vous a été envoyé.',
-      simulatedCode: process.env.NODE_ENV !== 'production' && !process.env.RESEND_API_KEY ? newOtpCode : undefined,
     };
   } catch (error: any) {
     console.error('Erreur resendRegistrationOtpAction:', error);
@@ -452,20 +454,15 @@ export async function sendEmailVerificationTokenAction(email: string) {
       where: { identifier: user.email },
     });
 
-    await prisma.verificationToken.create({
-      data: {
-        identifier: user.email,
-        token: code,
-        expiresAt,
-      },
+    await sendOtpVerificationEmail({
+      to: user.email,
+      userName: user.firstName,
+      otpCode: code,
     });
-
-    console.log(`✉️ [EMAIL VERIFICATION] Code de confirmation pour ${user.email} : ${code}`);
 
     return {
       success: true,
       message: 'Code de vérification envoyé par email.',
-      simulatedCode: process.env.NODE_ENV !== 'production' ? code : undefined,
     };
   } catch (error: any) {
     console.error('Erreur sendEmailVerificationTokenAction:', error);

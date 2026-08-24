@@ -20,7 +20,6 @@ export function InscriptionForm({ redirectTarget }: { redirectTarget: string }) 
   // Étape 2 : Validation OTP
   const [step, setStep] = useState<'form' | 'otp'>('form');
   const [otpCode, setOtpCode] = useState('');
-  const [simulatedCode, setSimulatedCode] = useState<string | null>(null);
   const [countdown, setCountdown] = useState(60);
   const [canResend, setCanResend] = useState(false);
 
@@ -72,9 +71,6 @@ export function InscriptionForm({ redirectTarget }: { redirectTarget: string }) 
       setStep('otp');
       setCountdown(60);
       setCanResend(false);
-      if (result.simulatedCode) {
-        setSimulatedCode(result.simulatedCode);
-      }
     } else {
       setError(result.error || 'Erreur lors de la création du compte');
     }
@@ -118,9 +114,6 @@ export function InscriptionForm({ redirectTarget }: { redirectTarget: string }) 
       setSuccessMessage(result.message || 'Un nouveau code vous a été envoyé.');
       setCountdown(60);
       setCanResend(false);
-      if (result.simulatedCode) {
-        setSimulatedCode(result.simulatedCode);
-      }
     } else {
       setError(result.error || 'Impossible de renvoyer le code.');
     }
@@ -152,22 +145,6 @@ export function InscriptionForm({ redirectTarget }: { redirectTarget: string }) 
           <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-3 rounded-xl text-xs mb-4 flex items-center gap-2">
             <Icons.CheckCircle size={16} className="flex-shrink-0 text-emerald-600" />
             <span>{successMessage}</span>
-          </div>
-        )}
-
-        {/* Aide simulation locale si pas encore de clé Resend */}
-        {step === 'otp' && simulatedCode && (
-          <div className="bg-amber-50 border border-amber-300 text-amber-900 p-3.5 rounded-xl text-xs mb-5">
-            <div className="font-bold flex items-center gap-1.5 mb-1 text-[#1D2129]">
-              <Icons.ShieldCheck size={16} className="text-amber-600" />
-              <span>Mode Démo / Test Local (Simulation Resend) :</span>
-            </div>
-            <p className="text-gray-700">
-              Votre code de vérification est :{' '}
-              <strong className="text-base text-[#0062BD] font-mono tracking-widest bg-white px-2 py-0.5 rounded border border-amber-200">
-                {simulatedCode}
-              </strong>
-            </p>
           </div>
         )}
 
