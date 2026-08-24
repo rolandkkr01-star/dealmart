@@ -59,6 +59,7 @@ export default function OrderTrackingDetailPage({ params }: { params: Promise<{ 
     if (typeof window !== 'undefined' && window.openKkiapayWidget && initRes.kkiapay?.publicKey) {
       if (window.addSuccessListener) {
         window.addSuccessListener(async (response: any) => {
+          setIsPaying(true);
           const txId = response.transactionId || response.transaction_id || `KKIA-${Date.now()}`;
           const res = await verifyOrderPaymentAction({
             orderNumber: order.orderNumber,
@@ -81,6 +82,7 @@ export default function OrderTrackingDetailPage({ params }: { params: Promise<{ 
         });
       }
 
+      // Ouverture du widget Kkiapay et déblocage de l'UI
       window.openKkiapayWidget({
         amount: initRes.amount,
         key: initRes.kkiapay.publicKey,
@@ -90,6 +92,7 @@ export default function OrderTrackingDetailPage({ params }: { params: Promise<{ 
         name: order.customerName,
         data: { orderNumber: order.orderNumber },
       });
+      setIsPaying(false);
     } else {
       // Simulation / Test local
       await verifyOrderPaymentAction({
@@ -152,7 +155,7 @@ export default function OrderTrackingDetailPage({ params }: { params: Promise<{ 
 
   return (
     <>
-      <Script src="https://cdn.kkiapay.me/k.js" strategy="lazyOnload" />
+      <Script src="https://cdn.kkiapay.me/k.js" strategy="afterInteractive" />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         {/* En-tête de la commande */}
