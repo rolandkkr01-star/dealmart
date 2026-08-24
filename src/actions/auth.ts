@@ -1,11 +1,13 @@
 'use server';
 
 import { z } from 'zod';
+import crypto from 'crypto';
 import { prisma } from '@/lib/prisma';
 import { hashPassword, verifyPassword, createSession, destroySession, getCurrentUser } from '@/lib/auth';
 import { revalidatePath } from 'next/cache';
 import { validateEmailDeliverability } from '@/lib/email-validator';
 import { checkRateLimit, resetRateLimit } from '@/lib/rate-limiter';
+import { sendOtpVerificationEmail, sendPasswordResetEmail } from '@/lib/email-service';
 
 const StrongPasswordSchema = z
   .string()
@@ -137,8 +139,6 @@ export async function setupMasterAdminAction(formData: {
     return { success: false, error: 'Une erreur est survenue lors de l\'initialisation du compte Master Admin.' };
   }
 }
-
-import { sendOtpVerificationEmail } from '@/lib/email-service';
 
 export async function registerAction(formData: {
   email: string;
@@ -529,3 +529,220 @@ export async function verifyEmailWithTokenAction(token: string) {
     return { success: false, error: 'Erreur lors de la validation du code.' };
   }
 }
+
+const ForgotPasswordRequestSchema = z.object({
+  email: z.string().email('Format d\'email invalide'),
+});
+
+const ResetPasswordSchema = z.object({
+  token: z.string().min(10, 'Jeton de réinitialisation invalide'),
+  password: StrongPasswordSchema,
+  confirmPassword: z.string(),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: 'Les deux mots de passe ne correspondent pas',
+  path: ['confirmPassword'],
+});
+
+/**
+ * 1. Demande de réinitialisation de mot de passe (Lien à usage unique avec expiration 15 min)
+ * - Rate Limiting strict (3 demandes par 15 min par email)
+ * - Token cryptographique aléatoire 32 octets
+ * - Token haché en base (SHA-256) pour éviter toute fuite
+ * - Protection anti-énumération (réponse générique identique que l'email existe ou non)
+ */
+export async function requestPasswordResetAction(formData: { email: string }) {
+  try {
+    const validated = ForgotPasswordRequestSchema.parse(formData);
+    const normalizedEmail = validated.email.toLowerCase().trim();
+
+    // Rate Limiting : 3 demandes par 15 minutes par email
+    const rateLimit = checkRateLimit(`pwd_reset_req_${normalizedEmail}`, {
+      maxRequests: 3,
+      windowMs: 15 * 60 * 1000,
+    });
+
+    if (!rateLimit.isAllowed) {
+      const minutesRemaining = Math.ceil(rateLimit.resetInMs / (60 * 1000));
+      return {
+        success: false,
+        error: `Trop de demandes de réinitialisation. Veuillez patienter ${minutesRemaining} minute(s) avant de réessayer.`,
+      };
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { email: normalizedEmail },
+    });
+
+    // Protection anti-énumération : message de succès même si le compte n'existe pas
+    const genericSuccessMessage = 'Si cette adresse email est associée à un compte, un lien sécurisé de réinitialisation vous a été envoyé. Vérifiez votre boîte de réception et vos spams.';
+
+    if (!user) {
+      return {
+        success: true,
+        message: genericSuccessMessage,
+      };
+    }
+
+    // Génération d'un token aléatoire de 32 octets (haute entropie)
+    const rawToken = crypto.randomBytes(32).toString('hex');
+    // Hachage SHA-256 du token pour le stockage en base (le token brut n'est JAMAIS enregistré en base)
+    const hashedToken = crypto.createHash('sha256').update(rawToken).digest('hex');
+
+    // Expiration stricte de 15 minutes
+    const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
+
+    // Supprimer les anciens tokens de réinitialisation pour cet email
+    await prisma.verificationToken.deleteMany({
+      where: { identifier: `pwd_reset_${user.email}` },
+    });
+
+    // Enregistrer le nouveau token haché
+    await prisma.verificationToken.create({
+      data: {
+        identifier: `pwd_reset_${user.email}`,
+        token: hashedToken,
+        expiresAt,
+      },
+    });
+
+    // URL de réinitialisation sécurisée
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    const resetUrl = `${baseUrl}/reinitialiser-mot-de-passe?token=${rawToken}`;
+
+    // Envoi de l'email via Resend
+    await sendPasswordResetEmail({
+      to: user.email,
+      userName: user.firstName,
+      resetUrl,
+    });
+
+    return {
+      success: true,
+      message: genericSuccessMessage,
+    };
+  } catch (error: any) {
+    if (error instanceof z.ZodError) {
+      return { success: false, error: error.issues[0]?.message || 'Données invalides.' };
+    }
+    console.error('Erreur requestPasswordResetAction:', error);
+    return { success: false, error: 'Une erreur est survenue lors de la demande. Veuillez réessayer.' };
+  }
+}
+
+/**
+ * 2. Exécution de la réinitialisation de mot de passe
+ * - Vérification du token haché et de son expiration (15 min)
+ * - Application de la politique de mot de passe fort
+ * - Invalidation immédiate du token consommé
+ * - Révocation de toutes les sessions actives existantes (Sécurité bancaire)
+ * - Journalisation dans AuditLog
+ */
+export async function resetPasswordAction(formData: {
+  token: string;
+  password: string;
+  confirmPassword: string;
+}) {
+  try {
+    const validated = ResetPasswordSchema.parse(formData);
+
+    // Rate Limiting sur les tentatives de réinitialisation pour bloquer le brute force de tokens
+    const rateLimit = checkRateLimit(`pwd_reset_exec_${validated.token.slice(0, 12)}`, {
+      maxRequests: 5,
+      windowMs: 15 * 60 * 1000,
+    });
+
+    if (!rateLimit.isAllowed) {
+      return {
+        success: false,
+        error: 'Trop de tentatives de validation. Veuillez refaire une demande de réinitialisation.',
+      };
+    }
+
+    // Hachage du token reçu pour comparaison avec la base
+    const hashedToken = crypto.createHash('sha256').update(validated.token.trim()).digest('hex');
+
+    const tokenRecord = await prisma.verificationToken.findUnique({
+      where: { token: hashedToken },
+    });
+
+    if (!tokenRecord || !tokenRecord.identifier.startsWith('pwd_reset_')) {
+      return {
+        success: false,
+        error: 'Ce lien de réinitialisation est invalide ou a déjà été utilisé. Veuillez refaire une demande.',
+      };
+    }
+
+    // Vérifier l'expiration
+    if (tokenRecord.expiresAt < new Date()) {
+      // Supprimer le token expiré
+      await prisma.verificationToken.delete({
+        where: { id: tokenRecord.id },
+      });
+      return {
+        success: false,
+        error: 'Ce lien de réinitialisation a expiré (validité de 15 minutes dépassée). Veuillez refaire une demande.',
+      };
+    }
+
+    const email = tokenRecord.identifier.replace('pwd_reset_', '');
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      return {
+        success: false,
+        error: 'Compte utilisateur associé introuvable.',
+      };
+    }
+
+    // Hachage sécurisé du nouveau mot de passe (Bcrypt cost factor 12)
+    const newPasswordHash = await hashPassword(validated.password);
+
+    // Transaction atomique : Mise à jour mot de passe + Invalidation token + Révocation sessions + Audit
+    await prisma.$transaction([
+      // 1. Mise à jour du hash
+      prisma.user.update({
+        where: { id: user.id },
+        data: {
+          passwordHash: newPasswordHash,
+          emailVerified: true, // L'accès au lien email prouve la possession de l'adresse
+        },
+      }),
+      // 2. Suppression du token consommé (Usage unique strict)
+      prisma.verificationToken.delete({
+        where: { id: tokenRecord.id },
+      }),
+      // 3. Révocation de toutes les sessions actives précédentes (Sécurité maximale)
+      prisma.session.deleteMany({
+        where: { userId: user.id },
+      }),
+      // 4. Audit Log
+      prisma.auditLog.create({
+        data: {
+          adminUserId: user.id,
+          adminEmail: user.email,
+          action: 'user.password_reset_completed',
+          targetType: 'User',
+          targetId: user.id,
+          metadata: JSON.stringify({
+            ip: 'client',
+            timestamp: new Date().toISOString(),
+          }),
+        },
+      }),
+    ]);
+
+    return {
+      success: true,
+      message: 'Votre mot de passe a été modifié avec succès ! Vous pouvez maintenant vous connecter.',
+    };
+  } catch (error: any) {
+    if (error instanceof z.ZodError) {
+      return { success: false, error: error.issues[0]?.message || 'Données invalides.' };
+    }
+    console.error('Erreur resetPasswordAction:', error);
+    return { success: false, error: 'Une erreur est survenue lors de la réinitialisation.' };
+  }
+}
+

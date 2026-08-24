@@ -81,7 +81,15 @@ export function ConnexionForm({ redirectTarget }: { redirectTarget: string }) {
           </div>
 
           <div>
-            <label className="block text-gray-700 font-bold mb-1">Mot de passe</label>
+            <div className="flex items-center justify-between mb-1">
+              <label className="block text-gray-700 font-bold">Mot de passe</label>
+              <Link
+                href="/mot-de-passe-oublie"
+                className="text-[11px] font-bold text-[#0062BD] hover:underline"
+              >
+                Mot de passe oublié ?
+              </Link>
+            </div>
             <input
               type="password"
               required
