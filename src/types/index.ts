@@ -52,6 +52,8 @@ export interface Product {
 
 export type TradeOfferStatus = 'PENDING' | 'ACCEPTED' | 'COUNTERED' | 'REJECTED' | 'COMPLETED';
 
+export type TradeComplementDirection = 'CLIENT_TO_STORE' | 'STORE_TO_CLIENT' | 'NONE';
+
 export interface TradeOffer {
   id: string;
   userId?: string;
@@ -67,9 +69,11 @@ export interface TradeOffer {
   offeredDeviceModel: string;
   offeredDeviceCondition: ProductCondition;
   offeredDevicePhotos: string[];
+  complementDirection: TradeComplementDirection;
   cashComplement?: number; // FCFA
   status: TradeOfferStatus;
   adminNote?: string;
+  counterComplementDirection?: TradeComplementDirection;
   counterOfferAmount?: number;
   createdAt: string;
   updatedAt?: string;

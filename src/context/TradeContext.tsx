@@ -28,6 +28,7 @@ const INITIAL_TRADE_OFFERS: TradeOffer[] = [
     offeredDevicePhotos: [
       'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=600&q=80'
     ],
+    complementDirection: 'CLIENT_TO_STORE',
     cashComplement: 380000,
     status: 'PENDING',
     createdAt: '2024-03-20T14:32:00.000Z'
@@ -48,9 +49,11 @@ const INITIAL_TRADE_OFFERS: TradeOffer[] = [
     offeredDevicePhotos: [
       'https://images.unsplash.com/photo-1580910051074-3eb694886505?auto=format&fit=crop&w=600&q=80'
     ],
+    complementDirection: 'CLIENT_TO_STORE',
     cashComplement: 420000,
     status: 'COUNTERED',
     adminNote: 'Votre S22 Ultra est évalué à 310 000 FCFA après inspection préliminaire des photos. Nous vous proposons un complément de 440 000 FCFA pour le S24 Ultra 512Go Neuf Scellé.',
+    counterComplementDirection: 'CLIENT_TO_STORE',
     counterOfferAmount: 440000,
     createdAt: '2024-03-18T10:15:00.000Z'
   }

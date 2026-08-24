@@ -316,10 +316,10 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                   <div>
                     <h4 className="font-heading font-bold text-xs text-amber-950 flex items-center gap-1.5">
                       <Icons.Repeat size={16} className="text-amber-800" />
-                      <span>Vous avez un ancien smartphone à échanger ?</span>
+                      <span>Vous avez un smartphone à échanger ?</span>
                     </h4>
                     <p className="text-[11px] text-amber-800 mt-0.5">
-                      Faites estimer votre ancien iPhone ou Samsung et réduisez la facture finale.
+                      Échange direct ou avec complément financier (y compris si votre appareil actuel a plus de valeur).
                     </p>
                   </div>
                   <button

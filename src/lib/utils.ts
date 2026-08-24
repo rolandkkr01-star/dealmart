@@ -107,10 +107,41 @@ export function getTradeStatusInfo(status: TradeOfferStatus): {
     case 'COUNTERED':
       return { label: 'Contre-proposition reçue', className: 'bg-blue-100 text-blue-800 border-blue-300' };
     case 'REJECTED':
-      return { label: 'Offre refusée', className: 'bg-red-100 text-red-800 border-red-300' };
+      return { label: 'Offre non retenue', className: 'bg-red-100 text-red-800 border-red-300' };
     case 'COMPLETED':
       return { label: 'Troc finalisé', className: 'bg-purple-100 text-purple-800 border-purple-300' };
   }
+}
+
+/**
+ * Formatage lisible du sens et du montant du complément financier
+ */
+export function formatComplementText(
+  direction: 'CLIENT_TO_STORE' | 'STORE_TO_CLIENT' | 'NONE' | string,
+  amount?: number | null
+): { text: string; subtext: string; badge: string; colorClass: string } {
+  if (direction === 'NONE' || !amount || amount === 0) {
+    return {
+      text: 'Échange pur (0 FCFA)',
+      subtext: 'Échange direct sans versement d\'argent supplémentaire',
+      badge: 'Échange 0 FCFA',
+      colorClass: 'text-gray-700 bg-gray-100 border-gray-300',
+    };
+  }
+  if (direction === 'STORE_TO_CLIENT') {
+    return {
+      text: `+${formatFCFA(amount)} versé au client`,
+      subtext: 'La boutique vous verse ce montant en plus de l\'appareil visé (votre téléphone a une valeur supérieure)',
+      badge: `La boutique vous verse : +${formatFCFA(amount)}`,
+      colorClass: 'text-amber-900 bg-amber-50 border-amber-300',
+    };
+  }
+  return {
+    text: `+${formatFCFA(amount)} versé par le client`,
+    subtext: 'Vous versez ce complément pour obtenir l\'appareil visé',
+    badge: `Vous ajoutez : +${formatFCFA(amount)}`,
+    colorClass: 'text-emerald-900 bg-emerald-50 border-emerald-300',
+  };
 }
 
 /**
