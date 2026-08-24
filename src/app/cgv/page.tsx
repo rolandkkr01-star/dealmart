@@ -42,7 +42,7 @@ export default function CGVPage() {
             Objet et Identité du Vendeur
           </h2>
           <p className="mb-2">
-            Les présentes Conditions Générales de Vente régissent l'ensemble des transactions commerciales et des contrats électroniques conclus via la plateforme <strong>{siteConfig.name}</strong>, exploitée à {siteConfig.city}, République du Bénin.
+            Les présentes Conditions Générales de Vente régissent l'ensemble des transactions commerciales et des contrats électroniques conclus via la plateforme <strong>{siteConfig.name}</strong>, exploitée par la société <strong>{siteConfig.legalName}</strong> à {siteConfig.city}, République du Bénin.
           </p>
           <p>
             <strong>Contact officiel :</strong> {siteConfig.email} • Téléphone : {siteConfig.phone} • Adresse : {siteConfig.address}.

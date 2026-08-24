@@ -100,7 +100,7 @@ export async function GET(request: NextRequest) {
     }
 
     try {
-      const demoEmail = 'client.demo@techphone229.bj';
+      const demoEmail = 'client.demo@butiky.bj';
       let user = await prisma.user.findUnique({
         where: { email: demoEmail },
       });

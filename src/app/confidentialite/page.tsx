@@ -42,7 +42,7 @@ export default function ConfidentialitePage() {
             1. Responsable du Traitement des Données
           </h2>
           <p className="mb-2">
-            Les données à caractère personnel collectées sur ce site sont traitées par <strong>{siteConfig.name}</strong>, domiciliée à {siteConfig.city}, République du Bénin, sous la supervision de l'Autorité de Protection des Données Personnelles (APDP).
+            Les données à caractère personnel collectées sur ce site sont traitées par la société <strong>{siteConfig.legalName}</strong> (exploitant la marque <strong>{siteConfig.name}</strong>), domiciliée à {siteConfig.city}, République du Bénin, sous la supervision de l'Autorité de Protection des Données Personnelles (APDP).
           </p>
           <p className="text-xs text-gray-500">
             Délégué à la Protection des Données (DPO) : {siteConfig.email}.

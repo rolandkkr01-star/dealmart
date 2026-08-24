@@ -1,4 +1,5 @@
 import { PaymentInitParams, PaymentVerificationResult } from './types';
+import { siteConfig } from '@/lib/site-config';
 
 /**
  * Adaptateur FedaPay pour initialiser et vérifier les paiements
@@ -58,20 +59,20 @@ export async function createFedaPayTransaction(params: PaymentInitParams): Promi
 
   try {
     const phoneObj = formatFedaPayPhone(params.customerPhone);
-    const names = (params.customerName || 'Client TechPhone').trim().split(' ');
+    const names = (params.customerName || 'Client').trim().split(' ');
     const firstname = names[0] || 'Client';
-    const lastname = names.slice(1).join(' ') || 'TechPhone';
+    const lastname = names.slice(1).join(' ') || siteConfig.name;
 
     // 1. Créer la transaction FedaPay
     const txPayload = {
-      description: `Commande #${params.orderNumber} - ${process.env.NEXT_PUBLIC_STORE_NAME || 'TechPhone229'}`,
+      description: `Commande #${params.orderNumber} - ${siteConfig.name}`,
       amount: Math.round(params.amount),
       currency: { iso: 'XOF' },
       callback_url: `${appUrl}/api/payments/fedapay/callback?orderNumber=${params.orderNumber}`,
       customer: {
         firstname,
         lastname,
-        email: params.customerEmail || 'client@techphone229.bj',
+        email: params.customerEmail || siteConfig.email,
         phone_number: phoneObj,
       },
     };

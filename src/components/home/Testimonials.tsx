@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Icons } from '@/components/ui/Icons';
+import { siteConfig } from '@/lib/site-config';
 
 export interface FeaturedReviewItem {
   id: string;
@@ -42,7 +43,7 @@ const DEFAULT_REVIEWS: FeaturedReviewItem[] = [
     id: 'f-3',
     name: 'Marius Koudjo',
     city: 'Cotonou, Cadjehoun',
-    comment: 'Difficile de trouver des chargeurs 20W Apple réellement authentiques à Cotonou avec toutes les contrefaçons. TechPhone229 est le seul en qui j\'ai totale confiance.',
+    comment: `Difficile de trouver des chargeurs 20W Apple réellement authentiques à Cotonou avec toutes les contrefaçons. ${siteConfig.name} est la seule boutique en qui j'ai totale confiance.`,
     rating: 5,
     productName: 'Chargeur Apple 20W Authentique',
   }

@@ -23,15 +23,17 @@ async function cleanReset() {
   await prisma.user.deleteMany();
 
   // 2. Recréation unique du compte SuperAdmin officiel
-  const adminPasswordHash = await bcrypt.hash('AdminTechPhone229!', 12);
+  const defaultEmail = process.env.ADMIN_EMAIL || 'admin@butiky.bj';
+  const defaultPassword = process.env.ADMIN_PASSWORD || 'AdminButiky2026!';
+  const adminPasswordHash = await bcrypt.hash(defaultPassword, 12);
 
   const superAdmin = await prisma.user.create({
     data: {
-      email: 'admin@techphone229.bj',
+      email: defaultEmail,
       passwordHash: adminPasswordHash,
       role: 'SUPERADMIN',
-      firstName: 'Admin',
-      lastName: 'TechPhone229',
+      firstName: 'Directeur',
+      lastName: process.env.NEXT_PUBLIC_STORE_NAME || 'Boutique',
       phone: '+229 97 00 00 00',
       emailVerified: true,
     },
@@ -60,7 +62,7 @@ async function cleanReset() {
   });
 
   console.log('✅ Base de données remise à zéro proprement !');
-  console.log(`👤 SuperAdmin prêt : ${superAdmin.email} / AdminTechPhone229!`);
+  console.log(`👤 SuperAdmin prêt : ${superAdmin.email} / ${defaultPassword}`);
   console.log(`📁 Catégories créées : ${categories.length}`);
 }
 

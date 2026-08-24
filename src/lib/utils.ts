@@ -55,7 +55,7 @@ export function getConditionBadgeInfo(condition: ProductCondition): {
       };
     case 'OCCASION':
       return {
-        label: 'Occasion Garantie TechPhone',
+        label: 'Occasion Certifiée & Garantie',
         badgeShort: 'Occasion Vérifiée',
         badgeClass: 'bg-amber-50 text-amber-800 border-amber-300 font-semibold',
         badgeBg: '#FFFBEB',

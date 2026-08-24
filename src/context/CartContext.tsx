@@ -43,29 +43,29 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Charger le panier et les favoris depuis localStorage (avec purge des anciennes données factices)
   useEffect(() => {
     try {
-      const storeVersion = localStorage.getItem('techphone229_store_v');
+      const storeVersion = localStorage.getItem('butiky_store_v');
       if (storeVersion !== '2.0.0') {
-        localStorage.removeItem('techphone229_cart');
-        localStorage.removeItem('techphone229_wishlist');
-        localStorage.removeItem('techphone229_promo');
-        localStorage.removeItem('techphone229_trade_offers');
-        localStorage.removeItem('techphone229_orders');
-        localStorage.setItem('techphone229_store_v', '2.0.0');
+        localStorage.removeItem('butiky_cart');
+        localStorage.removeItem('butiky_wishlist');
+        localStorage.removeItem('butiky_promo');
+        localStorage.removeItem('butiky_trade_offers');
+        localStorage.removeItem('butiky_orders');
+        localStorage.setItem('butiky_store_v', '2.0.0');
         setCart([]);
         setWishlist([]);
         setAppliedPromo(null);
       } else {
-        const savedCart = localStorage.getItem('techphone229_cart');
+        const savedCart = localStorage.getItem('butiky_cart');
         if (savedCart && savedCart !== 'undefined' && savedCart !== 'null') {
           try { setCart(JSON.parse(savedCart)); } catch (_) {}
         }
 
-        const savedWishlist = localStorage.getItem('techphone229_wishlist');
+        const savedWishlist = localStorage.getItem('butiky_wishlist');
         if (savedWishlist && savedWishlist !== 'undefined' && savedWishlist !== 'null') {
           try { setWishlist(JSON.parse(savedWishlist)); } catch (_) {}
         }
 
-        const savedPromo = localStorage.getItem('techphone229_promo');
+        const savedPromo = localStorage.getItem('butiky_promo');
         if (savedPromo && savedPromo !== 'undefined' && savedPromo !== 'null') {
           try { setAppliedPromo(JSON.parse(savedPromo)); } catch (_) {}
         }
@@ -80,7 +80,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     if (!mounted) return;
     try {
-      localStorage.setItem('techphone229_cart', JSON.stringify(cart));
+      localStorage.setItem('butiky_cart', JSON.stringify(cart));
     } catch (e) {
       console.error('Erreur sauvegarde cart:', e);
     }
@@ -89,7 +89,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     if (!mounted) return;
     try {
-      localStorage.setItem('techphone229_wishlist', JSON.stringify(wishlist));
+      localStorage.setItem('butiky_wishlist', JSON.stringify(wishlist));
     } catch (e) {
       console.error('Erreur sauvegarde wishlist:', e);
     }
@@ -159,8 +159,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setCart([]);
     setAppliedPromo(null);
     if (typeof window !== 'undefined') {
-      localStorage.removeItem('techphone229_cart');
-      localStorage.removeItem('techphone229_promo');
+      localStorage.removeItem('butiky_cart');
+      localStorage.removeItem('butiky_promo');
     }
   };
 
@@ -181,7 +181,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     setAppliedPromo(found);
     if (typeof window !== 'undefined') {
-      localStorage.setItem('techphone229_promo', JSON.stringify(found));
+      localStorage.setItem('butiky_promo', JSON.stringify(found));
     }
     showToast(`🎉 Code promo ${found.code} appliqué !`);
     return true;
@@ -191,7 +191,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setAppliedPromo(null);
     setPromoError(null);
     if (typeof window !== 'undefined') {
-      localStorage.removeItem('techphone229_promo');
+      localStorage.removeItem('butiky_promo');
     }
   };
 

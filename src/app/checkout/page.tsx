@@ -44,7 +44,7 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const savedNum = sessionStorage.getItem('techphone229_checkout_order_num');
+      const savedNum = sessionStorage.getItem('butiky_checkout_order_num');
       if (savedNum) {
         setPendingOrderNumber(savedNum);
       }
@@ -270,7 +270,7 @@ export default function CheckoutPage() {
       const orderNumber = initResult.orderNumber;
       setPendingOrderNumber(orderNumber);
       if (typeof window !== 'undefined') {
-        sessionStorage.setItem('techphone229_checkout_order_num', orderNumber);
+        sessionStorage.setItem('butiky_checkout_order_num', orderNumber);
       }
 
       // 2. Branchement KKIAPAY
@@ -291,7 +291,7 @@ export default function CheckoutPage() {
 
               if (verifyRes.success) {
                 if (typeof window !== 'undefined') {
-                  sessionStorage.removeItem('techphone229_checkout_order_num');
+                  sessionStorage.removeItem('butiky_checkout_order_num');
                 }
                 clearCart();
                 router.push(`/commande/${orderNumber}?payment=success`);
@@ -329,7 +329,7 @@ export default function CheckoutPage() {
             provider: 'kkiapay',
           });
           if (typeof window !== 'undefined') {
-            sessionStorage.removeItem('techphone229_checkout_order_num');
+            sessionStorage.removeItem('butiky_checkout_order_num');
           }
           clearCart();
           setIsProcessing(false);
@@ -343,7 +343,7 @@ export default function CheckoutPage() {
         const paymentUrl = initResult.fedapay.paymentUrl;
         if (paymentUrl) {
           if (typeof window !== 'undefined') {
-            sessionStorage.removeItem('techphone229_checkout_order_num');
+            sessionStorage.removeItem('butiky_checkout_order_num');
           }
           clearCart();
           window.location.href = paymentUrl;
@@ -356,7 +356,7 @@ export default function CheckoutPage() {
             provider: 'fedapay',
           });
           if (typeof window !== 'undefined') {
-            sessionStorage.removeItem('techphone229_checkout_order_num');
+            sessionStorage.removeItem('butiky_checkout_order_num');
           }
           clearCart();
           setIsProcessing(false);
@@ -366,7 +366,7 @@ export default function CheckoutPage() {
       }
 
       if (typeof window !== 'undefined') {
-        sessionStorage.removeItem('techphone229_checkout_order_num');
+        sessionStorage.removeItem('butiky_checkout_order_num');
       }
       clearCart();
       setIsProcessing(false);

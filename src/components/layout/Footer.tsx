@@ -145,7 +145,7 @@ export const Footer: React.FC = () => {
 
         {/* Copyright & Mentions */}
         <div className="pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-[11px] text-gray-500">
-          <p className="text-center sm:text-left">© {new Date().getFullYear()} {siteConfig.name}. Tous droits réservés. {siteConfig.city}, République du {siteConfig.country}.</p>
+          <p className="text-center sm:text-left">© {new Date().getFullYear()} {siteConfig.name} • Exploité par {siteConfig.legalName}. Tous droits réservés. {siteConfig.city}, République du {siteConfig.country}.</p>
           <div className="flex flex-wrap justify-center sm:justify-end items-center gap-x-4 gap-y-2 text-gray-500 text-center sm:text-right">
             <Link href="/cgv" className="hover:text-gray-300 transition-colors">Conditions Générales de Vente</Link>
             <span>•</span>

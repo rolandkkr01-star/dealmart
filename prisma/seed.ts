@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('🌱 Démarrage du peuplement (seed) de la base de données TechPhone229...');
+  console.log('🌱 Démarrage du peuplement (seed) de la base de données de la boutique...');
 
   // Nettoyage préalable
   await prisma.review.deleteMany();
@@ -301,7 +301,7 @@ async function main() {
       userId: null,
       customerName: 'Ablam Dossou',
       customerPhone: '+229 97 12 34 56',
-      customerEmail: 'client@techphone229.bj',
+      customerEmail: 'client.demo@butiky.bj',
       customerCity: 'Cotonou (Cadjehoun)',
       productId: p1.id,
       offeredDeviceModel: 'iPhone 13 Pro Max 128Go Graphite',
@@ -319,7 +319,7 @@ async function main() {
       orderNumber: 'TP229-928412',
       userId: null,
       customerName: 'Ablam Dossou',
-      customerEmail: 'client@techphone229.bj',
+      customerEmail: 'client.demo@butiky.bj',
       customerPhone: '+229 97 12 34 56',
       city: 'Cotonou',
       district: 'Cadjehoun',
@@ -384,7 +384,7 @@ async function main() {
         authorName: 'Marius Koudjo',
         city: 'Cotonou, Cadjehoun',
         rating: 5,
-        comment: 'Difficile de trouver des chargeurs 20W Apple réellement authentiques à Cotonou avec toutes les contrefaçons. TechPhone229 est le seul en qui j\'ai totale confiance.',
+        comment: 'Difficile de trouver des chargeurs 20W Apple réellement authentiques à Cotonou avec toutes les contrefaçons. C\'est la seule boutique en qui j\'ai totale confiance.',
         isApproved: true,
         isFeaturedHome: true,
       },

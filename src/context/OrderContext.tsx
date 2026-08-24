@@ -21,14 +21,14 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   useEffect(() => {
     try {
-      const storeVersion = localStorage.getItem('techphone229_store_v');
+      const storeVersion = localStorage.getItem('butiky_store_v');
       if (storeVersion === '2.0.0') {
-        const saved = localStorage.getItem('techphone229_orders');
+        const saved = localStorage.getItem('butiky_orders');
         if (saved && saved !== 'undefined' && saved !== 'null') {
           try { setOrders(JSON.parse(saved)); } catch (_) {}
         }
       } else {
-        localStorage.removeItem('techphone229_orders');
+        localStorage.removeItem('butiky_orders');
         setOrders([]);
       }
     } catch (e) {
@@ -40,7 +40,7 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   useEffect(() => {
     if (!mounted) return;
     try {
-      localStorage.setItem('techphone229_orders', JSON.stringify(orders));
+      localStorage.setItem('butiky_orders', JSON.stringify(orders));
     } catch (e) {
       console.error('Erreur sauvegarde orders:', e);
     }

@@ -67,14 +67,14 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   useEffect(() => {
     try {
-      const storeVersion = localStorage.getItem('techphone229_store_v');
+      const storeVersion = localStorage.getItem('butiky_store_v');
       if (storeVersion === '2.0.0') {
-        const saved = localStorage.getItem('techphone229_trade_offers');
+        const saved = localStorage.getItem('butiky_trade_offers');
         if (saved) {
           setTradeOffers(JSON.parse(saved));
         }
       } else {
-        localStorage.removeItem('techphone229_trade_offers');
+        localStorage.removeItem('butiky_trade_offers');
         setTradeOffers([]);
       }
     } catch (e) {
@@ -86,7 +86,7 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   useEffect(() => {
     if (!mounted) return;
     try {
-      localStorage.setItem('techphone229_trade_offers', JSON.stringify(tradeOffers));
+      localStorage.setItem('butiky_trade_offers', JSON.stringify(tradeOffers));
     } catch (e) {
       console.error('Erreur sauvegarde trade offers:', e);
     }

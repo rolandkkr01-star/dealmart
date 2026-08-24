@@ -43,8 +43,8 @@ export const Header: React.FC = () => {
             <span className="font-heading font-black text-xl sm:text-2xl tracking-tight text-[#1D2129] group-hover:text-[#0062BD] leading-none transition-colors">
               {siteConfig.name}
             </span>
-            <span className="text-[9px] sm:text-[10px] text-gray-500 font-semibold tracking-wider uppercase mt-0.5">
-              {siteConfig.country} • 100% Original
+            <span className="text-[9px] sm:text-[10px] text-gray-500 font-bold tracking-wider uppercase mt-0.5">
+              By {siteConfig.legalName}
             </span>
           </div>
         </Link>

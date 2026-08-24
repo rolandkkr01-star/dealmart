@@ -153,7 +153,7 @@ function BoutiqueContent({ initialProducts }: BoutiqueClientProps) {
                   { label: 'Tous les états', value: 'ALL' },
                   { label: 'Neuf Scellé (Boîte d\'origine)', value: 'NEUF_SCELLE' },
                   { label: 'Reconditionné A+ (Impeccable)', value: 'NEUF_NON_SCELLE' },
-                  { label: 'Occasion Certifiée TechPhone', value: 'OCCASION' },
+                  { label: 'Occasion Certifiée & Garantie', value: 'OCCASION' },
                 ].map((c) => (
                   <button
                     key={c.value}

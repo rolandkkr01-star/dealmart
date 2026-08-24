@@ -11,6 +11,7 @@ import { formatFCFA, getTradeStatusInfo, formatComplementText } from '@/lib/util
 import { Icons } from '@/components/ui/Icons';
 import { TradeOfferStatus, TradeComplementDirection } from '@/types';
 import { DialogModal } from '@/components/ui/DialogModal';
+import { siteConfig } from '@/lib/site-config';
 
 export default function AdminTrocPage() {
   const [tradeOffers, setTradeOffers] = useState<any[]>([]);
@@ -331,7 +332,7 @@ export default function AdminTrocPage() {
 
                   {/* Bouton Contact WhatsApp Direct */}
                   <a
-                    href={`https://wa.me/${selectedOffer.customerPhone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Bonjour ${selectedOffer.customerName}, concernant votre demande de troc #${selectedOffer.id.slice(-8)} sur TechPhone229...`)}`}
+                    href={`https://wa.me/${selectedOffer.customerPhone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Bonjour ${selectedOffer.customerName}, concernant votre demande de troc #${selectedOffer.id.slice(-8)} sur ${siteConfig.name}...`)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2 rounded-xl flex items-center gap-1.5 transition-colors self-start cursor-pointer shadow-xs"

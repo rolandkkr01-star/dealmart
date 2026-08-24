@@ -337,7 +337,7 @@ export default function MesTrocsPage() {
                           <Icons.MapPin size={14} className="text-emerald-700" />
                           <span>Option 1 : En Boutique Physique</span>
                         </p>
-                        <p className="text-gray-600">Passez au showroom TechPhone229 à Cotonou pour faire tester votre téléphone et repartir immédiatement avec votre {offer.productName}.</p>
+                        <p className="text-gray-600">Passez au showroom {siteConfig.name} à {siteConfig.city} pour faire tester votre téléphone et repartir immédiatement avec votre {offer.productName}.</p>
                       </div>
 
                       <div className="bg-white p-3 rounded-xl border border-emerald-200">
@@ -345,13 +345,13 @@ export default function MesTrocsPage() {
                           <Icons.Truck size={14} className="text-emerald-700" />
                           <span>Option 2 : Coursier à Domicile</span>
                         </p>
-                        <p className="text-gray-600">Notre coursier se déplace chez vous à Cotonou/Calavi pour vérifier l'appareil et finaliser la transaction sur place.</p>
+                        <p className="text-gray-600">Notre coursier se déplace chez vous à {siteConfig.city} pour vérifier l'appareil et finaliser la transaction sur place.</p>
                       </div>
                     </div>
 
                     <div className="pt-1">
                       <a
-                        href={`https://wa.me/22997000000?text=${encodeURIComponent(`Bonjour TechPhone229, mon dossier de troc #${offer.id.slice(-8)} (${offer.offeredDeviceModel} contre ${offer.productName}) a été accepté. Je souhaite convenir d'un créneau d'échange.`)}`}
+                        href={`https://wa.me/${siteConfig.whatsapp.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Bonjour ${siteConfig.name}, mon dossier de troc #${offer.id.slice(-8)} (${offer.offeredDeviceModel} contre ${offer.productName}) a été accepté. Je souhaite convenir d'un créneau d'échange.`)}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-2 bg-[#1D2129] hover:bg-[#0062BD] text-[#FED700] hover:text-white font-heading font-black text-xs uppercase px-5 py-2.5 rounded-xl shadow-xs transition-all"
