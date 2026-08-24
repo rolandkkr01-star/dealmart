@@ -11,7 +11,9 @@ import { formatFCFA } from '@/lib/utils';
 import { Icons } from '@/components/ui/Icons';
 import { siteConfig } from '@/lib/site-config';
 import { initCheckoutPaymentAction, verifyOrderPaymentAction } from '@/actions/payments';
+import { getUserAddressesAction } from '@/actions/address';
 import { PaymentGateway } from '@/lib/payments/types';
+import { UserAddress } from '@/types';
 
 declare global {
   interface Window {
@@ -31,8 +33,17 @@ export default function CheckoutPage() {
   const [customerName, setCustomerName] = useState('');
   const [customerEmail, setCustomerEmail] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
+
+  // Adresses enregistrées et sélection
+  const [savedAddresses, setSavedAddresses] = useState<UserAddress[]>([]);
+  const [loadingAddresses, setLoadingAddresses] = useState(true);
+  const [selectedAddressMode, setSelectedAddressMode] = useState<string>('new'); // address.id or 'new'
+  const [saveAddress, setSaveAddress] = useState(true);
+  const [addressLabel, setAddressLabel] = useState('');
+
+  // Champs de localisation (sans aucune valeur fictive pré-remplie)
   const [city, setCity] = useState('Cotonou');
-  const [district, setDistrict] = useState('Haie Vive');
+  const [district, setDistrict] = useState('');
   const [streetDetails, setStreetDetails] = useState('');
   const [notes, setNotes] = useState('');
 
@@ -42,7 +53,7 @@ export default function CheckoutPage() {
   const [error, setError] = useState<string | null>(null);
   const [kkiapayLoaded, setKkiapayLoaded] = useState(false);
 
-  // Pré-remplissage automatique des informations dès que l'utilisateur est connecté
+  // Chargement des informations utilisateur et de ses adresses réelles
   useEffect(() => {
     if (user) {
       setCustomerName(`${user.firstName} ${user.lastName}`.trim());
@@ -50,8 +61,48 @@ export default function CheckoutPage() {
       if (user.phone) {
         setCustomerPhone(user.phone);
       }
+
+      async function loadAddresses() {
+        setLoadingAddresses(true);
+        const res = await getUserAddressesAction();
+        if (res.success && res.addresses && res.addresses.length > 0) {
+          setSavedAddresses(res.addresses);
+          const defaultAddr = res.addresses.find((a: any) => a.isDefault) || res.addresses[0];
+          if (defaultAddr) {
+            setSelectedAddressMode(defaultAddr.id);
+            setCity(defaultAddr.city);
+            setDistrict(defaultAddr.district || '');
+            setStreetDetails(defaultAddr.street);
+            if (defaultAddr.phone) setCustomerPhone(defaultAddr.phone);
+          }
+        } else {
+          setSelectedAddressMode('new');
+          setCity('Cotonou');
+          setDistrict('');
+          setStreetDetails('');
+        }
+        setLoadingAddresses(false);
+      }
+      loadAddresses();
     }
   }, [user]);
+
+  const handleSelectSavedAddress = (addr: UserAddress) => {
+    setSelectedAddressMode(addr.id);
+    setCity(addr.city);
+    setDistrict(addr.district || '');
+    setStreetDetails(addr.street);
+    if (addr.phone) setCustomerPhone(addr.phone);
+  };
+
+  const handleSelectNewAddress = () => {
+    setSelectedAddressMode('new');
+    setCity('Cotonou');
+    setDistrict('');
+    setStreetDetails('');
+    setAddressLabel('');
+    setSaveAddress(true);
+  };
 
   // Si le panier est vide
   if (cart.length === 0) {
@@ -194,6 +245,8 @@ export default function CheckoutPage() {
         discountAmount,
         promoCode: appliedPromo?.code,
         paymentProvider,
+        saveAddress: selectedAddressMode === 'new' ? saveAddress : false,
+        addressLabel: selectedAddressMode === 'new' ? addressLabel : undefined,
         items: orderItems,
       });
 
@@ -292,7 +345,7 @@ export default function CheckoutPage() {
           window.location.href = paymentUrl;
           return;
         } else {
-          // Validation simulée
+          // Simulation fluide si en environnement de test
           const verifyRes = await verifyOrderPaymentAction({
             orderNumber,
             transactionId: `FEDAPAY-DEV-${Date.now().toString().slice(-6)}`,
@@ -424,64 +477,170 @@ export default function CheckoutPage() {
 
             {/* Étape 2 : Adresse de Livraison au Bénin */}
             <div className="bg-white border border-[#E2E5E8] rounded-3xl p-6 shadow-xs">
-              <h3 className="font-heading font-black text-sm uppercase text-gray-900 mb-4 pb-2 border-b border-gray-100 flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-[#FED700] text-[#1D2129] flex items-center justify-center font-bold text-xs">2</span>
-                <span>Lieu de Livraison au Bénin</span>
-              </h3>
+              <div className="flex items-center justify-between pb-3 mb-4 border-b border-gray-100">
+                <h3 className="font-heading font-black text-sm uppercase text-gray-900 flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-full bg-[#FED700] text-[#1D2129] flex items-center justify-center font-bold text-xs">2</span>
+                  <span>Lieu de Livraison au Bénin</span>
+                </h3>
+                {savedAddresses.length > 0 && (
+                  <Link
+                    href="/compte/adresses"
+                    target="_blank"
+                    className="text-[11px] font-bold text-[#0062BD] hover:underline flex items-center gap-1"
+                  >
+                    <Icons.Settings size={13} />
+                    <span>Gérer mes adresses</span>
+                  </Link>
+                )}
+              </div>
 
-              <div className="space-y-4 text-xs">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block font-bold text-gray-700 mb-1">Ville de Destination *</label>
-                    <select
-                      value={city}
-                      onChange={(e) => setCity(e.target.value)}
-                      className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0062BD] focus:outline-none bg-white font-bold text-gray-900"
+              {/* Sélection parmi les adresses enregistrées */}
+              {savedAddresses.length > 0 && (
+                <div className="mb-5 space-y-2">
+                  <label className="block text-xs font-bold text-gray-700 mb-2">
+                    Sélectionnez une adresse enregistrée :
+                  </label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {savedAddresses.map((addr) => {
+                      const isSelected = selectedAddressMode === addr.id;
+                      return (
+                        <div
+                          key={addr.id}
+                          onClick={() => handleSelectSavedAddress(addr)}
+                          className={`p-3.5 rounded-2xl border-2 cursor-pointer transition-all flex flex-col justify-between ${
+                            isSelected
+                              ? 'border-[#0062BD] bg-blue-50/60 shadow-xs'
+                              : 'border-gray-200 bg-white hover:border-gray-300'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between mb-1.5">
+                            <span className="font-bold text-xs text-gray-900 flex items-center gap-1.5">
+                              <Icons.MapPin size={14} className={isSelected ? 'text-[#0062BD]' : 'text-gray-400'} />
+                              <span>{addr.label}</span>
+                            </span>
+                            {addr.isDefault && (
+                              <span className="text-[9px] font-black uppercase bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">
+                                Par défaut
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-[11px] text-gray-600 line-clamp-2 leading-relaxed">
+                            {addr.district ? `${addr.district}, ` : ''}{addr.city} • {addr.street}
+                          </p>
+                          {addr.phone && (
+                            <p className="text-[10px] text-gray-500 font-medium mt-2 flex items-center gap-1">
+                              <Icons.Phone size={11} />
+                              <span>{addr.phone}</span>
+                            </p>
+                          )}
+                        </div>
+                      );
+                    })}
+
+                    {/* Option nouvelle adresse */}
+                    <div
+                      onClick={handleSelectNewAddress}
+                      className={`p-3.5 rounded-2xl border-2 border-dashed cursor-pointer transition-all flex flex-col items-center justify-center text-center ${
+                        selectedAddressMode === 'new'
+                          ? 'border-[#FED700] bg-amber-50/60 shadow-xs'
+                          : 'border-gray-300 bg-gray-50 hover:bg-gray-100 text-gray-600'
+                      }`}
                     >
-                      <option value="Cotonou">Cotonou (Livraison express 2h)</option>
-                      <option value="Abomey-Calavi">Abomey-Calavi</option>
-                      <option value="Porto-Novo">Porto-Novo</option>
-                      <option value="Ouidah">Ouidah</option>
-                      <option value="Parakou">Parakou / Nord-Bénin (24h - 48h)</option>
-                      <option value="Autre ville">Autre ville du Bénin</option>
-                    </select>
+                      <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-gray-800 shadow-2xs mb-1">
+                        <Icons.Plus size={15} />
+                      </div>
+                      <span className="font-bold text-xs text-gray-900">Utiliser une autre adresse</span>
+                      <span className="text-[10px] text-gray-500">Saisir un nouveau lieu de livraison</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Formulaire de saisie d'adresse (si nouveau ou si aucune adresse enregistrée) */}
+              {(selectedAddressMode === 'new' || savedAddresses.length === 0) && (
+                <div className="space-y-4 text-xs bg-gray-50/70 p-4 rounded-2xl border border-gray-200">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Ville de Destination *</label>
+                      <select
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)}
+                        className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0062BD] focus:outline-none bg-white font-bold text-gray-900"
+                      >
+                        <option value="Cotonou">Cotonou (Livraison express 2h)</option>
+                        <option value="Abomey-Calavi">Abomey-Calavi</option>
+                        <option value="Porto-Novo">Porto-Novo</option>
+                        <option value="Ouidah">Ouidah</option>
+                        <option value="Parakou">Parakou / Nord-Bénin (24h - 48h)</option>
+                        <option value="Autre ville">Autre ville du Bénin</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Quartier / Zone *</label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="Ex: Cadjehoun, Akpakpa, Zogbo, Fidjrossè..."
+                        value={district}
+                        onChange={(e) => setDistrict(e.target.value)}
+                        className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0062BD] focus:outline-none bg-white font-medium"
+                      />
+                    </div>
                   </div>
 
                   <div>
-                    <label className="block font-bold text-gray-700 mb-1">Quartier / Zone *</label>
+                    <label className="block font-bold text-gray-700 mb-1">Repère précis de Livraison (Maison, Rue, Carrefour) *</label>
                     <input
                       type="text"
                       required
-                      placeholder="Ex: Haie Vive, Cadjehoun, Akpakpa..."
-                      value={district}
-                      onChange={(e) => setDistrict(e.target.value)}
-                      className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0062BD] focus:outline-none"
+                      placeholder="Ex: Face Pharmacie Haie Vive, Immeuble vitré au 1er étage"
+                      value={streetDetails}
+                      onChange={(e) => setStreetDetails(e.target.value)}
+                      className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0062BD] focus:outline-none bg-white font-medium"
                     />
                   </div>
-                </div>
 
-                <div>
-                  <label className="block font-bold text-gray-700 mb-1">Repère précis de Livraison (Maison, Rue, Carrefour) *</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="Ex: En face de la Pharmacie Haie Vive, Immeuble vitré au 1er étage"
-                    value={streetDetails}
-                    onChange={(e) => setStreetDetails(e.target.value)}
-                    className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0062BD] focus:outline-none"
-                  />
-                </div>
+                  {/* Checkbox d'enregistrement de l'adresse */}
+                  <div className="pt-3 border-t border-gray-200">
+                    <label className="flex items-start gap-3 cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        checked={saveAddress}
+                        onChange={(e) => setSaveAddress(e.target.checked)}
+                        className="mt-0.5 w-4 h-4 rounded text-[#0062BD] focus:ring-[#0062BD] border-gray-300 cursor-pointer"
+                      />
+                      <div className="text-xs">
+                        <span className="font-bold text-gray-900 block">Enregistrer cette adresse dans mon carnet d'adresses</span>
+                        <span className="text-[11px] text-gray-500">Permet de la mémoriser pour vos prochains achats</span>
+                      </div>
+                    </label>
 
-                <div>
-                  <label className="block font-bold text-gray-700 mb-1">Instructions complémentaires pour le coursier (Optionnel)</label>
-                  <input
-                    type="text"
-                    placeholder="Ex: M'appeler 15 minutes avant l'arrivée"
-                    value={notes}
-                    onChange={(e) => setNotes(e.target.value)}
-                    className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0062BD] focus:outline-none"
-                  />
+                    {saveAddress && (
+                      <div className="mt-2.5 pl-7">
+                        <input
+                          type="text"
+                          placeholder="Nom de cette adresse (ex: Domicile, Bureau, Famille)"
+                          value={addressLabel}
+                          onChange={(e) => setAddressLabel(e.target.value)}
+                          className="w-full sm:w-80 border border-gray-300 rounded-xl p-2.5 text-xs focus:ring-1 focus:ring-[#0062BD] focus:outline-none bg-white font-medium"
+                        />
+                      </div>
+                    )}
+                  </div>
                 </div>
+              )}
+
+              {/* Instructions pour le coursier */}
+              <div className="mt-4 text-xs">
+                <label className="block font-bold text-gray-700 mb-1">Instructions complémentaires pour le coursier (Optionnel)</label>
+                <input
+                  type="text"
+                  placeholder="Ex: M'appeler 15 minutes avant l'arrivée"
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0062BD] focus:outline-none bg-white"
+                />
               </div>
             </div>
 

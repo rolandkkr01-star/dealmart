@@ -33,6 +33,8 @@ export interface CheckoutPayload {
   discountAmount: number;
   promoCode?: string;
   paymentProvider: PaymentGateway;
+  saveAddress?: boolean;
+  addressLabel?: string;
   items: OrderItemInput[];
 }
 
@@ -156,6 +158,37 @@ export async function initCheckoutPaymentAction(data: CheckoutPayload) {
         },
       },
     });
+
+    // Enregistrement optionnel dans le carnet d'adresses du client
+    if (data.saveAddress && data.streetDetails && data.streetDetails.trim()) {
+      try {
+        const existingAddress = await prisma.address.findFirst({
+          where: {
+            userId: user.id,
+            city: data.city.trim(),
+            street: data.streetDetails.trim(),
+          },
+        });
+
+        if (!existingAddress) {
+          const count = await prisma.address.count({ where: { userId: user.id } });
+          const label = data.addressLabel?.trim() || `${data.city} - ${data.district?.trim() || 'Livraison'}`;
+          await prisma.address.create({
+            data: {
+              userId: user.id,
+              label,
+              city: data.city.trim(),
+              district: data.district?.trim() || null,
+              street: data.streetDetails.trim(),
+              phone: data.customerPhone.trim(),
+              isDefault: count === 0,
+            },
+          });
+        }
+      } catch (addrErr) {
+        console.error('Erreur sauvegarde automatique adresse:', addrErr);
+      }
+    }
 
     // Branchement selon la passerelle sélectionnée
     if (data.paymentProvider === 'kkiapay') {

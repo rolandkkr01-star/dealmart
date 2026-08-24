@@ -131,3 +131,16 @@ export interface PromoCode {
   minOrderAmount?: number;
   isActive: boolean;
 }
+
+export interface UserAddress {
+  id: string;
+  userId: string;
+  label: string;
+  city: string;
+  district?: string;
+  street: string;
+  phone: string;
+  isDefault: boolean;
+  createdAt: string;
+}
+

@@ -84,7 +84,7 @@ export default function ClientDashboardPage() {
       )}
 
       {/* Cartes KPI / Raccourcis */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
         <Link
           href="/compte/commandes"
           className="bg-white border border-[#E2E5E8] hover:border-[#0062BD] rounded-3xl p-6 shadow-xs transition-all flex items-center justify-between group"
@@ -97,6 +97,19 @@ export default function ClientDashboardPage() {
           </div>
           <div className="w-12 h-12 rounded-2xl bg-blue-50 text-[#0062BD] flex items-center justify-center group-hover:scale-110 transition-transform">
             <Icons.ShoppingBag size={24} />
+          </div>
+        </Link>
+
+        <Link
+          href="/compte/adresses"
+          className="bg-white border border-[#E2E5E8] hover:border-emerald-500 rounded-3xl p-6 shadow-xs transition-all flex items-center justify-between group"
+        >
+          <div>
+            <span className="text-xs font-bold text-gray-500 uppercase tracking-wider block mb-1">Mes Adresses</span>
+            <span className="font-heading font-black text-xl text-gray-900">Lieux de livraison</span>
+          </div>
+          <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+            <Icons.MapPin size={24} />
           </div>
         </Link>
 

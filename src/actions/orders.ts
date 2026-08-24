@@ -25,6 +25,8 @@ export async function createOrderAction(data: {
   promoCode?: string;
   paymentProvider: string;
   paymentRef?: string;
+  saveAddress?: boolean;
+  addressLabel?: string;
   items: {
     productId: string;
     variantId?: string;
@@ -147,8 +149,41 @@ export async function createOrderAction(data: {
       },
     });
 
+    // Enregistrement optionnel dans le carnet d'adresses du client
+    if (data.saveAddress && data.streetDetails && data.streetDetails.trim()) {
+      try {
+        const existingAddress = await prisma.address.findFirst({
+          where: {
+            userId: currentUser.id,
+            city: data.city.trim(),
+            street: data.streetDetails.trim(),
+          },
+        });
+
+        if (!existingAddress) {
+          const count = await prisma.address.count({ where: { userId: currentUser.id } });
+          const label = data.addressLabel?.trim() || `${data.city} - ${data.district?.trim() || 'Livraison'}`;
+          await prisma.address.create({
+            data: {
+              userId: currentUser.id,
+              label,
+              city: data.city.trim(),
+              district: data.district?.trim() || null,
+              street: data.streetDetails.trim(),
+              phone: data.customerPhone.trim(),
+              isDefault: count === 0,
+            },
+          });
+        }
+      } catch (addrErr) {
+        console.error('Erreur sauvegarde automatique adresse:', addrErr);
+      }
+    }
+
     revalidatePath('/admin/commandes');
     revalidatePath('/compte/commandes');
+    revalidatePath('/compte/adresses');
+    revalidatePath('/compte');
 
     return { success: true, orderNumber: order.orderNumber };
   } catch (error: any) {
