@@ -8,6 +8,7 @@ import { createFedaPayTransaction, verifyFedaPayTransaction } from '@/lib/paymen
 import { PaymentGateway } from '@/lib/payments/types';
 import { siteConfig } from '@/lib/site-config';
 import { validateEmailDeliverability } from '@/lib/email-validator';
+import { checkRateLimit } from '@/lib/rate-limiter';
 
 export interface OrderItemInput {
   productId: string;
@@ -45,6 +46,17 @@ export async function initCheckoutPaymentAction(data: CheckoutPayload) {
       return {
         success: false,
         error: 'Vous devez être connecté à votre compte client pour passer commande.',
+      };
+    }
+
+    // Rate limiting: 10 initialisations de paiement par 10 minutes max par compte
+    const rateLimitKey = `checkout_init_${user.id}`;
+    const limit = checkRateLimit(rateLimitKey, { maxRequests: 10, windowMs: 10 * 60 * 1000 });
+    if (!limit.isAllowed) {
+      const minutesRemaining = Math.ceil(limit.resetInMs / (60 * 1000));
+      return {
+        success: false,
+        error: `Trop d'initialisations de commande consécutives. Par sécurité, veuillez patienter ${minutesRemaining} minute(s).`,
       };
     }
 

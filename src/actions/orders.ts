@@ -6,6 +6,7 @@ import { generateOrderNumber } from '@/lib/utils';
 import { revalidatePath } from 'next/cache';
 import { siteConfig } from '@/lib/site-config';
 import { validateEmailDeliverability } from '@/lib/email-validator';
+import { checkRateLimit } from '@/lib/rate-limiter';
 
 /**
  * Création d'une commande en base de données
@@ -34,19 +35,30 @@ export async function createOrderAction(data: {
   }[];
 }) {
   try {
-    if (data.customerEmail && data.customerEmail.trim()) {
-      const emailCheck = await validateEmailDeliverability(data.customerEmail);
-      if (!emailCheck.isValid) {
-        return { success: false, error: emailCheck.error || 'Adresse email de commande invalide ou injoignable.' };
-      }
-    }
-
     const currentUser = await getCurrentUser();
     if (!currentUser) {
       return {
         success: false,
         error: 'Session expirée ou non authentifiée. Veuillez vous connecter pour finaliser votre commande.',
       };
+    }
+
+    // Rate limiting: max 10 créations de commande par 10 minutes par compte
+    const rateLimitKey = `order_create_${currentUser.id}`;
+    const limit = checkRateLimit(rateLimitKey, { maxRequests: 10, windowMs: 10 * 60 * 1000 });
+    if (!limit.isAllowed) {
+      const minutesRemaining = Math.ceil(limit.resetInMs / (60 * 1000));
+      return {
+        success: false,
+        error: `Trop de créations de commandes consécutives. Par sécurité, veuillez patienter ${minutesRemaining} minute(s).`,
+      };
+    }
+
+    if (data.customerEmail && data.customerEmail.trim()) {
+      const emailCheck = await validateEmailDeliverability(data.customerEmail);
+      if (!emailCheck.isValid) {
+        return { success: false, error: emailCheck.error || 'Adresse email de commande invalide ou injoignable.' };
+      }
     }
 
     // Sauvegarde du numéro de téléphone sur le profil si non renseigné

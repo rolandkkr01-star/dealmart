@@ -22,8 +22,8 @@ export function InscriptionForm({ redirectTarget }: { redirectTarget: string }) 
     e.preventDefault();
     setError(null);
 
-    if (password.length < 8) {
-      setError('Le mot de passe doit contenir au moins 8 caractères.');
+    if (password.length < 10 || !/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/[0-9]/.test(password) || !/[^A-Za-z0-9]/.test(password)) {
+      setError('Le mot de passe doit contenir au moins 10 caractères, avec au moins 1 majuscule, 1 minuscule, 1 chiffre et 1 caractère spécial (ex: @, #, $, !).');
       return;
     }
 
@@ -134,7 +134,7 @@ export function InscriptionForm({ redirectTarget }: { redirectTarget: string }) 
           </div>
 
           <div>
-            <label className="block font-bold text-gray-700 mb-1">Mot de passe (8 caractères min.) *</label>
+            <label className="block font-bold text-gray-700 mb-1">Mot de passe (10 car. min., majuscule, chiffre, symbole) *</label>
             <input
               type="password"
               required

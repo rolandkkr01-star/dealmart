@@ -1,10 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { verifyFedaPayTransaction } from '@/lib/payments/fedapay';
+import { verifyFedaPayWebhookSignature } from '@/lib/payments/webhook-verifier';
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const rawBody = await request.text();
+    const signature = request.headers.get('x-fedapay-signature') || request.headers.get('X-FedaPay-Signature');
+
+    // Vérification de la signature si le webhook secret est configuré
+    if (process.env.FEDAPAY_WEBHOOK_SECRET || process.env.FEDAPAY_SECRET_KEY) {
+      const isValid = verifyFedaPayWebhookSignature(rawBody, signature);
+      if (!isValid) {
+        console.warn('⚠️ Webhook FedaPay rejeté : Signature HMAC invalide');
+        return NextResponse.json({ error: 'Signature webhook invalide' }, { status: 401 });
+      }
+    }
+
+    const body = JSON.parse(rawBody);
     const event = body.name || body.event;
     const entity = body.entity || body['v1/transaction'] || body.transaction;
 

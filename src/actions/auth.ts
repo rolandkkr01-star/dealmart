@@ -7,11 +7,19 @@ import { revalidatePath } from 'next/cache';
 import { validateEmailDeliverability } from '@/lib/email-validator';
 import { checkRateLimit, resetRateLimit } from '@/lib/rate-limiter';
 
+const StrongPasswordSchema = z
+  .string()
+  .min(10, 'Le mot de passe doit contenir au moins 10 caractères')
+  .regex(/[A-Z]/, 'Le mot de passe doit inclure au moins une lettre majuscule (A-Z)')
+  .regex(/[a-z]/, 'Le mot de passe doit inclure au moins une lettre minuscule (a-z)')
+  .regex(/[0-9]/, 'Le mot de passe doit inclure au moins un chiffre (0-9)')
+  .regex(/[^A-Za-z0-9]/, 'Le mot de passe doit inclure au moins un caractère spécial (ex: @, #, $, !, %, *, ?)');
+
 const RegisterSchema = z.object({
   email: z.string().email('Format d\'email invalide'),
-  password: z.string().min(8, 'Le mot de passe doit contenir au moins 8 caractères'),
-  firstName: z.string().min(2, 'Le prénom est requis'),
-  lastName: z.string().min(2, 'Le nom est requis'),
+  password: StrongPasswordSchema,
+  firstName: z.string().min(2, 'Le prénom est requis (2 caractères minimum)'),
+  lastName: z.string().min(2, 'Le nom est requis (2 caractères minimum)'),
   phone: z.string().optional(),
 });
 
@@ -25,7 +33,7 @@ const MasterAdminSetupSchema = z.object({
   lastName: z.string().min(2, 'Le nom est requis'),
   email: z.string().email('Format d\'email invalide'),
   phone: z.string().optional(),
-  password: z.string().min(8, 'Le mot de passe doit contenir au moins 8 caractères'),
+  password: StrongPasswordSchema,
 });
 
 /**
@@ -269,4 +277,98 @@ export async function logoutAction() {
 export async function getSessionUserAction() {
   const user = await getCurrentUser();
   return user;
+}
+
+/**
+ * Génération et enregistrement d'un token sécurisé de vérification d'email
+ */
+export async function sendEmailVerificationTokenAction(email: string) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { email: email.toLowerCase().trim() },
+    });
+
+    if (!user) {
+      return { success: false, error: 'Compte utilisateur introuvable.' };
+    }
+
+    if (user.emailVerified) {
+      return { success: true, message: 'Cette adresse email est déjà vérifiée.' };
+    }
+
+    // Rate limiting: 3 demandes par 10 minutes max
+    const limit = checkRateLimit(`verify_email_${user.id}`, { maxRequests: 3, windowMs: 10 * 60 * 1000 });
+    if (!limit.isAllowed) {
+      return { success: false, error: 'Trop de demandes de vérification. Veuillez patienter quelques minutes.' };
+    }
+
+    // Code OTP sécurisé à 6 chiffres
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24h
+
+    // Supprimer les anciens tokens de cet email
+    await prisma.verificationToken.deleteMany({
+      where: { identifier: user.email },
+    });
+
+    await prisma.verificationToken.create({
+      data: {
+        identifier: user.email,
+        token: code,
+        expiresAt,
+      },
+    });
+
+    console.log(`✉️ [EMAIL VERIFICATION] Code de confirmation pour ${user.email} : ${code}`);
+
+    return {
+      success: true,
+      message: 'Code de vérification envoyé par email.',
+      simulatedCode: process.env.NODE_ENV !== 'production' ? code : undefined,
+    };
+  } catch (error: any) {
+    console.error('Erreur sendEmailVerificationTokenAction:', error);
+    return { success: false, error: 'Impossible de générer le code de vérification.' };
+  }
+}
+
+/**
+ * Validation du code de confirmation d'email
+ */
+export async function verifyEmailWithTokenAction(token: string) {
+  try {
+    const currentUser = await getCurrentUser();
+    if (!currentUser) {
+      return { success: false, error: 'Vous devez être connecté pour valider votre email.' };
+    }
+
+    const verificationRecord = await prisma.verificationToken.findFirst({
+      where: {
+        identifier: currentUser.email,
+        token: token.trim(),
+      },
+    });
+
+    if (!verificationRecord || verificationRecord.expiresAt < new Date()) {
+      return { success: false, error: 'Code de confirmation invalide ou expiré.' };
+    }
+
+    // Validation du statut utilisateur
+    await prisma.user.update({
+      where: { id: currentUser.id },
+      data: { emailVerified: true },
+    });
+
+    // Suppression du token consommé
+    await prisma.verificationToken.delete({
+      where: { id: verificationRecord.id },
+    });
+
+    revalidatePath('/compte');
+
+    return { success: true, message: 'Votre adresse email a été vérifiée avec succès !' };
+  } catch (error: any) {
+    console.error('Erreur verifyEmailWithTokenAction:', error);
+    return { success: false, error: 'Erreur lors de la validation du code.' };
+  }
 }

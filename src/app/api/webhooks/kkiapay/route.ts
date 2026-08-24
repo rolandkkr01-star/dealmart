@@ -1,10 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { verifyKkiapayTransaction } from '@/lib/payments/kkiapay';
+import { verifyKkiapayWebhookSignature } from '@/lib/payments/webhook-verifier';
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const rawBody = await request.text();
+    const signature = request.headers.get('x-kkiapay-signature') || request.headers.get('x-kkiapay-secret');
+
+    // Vérification de la signature si le secret est configuré
+    if (process.env.KKIAPAY_SECRET) {
+      const isValid = verifyKkiapayWebhookSignature(rawBody, signature);
+      if (!isValid) {
+        console.warn('⚠️ Webhook Kkiapay rejeté : Signature invalide');
+        return NextResponse.json({ error: 'Signature invalide' }, { status: 401 });
+      }
+    }
+
+    const body = JSON.parse(rawBody);
     const transactionId = body.transactionId || body.id;
 
     if (!transactionId) {
