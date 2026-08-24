@@ -125,7 +125,7 @@ export async function initCheckoutPaymentAction(data: CheckoutPayload) {
     const realDiscount = Math.max(0, Math.floor(data.discountAmount || 0));
     const calculatedTotalAmount = Math.max(0, calculatedItemsTotal + realShipping - realDiscount);
 
-    // Vérifier si une commande PENDING existe déjà pour cette session de checkout
+    // Vérifier si une commande PENDING existe déjà pour cet utilisateur
     let existingPendingOrder = null;
     if (data.existingOrderNumber) {
       existingPendingOrder = await prisma.order.findFirst({
@@ -134,6 +134,19 @@ export async function initCheckoutPaymentAction(data: CheckoutPayload) {
           userId: user.id,
           status: 'PENDING',
         },
+      });
+    }
+
+    // Si aucun numéro explicite ou non trouvé, récupérer la dernière commande PENDING récente (moins de 2h)
+    if (!existingPendingOrder) {
+      const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000);
+      existingPendingOrder = await prisma.order.findFirst({
+        where: {
+          userId: user.id,
+          status: 'PENDING',
+          createdAt: { gte: twoHoursAgo },
+        },
+        orderBy: { createdAt: 'desc' },
       });
     }
 
@@ -212,6 +225,20 @@ export async function initCheckoutPaymentAction(data: CheckoutPayload) {
         },
       });
     }
+
+    // Nettoyer / annuler automatiquement les anciennes commandes PENDING orphelines pour ce compte
+    try {
+      await prisma.order.updateMany({
+        where: {
+          userId: user.id,
+          status: 'PENDING',
+          id: { not: order.id },
+        },
+        data: {
+          status: 'CANCELLED',
+        },
+      });
+    } catch (_) {}
 
     // Enregistrement optionnel dans le carnet d'adresses du client
     if (data.saveAddress && data.streetDetails && data.streetDetails.trim()) {

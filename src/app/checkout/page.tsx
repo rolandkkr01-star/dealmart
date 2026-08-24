@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Script from 'next/script';
 import { useCart } from '@/context/CartContext';
-import { useOrders } from '@/context/OrderContext';
 import { useAuth } from '@/context/AuthContext';
 import { formatFCFA } from '@/lib/utils';
 import { Icons } from '@/components/ui/Icons';
@@ -28,7 +27,6 @@ export default function CheckoutPage() {
   const router = useRouter();
   const { user, loading: authLoading, logout } = useAuth();
   const { cart, subtotal, shippingFee, discountAmount, total, appliedPromo, clearCart } = useCart();
-  const { createOrder } = useOrders();
 
   const [customerName, setCustomerName] = useState('');
   const [customerEmail, setCustomerEmail] = useState('');
@@ -41,8 +39,17 @@ export default function CheckoutPage() {
   const [saveAddress, setSaveAddress] = useState(true);
   const [addressLabel, setAddressLabel] = useState('');
 
-  // Identifiant de la commande en cours de règlement (évite les doublons en cas d'échec / re-tentative)
+  // Identifiant de la commande en cours de règlement (persistant en session pour éviter tout doublon)
   const [pendingOrderNumber, setPendingOrderNumber] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedNum = sessionStorage.getItem('techphone229_checkout_order_num');
+      if (savedNum) {
+        setPendingOrderNumber(savedNum);
+      }
+    }
+  }, []);
 
   // Champs de localisation (sans aucune valeur fictive pré-remplie)
   const [city, setCity] = useState('Cotonou');
@@ -262,26 +269,9 @@ export default function CheckoutPage() {
 
       const orderNumber = initResult.orderNumber;
       setPendingOrderNumber(orderNumber);
-
-      // Synchronisation état local
-      createOrder({
-        customerName,
-        customerEmail: customerEmail || user.email,
-        customerPhone,
-        shippingAddress: {
-          city,
-          district,
-          streetDetails,
-          notes,
-        },
-        items: orderItems,
-        totalAmount: total,
-        shippingFee,
-        discountAmount,
-        promoCode: appliedPromo?.code,
-        paymentProvider,
-        paymentRef: `${paymentProvider.toUpperCase()}-${orderNumber}`,
-      });
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem('techphone229_checkout_order_num', orderNumber);
+      }
 
       // 2. Branchement KKIAPAY
       if (initResult.paymentProvider === 'kkiapay' && initResult.kkiapay) {
@@ -300,6 +290,9 @@ export default function CheckoutPage() {
               });
 
               if (verifyRes.success) {
+                if (typeof window !== 'undefined') {
+                  sessionStorage.removeItem('techphone229_checkout_order_num');
+                }
                 clearCart();
                 router.push(`/commande/${orderNumber}?payment=success`);
               } else {
@@ -335,6 +328,9 @@ export default function CheckoutPage() {
             transactionId: `KKIAPAY-DEV-${Date.now().toString().slice(-6)}`,
             provider: 'kkiapay',
           });
+          if (typeof window !== 'undefined') {
+            sessionStorage.removeItem('techphone229_checkout_order_num');
+          }
           clearCart();
           setIsProcessing(false);
           router.push(`/commande/${orderNumber}?status=simulated`);
@@ -346,6 +342,9 @@ export default function CheckoutPage() {
       if (initResult.paymentProvider === 'fedapay' && initResult.fedapay) {
         const paymentUrl = initResult.fedapay.paymentUrl;
         if (paymentUrl) {
+          if (typeof window !== 'undefined') {
+            sessionStorage.removeItem('techphone229_checkout_order_num');
+          }
           clearCart();
           window.location.href = paymentUrl;
           return;
@@ -356,6 +355,9 @@ export default function CheckoutPage() {
             transactionId: `FEDAPAY-DEV-${Date.now().toString().slice(-6)}`,
             provider: 'fedapay',
           });
+          if (typeof window !== 'undefined') {
+            sessionStorage.removeItem('techphone229_checkout_order_num');
+          }
           clearCart();
           setIsProcessing(false);
           router.push(`/commande/${orderNumber}?status=simulated`);
@@ -363,6 +365,9 @@ export default function CheckoutPage() {
         }
       }
 
+      if (typeof window !== 'undefined') {
+        sessionStorage.removeItem('techphone229_checkout_order_num');
+      }
       clearCart();
       setIsProcessing(false);
       router.push(`/commande/${orderNumber}`);
