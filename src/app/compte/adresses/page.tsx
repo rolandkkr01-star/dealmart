@@ -12,6 +12,7 @@ import {
 import { UserAddress } from '@/types';
 import { Icons } from '@/components/ui/Icons';
 import { DialogModal } from '@/components/ui/DialogModal';
+import { Pagination } from '@/components/ui/Pagination';
 
 export default function ClientAddressesPage() {
   const { user } = useAuth();
@@ -21,6 +22,11 @@ export default function ClientAddressesPage() {
   const [actionError, setActionError] = useState<string | null>(null);
   const [actionSuccess, setActionSuccess] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+
+  // Recherche & Pagination
+  const [searchQuery, setSearchQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(6);
 
   // Modal de confirmation de suppression
   const [deleteConfirmState, setDeleteConfirmState] = useState<{
@@ -123,8 +129,29 @@ export default function ClientAddressesPage() {
     }
   };
 
+  const filteredAddresses = React.useMemo(() => {
+    return addresses.filter((addr) => {
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase();
+        const matchLabel = addr.label?.toLowerCase().includes(q);
+        const matchCity = addr.city?.toLowerCase().includes(q);
+        const matchDistrict = addr.district?.toLowerCase().includes(q);
+        const matchStreet = addr.street?.toLowerCase().includes(q);
+        const matchPhone = addr.phone?.toLowerCase().includes(q);
+        if (!matchLabel && !matchCity && !matchDistrict && !matchStreet && !matchPhone) return false;
+      }
+      return true;
+    });
+  }, [addresses, searchQuery]);
+
+  const totalPages = Math.ceil(filteredAddresses.length / pageSize);
+  const paginatedAddresses = React.useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return filteredAddresses.slice(start, start + pageSize);
+  }, [filteredAddresses, currentPage, pageSize]);
+
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Dialog de confirmation de suppression */}
       <DialogModal
         isOpen={deleteConfirmState.isOpen}
@@ -145,7 +172,7 @@ export default function ClientAddressesPage() {
         <span className="text-gray-900 font-bold">Mes Adresses de Livraison</span>
       </nav>
 
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-200 pb-5 mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-200 pb-5 mb-6">
         <div>
           <h1 className="font-heading font-black text-2xl sm:text-3xl text-gray-900 tracking-tight flex items-center gap-3">
             <Icons.MapPin size={28} className="text-[#0062BD]" />
@@ -158,7 +185,7 @@ export default function ClientAddressesPage() {
 
         <button
           onClick={handleOpenAddModal}
-          className="bg-[#FED700] hover:bg-[#E8C400] text-[#1D2129] font-heading font-black text-xs uppercase px-5 py-3 rounded-xl shadow-xs transition-colors inline-flex items-center gap-2 cursor-pointer"
+          className="bg-[#FED700] hover:bg-[#E8C400] text-[#1D2129] font-heading font-black text-xs uppercase px-5 py-3 rounded-xl shadow-xs transition-colors inline-flex items-center gap-2 cursor-pointer self-start sm:self-auto"
         >
           <Icons.Plus size={16} />
           <span>Ajouter une adresse</span>
@@ -176,6 +203,39 @@ export default function ClientAddressesPage() {
         <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-2xl text-xs mb-6 flex items-center gap-2.5">
           <Icons.AlertCircle size={18} className="text-red-500 flex-shrink-0" />
           <span>{actionError}</span>
+        </div>
+      )}
+
+      {/* Barre de Recherche si plusieurs adresses */}
+      {addresses.length > 0 && (
+        <div className="bg-white border border-[#E2E5E8] rounded-2xl p-4 mb-6 shadow-xs flex items-center justify-between gap-4">
+          <div className="relative w-full max-w-md">
+            <Icons.Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+            <input
+              type="text"
+              placeholder="Rechercher par label, quartier, ville ou téléphone..."
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="w-full pl-10 pr-4 py-2 bg-[#F8F9FA] border border-[#E2E5E8] rounded-xl text-xs font-semibold focus:outline-none focus:border-[#0062BD]"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => {
+                  setSearchQuery('');
+                  setCurrentPage(1);
+                }}
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-xs font-bold"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+          <span className="text-xs text-gray-500 font-bold hidden sm:inline-block">
+            {filteredAddresses.length} adresse{filteredAddresses.length > 1 ? 's' : ''}
+          </span>
         </div>
       )}
 
@@ -203,64 +263,99 @@ export default function ClientAddressesPage() {
             <span>Ajouter ma première adresse</span>
           </button>
         </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {addresses.map((addr) => (
-            <div
-              key={addr.id}
-              className={`bg-white border-2 rounded-2xl p-5 shadow-xs transition-all flex flex-col justify-between ${
-                addr.isDefault ? 'border-[#0062BD] bg-blue-50/20' : 'border-gray-200 hover:border-gray-300'
-              }`}
-            >
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="font-heading font-bold text-sm text-gray-900 flex items-center gap-2">
-                    <Icons.MapPin size={16} className={addr.isDefault ? 'text-[#0062BD]' : 'text-gray-400'} />
-                    <span>{addr.label}</span>
-                  </span>
-                  {addr.isDefault ? (
-                    <span className="text-[10px] font-black uppercase bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full">
-                      Adresse par défaut
-                    </span>
-                  ) : (
-                    <button
-                      onClick={() => handleSetDefault(addr.id)}
-                      className="text-[11px] font-bold text-[#0062BD] hover:underline cursor-pointer"
-                    >
-                      Définir par défaut
-                    </button>
-                  )}
-                </div>
-
-                <div className="text-xs text-gray-700 space-y-1 my-3 bg-gray-50 p-3 rounded-xl border border-gray-100">
-                  <p>
-                    <span className="text-gray-500 font-medium">Ville :</span> <strong>{addr.city}</strong>
-                    {addr.district ? ` • Quartier ${addr.district}` : ''}
-                  </p>
-                  <p>
-                    <span className="text-gray-500 font-medium">Repère / Rue :</span> {addr.street}
-                  </p>
-                  {addr.phone && (
-                    <p className="flex items-center gap-1.5 pt-1 text-gray-600">
-                      <Icons.Phone size={12} className="text-emerald-600" />
-                      <span>{addr.phone}</span>
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-gray-100 text-xs">
-                <button
-                  onClick={() => handleDeleteAddress(addr.id, addr.label)}
-                  className="text-red-600 hover:text-red-800 hover:bg-red-50 px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
-                >
-                  <Icons.Trash2 size={14} />
-                  <span>Supprimer</span>
-                </button>
-              </div>
-            </div>
-          ))}
+      ) : filteredAddresses.length === 0 ? (
+        <div className="bg-white border border-[#E2E5E8] rounded-2xl p-12 text-center">
+          <p className="text-xs text-gray-500 mb-4">Aucune adresse ne correspond à votre recherche.</p>
+          <button
+            onClick={() => {
+              setSearchQuery('');
+              setCurrentPage(1);
+            }}
+            className="bg-[#FED700] text-[#1D2129] font-heading font-black text-xs uppercase px-5 py-2.5 rounded-xl cursor-pointer"
+          >
+            Réinitialiser la recherche
+          </button>
         </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {paginatedAddresses.map((addr) => (
+              <div
+                key={addr.id}
+                className={`bg-white border-2 rounded-2xl p-5 shadow-xs transition-all flex flex-col justify-between ${
+                  addr.isDefault ? 'border-[#0062BD] bg-blue-50/20' : 'border-gray-200 hover:border-gray-300'
+                }`}
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-heading font-bold text-sm text-gray-900 flex items-center gap-2">
+                      <Icons.MapPin size={16} className={addr.isDefault ? 'text-[#0062BD]' : 'text-gray-400'} />
+                      <span>{addr.label}</span>
+                    </span>
+                    {addr.isDefault ? (
+                      <span className="text-[10px] font-black uppercase bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full">
+                        Adresse par défaut
+                      </span>
+                    ) : (
+                      <button
+                        onClick={() => handleSetDefault(addr.id)}
+                        className="text-[11px] font-bold text-[#0062BD] hover:underline cursor-pointer"
+                      >
+                        Définir par défaut
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="text-xs text-gray-700 space-y-1 my-3 bg-gray-50 p-3 rounded-xl border border-gray-100">
+                    <p>
+                      <span className="text-gray-500 font-medium">Ville :</span> <strong>{addr.city}</strong>
+                      {addr.district ? ` • Quartier ${addr.district}` : ''}
+                    </p>
+                    <p>
+                      <span className="text-gray-500 font-medium">Repère / Rue :</span> {addr.street}
+                    </p>
+                    {addr.phone && (
+                      <p className="flex items-center gap-1.5 pt-1 text-gray-600">
+                        <Icons.Phone size={12} className="text-emerald-600" />
+                        <span>{addr.phone}</span>
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-3 pt-3 border-t border-gray-100 text-xs">
+                  <button
+                    onClick={() => handleDeleteAddress(addr.id, addr.label)}
+                    className="text-red-600 hover:text-red-800 hover:bg-red-50 px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+                  >
+                    <Icons.Trash2 size={14} />
+                    <span>Supprimer</span>
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Pagination Adresses */}
+          <div className="mt-8 bg-white border border-[#E2E5E8] rounded-2xl p-2 shadow-xs">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={(p) => {
+                setCurrentPage(p);
+                window.scrollTo({ top: 120, behavior: 'smooth' });
+              }}
+              totalItems={filteredAddresses.length}
+              itemsPerPage={pageSize}
+              onItemsPerPageChange={(newSize) => {
+                setPageSize(newSize);
+                setCurrentPage(1);
+              }}
+              pageSizeOptions={[4, 6, 12]}
+              itemLabel="adresses"
+            />
+          </div>
+        </>
       )}
 
       {/* Modal Ajout d'Adresse */}

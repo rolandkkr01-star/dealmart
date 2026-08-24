@@ -6,6 +6,7 @@ import { Product, Brand, ProductCondition } from '@/types';
 import { ProductCard } from '@/components/product/ProductCard';
 import { TradeModal } from '@/components/product/TradeModal';
 import { Icons } from '@/components/ui/Icons';
+import { Pagination } from '@/components/ui/Pagination';
 import Link from 'next/link';
 
 interface BoutiqueClientProps {
@@ -28,6 +29,10 @@ function BoutiqueContent({ initialProducts }: BoutiqueClientProps) {
   const [selectedTradeProduct, setSelectedTradeProduct] = useState<Product | null>(null);
   const [isTradeModalOpen, setIsTradeModalOpen] = useState(false);
 
+  // États de Pagination
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(12);
+
   // Synchronisation dynamique quand l'utilisateur soumet une recherche depuis le Header
   React.useEffect(() => {
     const brand = searchParams.get('brand') || 'ALL';
@@ -39,7 +44,34 @@ function BoutiqueContent({ initialProducts }: BoutiqueClientProps) {
     setSelectedCondition(condition);
     setSearchQuery(search);
     setTradeOnly(trade);
+    setCurrentPage(1);
   }, [searchParams]);
+
+  // Réinitialisation de la page quand un filtre change
+  const handleBrandChange = (brand: string) => {
+    setSelectedBrand(brand);
+    setCurrentPage(1);
+  };
+
+  const handleConditionChange = (cond: string) => {
+    setSelectedCondition(cond);
+    setCurrentPage(1);
+  };
+
+  const handleTradeChange = (trade: boolean) => {
+    setTradeOnly(trade);
+    setCurrentPage(1);
+  };
+
+  const handleSearchChange = (query: string) => {
+    setSearchQuery(query);
+    setCurrentPage(1);
+  };
+
+  const handleSortChange = (sort: 'featured' | 'price-asc' | 'price-desc' | 'rating') => {
+    setSortBy(sort);
+    setCurrentPage(1);
+  };
 
   const filteredProducts = useMemo(() => {
     return products.filter((prod) => {
@@ -66,6 +98,12 @@ function BoutiqueContent({ initialProducts }: BoutiqueClientProps) {
     });
   }, [products, selectedBrand, selectedCondition, tradeOnly, searchQuery, sortBy]);
 
+  const totalPages = Math.ceil(filteredProducts.length / pageSize);
+  const paginatedProducts = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return filteredProducts.slice(start, start + pageSize);
+  }, [filteredProducts, currentPage, pageSize]);
+
   const handleOpenTrade = (product: Product) => {
     setSelectedTradeProduct(product);
     setIsTradeModalOpen(true);
@@ -77,6 +115,7 @@ function BoutiqueContent({ initialProducts }: BoutiqueClientProps) {
     setTradeOnly(false);
     setSearchQuery('');
     setSortBy('featured');
+    setCurrentPage(1);
   };
 
   return (
@@ -110,26 +149,43 @@ function BoutiqueContent({ initialProducts }: BoutiqueClientProps) {
                   onClick={resetFilters}
                   className="text-[11px] font-bold text-[#DC3545] hover:underline cursor-pointer"
                 >
-                  Réinitialiser
+                  Effacer
                 </button>
               )}
+            </div>
+
+            {/* Recherche textuelle directe */}
+            <div className="mb-5">
+              <label className="block text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-2">
+                Recherche par nom
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Ex: iPhone 15, S24, Chargeur..."
+                  value={searchQuery}
+                  onChange={(e) => handleSearchChange(e.target.value)}
+                  className="w-full pl-8 pr-3 py-2 bg-[#F8F9FA] border border-[#E2E5E8] rounded-lg text-xs font-semibold focus:outline-none focus:border-[#0062BD]"
+                />
+                <Icons.Search size={14} className="absolute left-2.5 top-2.5 text-gray-400" />
+              </div>
             </div>
 
             {/* Filtre Marque */}
             <div className="mb-5">
               <label className="block text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-2">
-                Marque Constructeur
+                Marques
               </label>
-              <div className="space-y-1.5">
+              <div className="space-y-1">
                 {[
                   { label: 'Toutes les marques', value: 'ALL' },
                   { label: 'Apple iPhone', value: 'IPHONE' },
                   { label: 'Samsung Galaxy', value: 'SAMSUNG' },
-                  { label: 'Accessoires & Chargeurs', value: 'ACCESSOIRE' },
+                  { label: 'Accessoires & Audio', value: 'ACCESSOIRE' },
                 ].map((b) => (
                   <button
                     key={b.value}
-                    onClick={() => setSelectedBrand(b.value)}
+                    onClick={() => handleBrandChange(b.value)}
                     className={`w-full text-left px-3 py-2 rounded-lg text-xs font-semibold transition-colors flex items-center justify-between cursor-pointer ${
                       selectedBrand === b.value
                         ? 'bg-[#FED700] text-[#1D2129] font-black shadow-xs'
@@ -137,7 +193,7 @@ function BoutiqueContent({ initialProducts }: BoutiqueClientProps) {
                     }`}
                   >
                     <span>{b.label}</span>
-                    {selectedBrand === b.value && <Icons.Check size={14} />}
+                    {selectedBrand === b.value && <Icons.Check size={14} className="text-[#1D2129]" />}
                   </button>
                 ))}
               </div>
@@ -157,7 +213,7 @@ function BoutiqueContent({ initialProducts }: BoutiqueClientProps) {
                 ].map((c) => (
                   <button
                     key={c.value}
-                    onClick={() => setSelectedCondition(c.value)}
+                    onClick={() => handleConditionChange(c.value)}
                     className={`w-full text-left px-3 py-2 rounded-lg text-xs font-semibold transition-colors flex items-center justify-between cursor-pointer ${
                       selectedCondition === c.value
                         ? 'bg-[#0062BD] text-white font-bold shadow-xs'
@@ -165,7 +221,7 @@ function BoutiqueContent({ initialProducts }: BoutiqueClientProps) {
                     }`}
                   >
                     <span className="truncate">{c.label}</span>
-                    {selectedCondition === c.value && <Icons.Check size={14} />}
+                    {selectedCondition === c.value && <Icons.Check size={14} className="text-white" />}
                   </button>
                 ))}
               </div>
@@ -173,16 +229,19 @@ function BoutiqueContent({ initialProducts }: BoutiqueClientProps) {
 
             {/* Filtre Troc Uniquement */}
             <div className="border-t border-gray-100 pt-4">
-              <label className="flex items-center gap-3 cursor-pointer select-none">
+              <label className="flex items-center gap-3 cursor-pointer group">
                 <input
                   type="checkbox"
                   checked={tradeOnly}
-                  onChange={(e) => setTradeOnly(e.target.checked)}
-                  className="w-4 h-4 text-[#FED700] rounded focus:ring-[#FED700] border-gray-300"
+                  onChange={(e) => handleTradeChange(e.target.checked)}
+                  className="w-4 h-4 text-[#0062BD] rounded-sm border-gray-300 focus:ring-0 cursor-pointer"
                 />
-                <div className="text-xs">
-                  <span className="font-bold text-gray-900 block">Troc Possible</span>
-                  <span className="text-[10px] text-gray-500">Échangez votre ancien smartphone</span>
+                <div>
+                  <span className="text-xs font-bold text-gray-800 group-hover:text-[#0062BD] transition-colors flex items-center gap-1.5">
+                    <Icons.Repeat size={13} className="text-emerald-600" />
+                    <span>Éligible au Troc</span>
+                  </span>
+                  <p className="text-[10px] text-gray-400">Échangez votre ancien smartphone</p>
                 </div>
               </label>
             </div>
@@ -201,8 +260,8 @@ function BoutiqueContent({ initialProducts }: BoutiqueClientProps) {
               <label className="text-xs text-gray-600 whitespace-nowrap font-medium">Trier par :</label>
               <select
                 value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as any)}
-                className="bg-[#F8F9FA] border border-[#E2E5E8] rounded-lg px-3 py-1.5 text-xs font-bold text-gray-800 focus:outline-none"
+                onChange={(e) => handleSortChange(e.target.value as any)}
+                className="bg-[#F8F9FA] border border-[#E2E5E8] rounded-lg px-3 py-1.5 text-xs font-bold text-gray-800 focus:outline-none cursor-pointer"
               >
                 <option value="featured">Populaires & Recommandés</option>
                 <option value="price-asc">Prix : Moins cher au plus cher</option>
@@ -236,15 +295,37 @@ function BoutiqueContent({ initialProducts }: BoutiqueClientProps) {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
-              {filteredProducts.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  onOpenTrade={handleOpenTrade}
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+                {paginatedProducts.map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    onOpenTrade={handleOpenTrade}
+                  />
+                ))}
+              </div>
+
+              {/* Contrôle de Pagination */}
+              <div className="mt-8 bg-white border border-[#E2E5E8] rounded-xl p-2 shadow-xs">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={(p) => {
+                    setCurrentPage(p);
+                    window.scrollTo({ top: 180, behavior: 'smooth' });
+                  }}
+                  totalItems={filteredProducts.length}
+                  itemsPerPage={pageSize}
+                  onItemsPerPageChange={(newSize) => {
+                    setPageSize(newSize);
+                    setCurrentPage(1);
+                  }}
+                  pageSizeOptions={[6, 12, 24, 48]}
+                  itemLabel="produits"
                 />
-              ))}
-            </div>
+              </div>
+            </>
           )}
         </div>
       </div>

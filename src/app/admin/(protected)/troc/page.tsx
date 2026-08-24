@@ -12,12 +12,18 @@ import { Icons } from '@/components/ui/Icons';
 import { TradeOfferStatus, TradeComplementDirection } from '@/types';
 import { DialogModal } from '@/components/ui/DialogModal';
 import { siteConfig } from '@/lib/site-config';
+import { Pagination } from '@/components/ui/Pagination';
 
 export default function AdminTrocPage() {
   const [tradeOffers, setTradeOffers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedOfferId, setSelectedOfferId] = useState<string | null>(null);
   const [filterStatus, setFilterStatus] = useState<string>('ALL');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+
+  // Pagination
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(6);
 
   // Formulaire d'action admin
   const [actionType, setActionType] = useState<'ACCEPT' | 'COUNTER' | 'REJECT' | 'COMPLETE'>('ACCEPT');
@@ -74,10 +80,27 @@ export default function AdminTrocPage() {
 
   const selectedOffer = tradeOffers.find((t) => t.id === selectedOfferId);
 
-  const filteredOffers = tradeOffers.filter((off) => {
-    if (filterStatus === 'ALL') return true;
-    return off.status === filterStatus;
-  });
+  const filteredOffers = React.useMemo(() => {
+    return tradeOffers.filter((off) => {
+      if (filterStatus !== 'ALL' && off.status !== filterStatus) return false;
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase();
+        const matchId = off.id.toLowerCase().includes(q);
+        const matchClient = off.customerName?.toLowerCase().includes(q);
+        const matchPhone = off.customerPhone?.toLowerCase().includes(q);
+        const matchModel = off.offeredDeviceModel?.toLowerCase().includes(q);
+        const matchTarget = off.productName?.toLowerCase().includes(q);
+        if (!matchId && !matchClient && !matchPhone && !matchModel && !matchTarget) return false;
+      }
+      return true;
+    });
+  }, [tradeOffers, filterStatus, searchQuery]);
+
+  const totalPages = Math.ceil(filteredOffers.length / pageSize);
+  const paginatedOffers = React.useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return filteredOffers.slice(start, start + pageSize);
+  }, [filteredOffers, currentPage, pageSize]);
 
   const handleApplyAction = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -220,28 +243,61 @@ export default function AdminTrocPage() {
         </button>
       </div>
 
-      {/* Filtres par statut */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
-        {[
-          { id: 'ALL', label: 'Toutes les demandes' },
-          { id: 'PENDING', label: 'En attente' },
-          { id: 'COUNTERED', label: 'Contre-propositions' },
-          { id: 'ACCEPTED', label: 'Acceptées' },
-          { id: 'COMPLETED', label: 'Finalisées' },
-          { id: 'REJECTED', label: 'Non retenues' },
-        ].map((f) => (
-          <button
-            key={f.id}
-            onClick={() => setFilterStatus(f.id)}
-            className={`px-4 py-2 rounded-xl font-bold whitespace-nowrap transition-all cursor-pointer ${
-              filterStatus === f.id
-                ? 'bg-[#1D2129] text-[#FED700]'
-                : 'bg-white text-gray-600 border border-gray-200 hover:border-gray-300'
-            }`}
-          >
-            {f.label} ({tradeOffers.filter((o) => f.id === 'ALL' || o.status === f.id).length})
-          </button>
-        ))}
+      {/* Barre de Recherche & Filtres par statut */}
+      <div className="space-y-3">
+        <div className="bg-white p-4 rounded-2xl border border-gray-200 shadow-xs flex flex-col sm:flex-row items-center gap-3 text-xs">
+          <div className="relative flex-1 w-full">
+            <Icons.Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+            <input
+              type="text"
+              placeholder="Rechercher par n° dossier, nom client, téléphone, modèle proposé ou visé..."
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-1 focus:ring-[#0062BD] focus:outline-none font-medium"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => {
+                  setSearchQuery('');
+                  setCurrentPage(1);
+                }}
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 font-bold"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Filtres par statut */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
+          {[
+            { id: 'ALL', label: 'Toutes les demandes' },
+            { id: 'PENDING', label: 'En attente' },
+            { id: 'COUNTERED', label: 'Contre-propositions' },
+            { id: 'ACCEPTED', label: 'Acceptées' },
+            { id: 'COMPLETED', label: 'Finalisées' },
+            { id: 'REJECTED', label: 'Non retenues' },
+          ].map((f) => (
+            <button
+              key={f.id}
+              onClick={() => {
+                setFilterStatus(f.id);
+                setCurrentPage(1);
+              }}
+              className={`px-4 py-2 rounded-xl font-bold whitespace-nowrap transition-all cursor-pointer ${
+                filterStatus === f.id
+                  ? 'bg-[#1D2129] text-[#FED700]'
+                  : 'bg-white text-gray-600 border border-gray-200 hover:border-gray-300'
+              }`}
+            >
+              {f.label} ({tradeOffers.filter((o) => f.id === 'ALL' || o.status === f.id).length})
+            </button>
+          ))}
+        </div>
       </div>
 
       {loading ? (
@@ -261,11 +317,25 @@ export default function AdminTrocPage() {
             Les propositions soumises par les clients depuis les fiches produits éligibles s'afficheront ici.
           </p>
         </div>
+      ) : filteredOffers.length === 0 ? (
+        <div className="bg-white border border-[#E2E5E8] rounded-2xl p-12 text-center shadow-xs">
+          <p className="text-xs text-gray-500 mb-4">Aucun dossier de troc ne correspond à votre recherche.</p>
+          <button
+            onClick={() => {
+              setFilterStatus('ALL');
+              setSearchQuery('');
+              setCurrentPage(1);
+            }}
+            className="bg-[#FED700] text-[#1D2129] font-heading font-black text-xs uppercase px-5 py-2.5 rounded-xl cursor-pointer"
+          >
+            Réinitialiser les filtres
+          </button>
+        </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* Liste des offres (Gauche - 5 cols) */}
           <div className="lg:col-span-5 space-y-3">
-            {filteredOffers.map((offer) => {
+            {paginatedOffers.map((offer) => {
               const statusInfo = getTradeStatusInfo(offer.status);
               const complementInfo = formatComplementText(offer.complementDirection, offer.cashComplement);
               const isSelected = offer.id === selectedOfferId;
@@ -308,6 +378,26 @@ export default function AdminTrocPage() {
                 </div>
               );
             })}
+
+            {/* Pagination Liste de Gauche */}
+            <div className="bg-white border border-[#E2E5E8] rounded-2xl p-2 shadow-xs">
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={(p) => {
+                  setCurrentPage(p);
+                  window.scrollTo({ top: 120, behavior: 'smooth' });
+                }}
+                totalItems={filteredOffers.length}
+                itemsPerPage={pageSize}
+                onItemsPerPageChange={(newSize) => {
+                  setPageSize(newSize);
+                  setCurrentPage(1);
+                }}
+                pageSizeOptions={[4, 6, 12, 24]}
+                itemLabel="dossiers"
+              />
+            </div>
           </div>
 
           {/* Détail & Actions d'Examen (Droite - 7 cols) */}

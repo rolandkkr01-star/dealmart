@@ -6,6 +6,7 @@ import { formatFCFA, getConditionBadgeInfo } from '@/lib/utils';
 import { Icons } from '@/components/ui/Icons';
 import { getAdminProductsAction, deleteProductAction, toggleProductStatusAction } from '@/actions/admin-products';
 import { DialogModal } from '@/components/ui/DialogModal';
+import { Pagination } from '@/components/ui/Pagination';
 
 import { useRouter } from 'next/navigation';
 
@@ -19,6 +20,10 @@ export default function AdminProductsPage() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [actionSuccess, setActionSuccess] = useState<string | null>(null);
+
+  // Pagination
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10);
 
   // Modal Dialog
   const [dialogState, setDialogState] = useState<{
@@ -111,17 +116,26 @@ export default function AdminProductsPage() {
     }
   };
 
-  const filteredProducts = products.filter((prod) => {
-    const matchesSearch =
-      prod.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      prod.category?.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      prod.variants.some((v: any) => v.sku.toLowerCase().includes(searchQuery.toLowerCase()));
+  const filteredProducts = React.useMemo(() => {
+    return products.filter((prod) => {
+      const matchesSearch =
+        !searchQuery.trim() ||
+        prod.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        prod.category?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        prod.variants?.some((v: any) => v.sku?.toLowerCase().includes(searchQuery.toLowerCase()));
 
-    const matchesBrand = brandFilter === 'ALL' || prod.brand === brandFilter;
-    const matchesCondition = conditionFilter === 'ALL' || prod.condition === conditionFilter;
+      const matchesBrand = brandFilter === 'ALL' || prod.brand === brandFilter;
+      const matchesCondition = conditionFilter === 'ALL' || prod.condition === conditionFilter;
 
-    return matchesSearch && matchesBrand && matchesCondition;
-  });
+      return matchesSearch && matchesBrand && matchesCondition;
+    });
+  }, [products, searchQuery, brandFilter, conditionFilter]);
+
+  const totalPages = Math.ceil(filteredProducts.length / pageSize);
+  const paginatedProducts = React.useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return filteredProducts.slice(start, start + pageSize);
+  }, [filteredProducts, currentPage, pageSize]);
 
   return (
     <div className="p-4 sm:p-8 max-w-7xl mx-auto space-y-6">
@@ -191,7 +205,10 @@ export default function AdminProductsPage() {
             type="text"
             placeholder="Rechercher par nom de modèle, catégorie ou SKU..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setCurrentPage(1);
+            }}
             className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-1 focus:ring-[#0062BD] focus:outline-none"
           />
         </div>
@@ -199,8 +216,11 @@ export default function AdminProductsPage() {
         <div className="flex items-center gap-3 w-full md:w-auto">
           <select
             value={brandFilter}
-            onChange={(e) => setBrandFilter(e.target.value)}
-            className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 font-medium text-gray-700 focus:outline-none"
+            onChange={(e) => {
+              setBrandFilter(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 font-medium text-gray-700 focus:outline-none cursor-pointer"
           >
             <option value="ALL">Toutes les marques</option>
             <option value="IPHONE">Apple iPhone</option>
@@ -210,8 +230,11 @@ export default function AdminProductsPage() {
 
           <select
             value={conditionFilter}
-            onChange={(e) => setConditionFilter(e.target.value)}
-            className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 font-medium text-gray-700 focus:outline-none"
+            onChange={(e) => {
+              setConditionFilter(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 font-medium text-gray-700 focus:outline-none cursor-pointer"
           >
             <option value="ALL">Tous les états</option>
             <option value="NEUF_SCELLE">Neuf scellé</option>
@@ -266,7 +289,7 @@ export default function AdminProductsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {filteredProducts.map((prod) => {
+                {paginatedProducts.map((prod) => {
                   const cond = getConditionBadgeInfo(prod.condition);
                   const totalStock = prod.variants.reduce((acc: number, v: any) => acc + v.stock, 0);
                   const mainImage = prod.images[0]?.url || 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=200&q=80';
@@ -304,47 +327,43 @@ export default function AdminProductsPage() {
 
                       {/* Prix */}
                       <td className="py-3.5 px-4 font-medium">
-                        {prod.promoPrice ? (
-                          <div>
-                            <span className="font-bold text-[#DC3545] block">
-                              {formatFCFA(prod.promoPrice)}
-                            </span>
-                            <span className="line-through text-gray-400 text-[11px]">
-                              {formatFCFA(prod.basePrice)}
-                            </span>
-                          </div>
-                        ) : (
-                          <span className="font-bold text-gray-900">
-                            {formatFCFA(prod.basePrice)}
+                        <span className="font-heading font-black text-gray-900">
+                          {formatFCFA(prod.basePrice)}
+                        </span>
+                        {prod.promoPrice && (
+                          <span className="text-[11px] text-red-600 line-through block">
+                            {formatFCFA(prod.promoPrice)}
                           </span>
                         )}
                       </td>
 
                       {/* Variantes & Stock */}
                       <td className="py-3.5 px-4">
-                        <div>
-                          <span className={`font-bold ${totalStock > 0 ? 'text-gray-900' : 'text-red-600'}`}>
-                            {totalStock} en stock
+                        <div className="space-y-1">
+                          <span className={`text-[10px] font-black px-2 py-0.5 rounded ${
+                            totalStock > 5
+                              ? 'bg-emerald-100 text-emerald-800'
+                              : totalStock > 0
+                              ? 'bg-amber-100 text-amber-800'
+                              : 'bg-red-100 text-red-800'
+                          }`}>
+                            {totalStock > 0 ? `${totalStock} en stock` : 'Rupture de stock'}
                           </span>
-                          <div className="flex flex-wrap gap-1 mt-1">
-                            {prod.variants.map((v: any) => (
-                              <span key={v.id} className="text-[10px] bg-gray-100 border border-gray-200 px-1.5 py-0.5 rounded text-gray-600">
-                                {v.storage || v.color || 'Défaut'} ({v.stock})
-                              </span>
-                            ))}
-                          </div>
+                          <span className="text-[11px] text-gray-400 block">
+                            {prod.variants.length} variante{prod.variants.length > 1 ? 's' : ''}
+                          </span>
                         </div>
                       </td>
 
                       {/* Troc */}
                       <td className="py-3.5 px-4">
                         {prod.tradeEligible ? (
-                          <span className="bg-amber-100 text-amber-900 border border-amber-300 text-[10px] font-black px-2 py-0.5 rounded inline-flex items-center gap-1">
-                            <Icons.Repeat size={12} />
-                            <span>Oui</span>
+                          <span className="text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded flex items-center gap-1 w-max">
+                            <Icons.Check size={12} />
+                            <span>Éligible</span>
                           </span>
                         ) : (
-                          <span className="text-gray-400 text-[11px]">Non</span>
+                          <span className="text-[10px] text-gray-400 font-medium">Non éligible</span>
                         )}
                       </td>
 
@@ -388,6 +407,26 @@ export default function AdminProductsPage() {
                 })}
               </tbody>
             </table>
+
+            {/* Pagination Admin Produits */}
+            <div className="border-t border-gray-200 px-4 py-2 bg-gray-50/50">
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={(p) => {
+                  setCurrentPage(p);
+                  window.scrollTo({ top: 120, behavior: 'smooth' });
+                }}
+                totalItems={filteredProducts.length}
+                itemsPerPage={pageSize}
+                onItemsPerPageChange={(newSize) => {
+                  setPageSize(newSize);
+                  setCurrentPage(1);
+                }}
+                pageSizeOptions={[10, 25, 50]}
+                itemLabel="produits"
+              />
+            </div>
           </div>
         )}
       </div>
