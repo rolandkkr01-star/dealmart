@@ -57,8 +57,12 @@ export function MasterAdminSetupForm() {
       <div className="max-w-lg w-full">
         {/* En-tête / Badge Première Initialisation */}
         <div className="text-center mb-8">
-          <Icons.BrandCart size={54} className="text-[#FED700] mx-auto mb-4" />
-          <span className="text-[11px] font-black tracking-widest text-[#FED700] uppercase block mb-1">
+          <img
+            src="/images/logo/dealmart_logo_horizontal_transparent.svg"
+            alt={siteConfig.name}
+            className="h-12 w-auto mx-auto mb-5 brightness-0 invert"
+          />
+          <span className="text-[11px] font-black tracking-widest text-[#F1B20B] uppercase block mb-1">
             INITIALISATION SYSTÈME • PREMIÈRE UTILISATION
           </span>
           <h1 className="font-heading font-black text-2xl sm:text-3xl text-white tracking-tight">
@@ -91,7 +95,7 @@ export function MasterAdminSetupForm() {
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
                   placeholder="Votre prénom"
-                  className="w-full bg-[#0F172A] border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#FED700] transition-colors text-xs"
+                  className="w-full bg-[#0F172A] border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#F1B20B] transition-colors text-xs"
                 />
               </div>
               <div>
@@ -104,7 +108,7 @@ export function MasterAdminSetupForm() {
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
                   placeholder="Votre nom"
-                  className="w-full bg-[#0F172A] border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#FED700] transition-colors text-xs"
+                  className="w-full bg-[#0F172A] border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#F1B20B] transition-colors text-xs"
                 />
               </div>
             </div>
@@ -120,7 +124,7 @@ export function MasterAdminSetupForm() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Votre adresse email administrateur"
-                  className="w-full bg-[#0F172A] border border-gray-700 rounded-xl px-4 py-3 pl-10 text-white placeholder-gray-500 focus:outline-none focus:border-[#FED700] transition-colors text-xs"
+                  className="w-full bg-[#0F172A] border border-gray-700 rounded-xl px-4 py-3 pl-10 text-white placeholder-gray-500 focus:outline-none focus:border-[#F1B20B] transition-colors text-xs"
                 />
                 <Icons.Mail size={16} className="absolute left-3.5 top-3.5 text-gray-500" />
               </div>
@@ -136,7 +140,7 @@ export function MasterAdminSetupForm() {
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="Votre numéro de téléphone (ex: +229 97 00 00 00)"
-                  className="w-full bg-[#0F172A] border border-gray-700 rounded-xl px-4 py-3 pl-10 text-white placeholder-gray-500 focus:outline-none focus:border-[#FED700] transition-colors text-xs"
+                  className="w-full bg-[#0F172A] border border-gray-700 rounded-xl px-4 py-3 pl-10 text-white placeholder-gray-500 focus:outline-none focus:border-[#F1B20B] transition-colors text-xs"
                 />
                 <Icons.PhoneCall size={16} className="absolute left-3.5 top-3.5 text-gray-500" />
               </div>
@@ -154,7 +158,7 @@ export function MasterAdminSetupForm() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Votre mot de passe sécurisé (ex: MasterTech229!)"
-                    className="w-full bg-[#0F172A] border border-gray-700 rounded-xl px-4 py-3 pl-10 pr-10 text-white placeholder-gray-500 focus:outline-none focus:border-[#FED700] transition-colors text-xs"
+                    className="w-full bg-[#0F172A] border border-gray-700 rounded-xl px-4 py-3 pl-10 pr-10 text-white placeholder-gray-500 focus:outline-none focus:border-[#F1B20B] transition-colors text-xs"
                   />
                   <Icons.Lock size={16} className="absolute left-3.5 top-3.5 text-gray-500" />
                   <button
@@ -178,7 +182,7 @@ export function MasterAdminSetupForm() {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="••••••••••••"
-                    className="w-full bg-[#0F172A] border border-gray-700 rounded-xl px-4 py-3 pl-10 text-white placeholder-gray-500 focus:outline-none focus:border-[#FED700] transition-colors text-xs"
+                    className="w-full bg-[#0F172A] border border-gray-700 rounded-xl px-4 py-3 pl-10 text-white placeholder-gray-500 focus:outline-none focus:border-[#F1B20B] transition-colors text-xs"
                   />
                   <Icons.Lock size={16} className="absolute left-3.5 top-3.5 text-gray-500" />
                 </div>
@@ -188,7 +192,7 @@ export function MasterAdminSetupForm() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#FED700] hover:bg-[#E8C400] text-[#1D2129] font-heading font-black text-xs uppercase tracking-wider py-4 rounded-xl shadow-xl transition-all cursor-pointer disabled:opacity-50 mt-4"
+              className="w-full bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase tracking-wider py-4 rounded-xl shadow-xl transition-all cursor-pointer disabled:opacity-50 mt-4"
             >
               {loading ? 'Création et initialisation du Master Admin...' : 'Initialiser et Accéder à la console'}
             </button>

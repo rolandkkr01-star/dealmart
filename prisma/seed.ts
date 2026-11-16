@@ -1,10 +1,9 @@
 import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('🌱 Démarrage du peuplement (seed) de la base de données de la boutique...');
+  console.log('🌱 Démarrage du peuplement (seed) de DealMart (Îles Salomon)...');
 
   // Nettoyage préalable
   await prisma.review.deleteMany();
@@ -12,7 +11,6 @@ async function main() {
   await prisma.orderStatusEvent.deleteMany();
   await prisma.orderItem.deleteMany();
   await prisma.order.deleteMany();
-  await prisma.tradeOffer.deleteMany();
   await prisma.favorite.deleteMany();
   await prisma.productVariant.deleteMany();
   await prisma.productImage.deleteMany();
@@ -23,380 +21,330 @@ async function main() {
   await prisma.address.deleteMany();
   await prisma.user.deleteMany();
 
-  // 1. Initialisation : Aucun compte admin par défaut n'est recréé
-  // Le système permettra à l'administrateur de configurer son compte propre sur /admin
   console.log('✅ Base nettoyée : Aucun compte par défaut, configuration Master Admin disponible.');
 
-  // 2. Création des Catégories
-  const catApple = await prisma.category.create({
+  // 1. Création des Catégories Généralistes (Alibaba des Îles Salomon)
+  const catElectronics = await prisma.category.create({
     data: {
-      slug: 'smartphones-apple',
-      name: 'Smartphones Apple iPhone',
+      slug: 'electronics-gadgets',
+      name: 'Électronique & High-Tech',
     },
   });
 
-  const catSamsung = await prisma.category.create({
+  const catBeauty = await prisma.category.create({
     data: {
-      slug: 'smartphones-samsung',
-      name: 'Smartphones Samsung Galaxy',
+      slug: 'beauty-cosmetics-skincare',
+      name: 'Beauté, Cosmétiques & Soins',
     },
   });
 
-  const catAccessories = await prisma.category.create({
+  const catFashion = await prisma.category.create({
     data: {
-      slug: 'accessoires-originaux',
-      name: 'Accessoires & Chargeurs Originaux',
+      slug: 'fashion-accessories',
+      name: 'Mode & Habillement',
     },
   });
 
-  const catAudio = await prisma.category.create({
+  const catHome = await prisma.category.create({
     data: {
-      slug: 'audio-ecouteurs',
-      name: 'Audio & Écouteurs Sans-Fil',
+      slug: 'home-kitchen-living',
+      name: 'Maison, Déco & Cuisine',
     },
   });
 
-  // 3. Création des Produits Réels
-  // Produit 1: iPhone 15 Pro Max
+  // 2. Création des Produits Multi-Rayons (Prix en SI$)
+
+  // PRODUIT 1 (ÉLECTRONIQUE) : Flagship Smartphone Pro
   const p1 = await prisma.product.create({
     data: {
-      slug: 'iphone-15-pro-max-256go-titane-naturel',
-      name: 'iPhone 15 Pro Max 256Go Titane Naturel',
-      description: 'Le flagship ultime d\'Apple avec puce A17 Pro gravée en 3nm, design en titane aérospatial, bouton Action personnalisable et téléobjectif 5x. Écran Super Retina XDR 6,7" avec ProMotion 120Hz Always-On. Boîte scellée d\'origine constructeur.',
-      brand: 'IPHONE',
-      categoryId: catApple.id,
+      slug: 'flagship-smartphone-pro-256gb',
+      name: 'Flagship Smartphone Pro 256Go Titane',
+      description: 'Le smartphone haut de gamme avec processeur dernière génération, écran AMOLED 120Hz 6,7", triple capteur photo professionnel 50 Mpx avec zoom optique 5x. Boîte d\'origine neuve sous scellé avec chargeur rapide inclus.',
+      brand: 'DEALMART TECH',
+      categoryId: catElectronics.id,
       condition: 'NEUF_SCELLE',
-      tradeEligible: true,
-      basePrice: 999000,
-      promoPrice: 850000,
+      basePrice: 12500, // SI$
+      promoPrice: 10990, // SI$
       isActive: true,
       isFeatured: true,
       rating: 4.9,
-      reviewsCount: 42,
+      reviewsCount: 38,
       warrantyMonths: 12,
       specsJson: JSON.stringify({
-        'Écran': 'Super Retina XDR OLED 6,7" 120Hz Always-On',
-        'Puce': 'Apple A17 Pro (6 cœurs CPU, 6 cœurs GPU)',
-        'Appareil Photo': 'Principal 48 Mpx + Ultra Grand-angle 12 Mpx + Téléobjectif 5x 12 Mpx',
-        'Batterie': 'Jusqu\'à 29h en lecture vidéo (USB-C 3.0)',
-        'Connectivité': '5G, Wi-Fi 6E, Bluetooth 5.3, NFC, USB-C 10 Gb/s',
+        'Écran': 'AMOLED 6,7" 120Hz HDR10+ Always-On',
+        'Puce': 'Octa-core 3.4GHz Haute Performance',
+        'Appareil Photo': 'Triple 50 Mpx + 12 Mpx Ultra-wide + 12 Mpx Téléobjectif',
+        'Batterie': '5000 mAh avec charge rapide 45W',
+        'Réseau': '5G, 4G LTE, Wi-Fi 6, Dual SIM',
       }),
       images: {
         create: [
           {
             url: '/images/products/daniel-romero-bR_r3fJu-vk-unsplash.jpg',
-            altText: 'iPhone 15 Pro Max 256 Go en titane naturel, vue de face et de profil',
+            altText: 'Smartphone Flagship Pro en finition titane naturel',
             position: 0,
           },
           {
             url: '/images/products/amanz-fYru5LNyJiM-unsplash.jpg',
-            altText: 'iPhone 15 Pro Max finition titane naturel avec triple capteur photo',
+            altText: 'Smartphone Flagship Pro vue arrière avec capteurs photo',
             position: 1,
           },
         ],
       },
       variants: {
         create: [
-          { storage: '256 Go', color: 'Titane Naturel', colorCode: '#9C968E', priceOverride: 850000, promoPrice: 850000, stock: 8, sku: 'IP15PM-256-TN' },
-          { storage: '512 Go', color: 'Titane Naturel', colorCode: '#9C968E', priceOverride: 975000, promoPrice: 975000, stock: 4, sku: 'IP15PM-512-TN' },
-          { storage: '256 Go', color: 'Titane Noir', colorCode: '#3C3B37', priceOverride: 850000, promoPrice: 850000, stock: 6, sku: 'IP15PM-256-TB' },
+          { storage: '256 Go', color: 'Titane Naturel', colorCode: '#9C968E', priceOverride: 10990, promoPrice: 10990, stock: 15, sku: 'DM-PH-PRO-256-TN' },
+          { storage: '512 Go', color: 'Noir Sidéral', colorCode: '#1C1C1E', priceOverride: 12490, promoPrice: 11990, stock: 8, sku: 'DM-PH-PRO-512-NS' },
         ],
       },
     },
   });
 
-  // Produit 2: Samsung Galaxy S24 Ultra
+  // PRODUIT 2 (AUDIO) : Écouteurs Sans-Fil Pro avec Réduction de Bruit
   const p2 = await prisma.product.create({
     data: {
-      slug: 'samsung-galaxy-s24-ultra-512go-gris-titane',
-      name: 'Samsung Galaxy S24 Ultra 512Go Gris Titane',
-      description: 'L\'expérience smartphone ultime sous Galaxy AI. Puce Snapdragon 8 Gen 3 for Galaxy, capteur révolutionnaire 200 Mpx avec Space Zoom 100x, stylet S-Pen intégré et écran Dynamic AMOLED 2X 6,8" anti-reflets.',
-      brand: 'SAMSUNG',
-      categoryId: catSamsung.id,
+      slug: 'ecouteurs-sans-fil-pro-anc',
+      name: 'Écouteurs Sans-Fil Pro avec Réduction de Bruit Active (ANC)',
+      description: 'Audio spatial immersif haute-fidélité avec réduction active du bruit ambiant. Autonomie jusqu\'à 30 heures avec le boîtier de charge sans fil. Résistants à la transpiration et à l\'eau IPX4.',
+      brand: 'DEALMART SOUND',
+      categoryId: catElectronics.id,
       condition: 'NEUF_SCELLE',
-      tradeEligible: true,
-      basePrice: 890000,
-      promoPrice: 750000,
+      basePrice: 1850,
+      promoPrice: 1490,
       isActive: true,
       isFeatured: true,
       rating: 4.8,
-      reviewsCount: 35,
-      warrantyMonths: 24,
-      specsJson: JSON.stringify({
-        'Écran': 'Dynamic AMOLED 2X 6,8" QHD+ 120Hz adaptatif',
-        'Processeur': 'Snapdragon 8 Gen 3 for Galaxy (4nm)',
-        'Mémoire': '12 Go RAM + 512 Go Stockage',
-        'Appareil Photo': '200 Mpx + 50 Mpx (5x) + 12 Mpx Ultra-wide + 10 Mpx (3x)',
-        'Batterie': '5000 mAh avec charge 45W et sans fil',
-      }),
-      images: {
-        create: [
-          {
-            url: '/images/products/zana-latif-5uJMG9fUAO0-unsplash.jpg',
-            altText: 'Samsung Galaxy S24 Ultra Gris Titane avec S-Pen',
-            position: 0,
-          },
-          {
-            url: '/images/products/thai-nguyen-Fl0Jfh9oinQ-unsplash.jpg',
-            altText: 'Samsung Galaxy S24 Ultra vue écran et bordures titane',
-            position: 1,
-          },
-        ],
-      },
-      variants: {
-        create: [
-          { storage: '256 Go', color: 'Gris Titane', colorCode: '#777777', priceOverride: 710000, stock: 5, sku: 'S24U-256-GT' },
-          { storage: '512 Go', color: 'Gris Titane', colorCode: '#777777', priceOverride: 750000, promoPrice: 750000, stock: 9, sku: 'S24U-512-GT' },
-          { storage: '512 Go', color: 'Noir Titane', colorCode: '#222222', priceOverride: 750000, promoPrice: 750000, stock: 4, sku: 'S24U-512-NT' },
-        ],
-      },
-    },
-  });
-
-  // Produit 3: iPhone 14 Pro Reconditionné Certifié
-  const p3 = await prisma.product.create({
-    data: {
-      slug: 'iphone-14-pro-128go-reconditionne-certifie-violet',
-      name: 'iPhone 14 Pro 128Go Deep Purple — Reconditionné Certifié A+',
-      description: 'Appareil remis à neuf dans nos ateliers à Cotonou. Batterie d\'origine Apple à 100% de santé certifiée, écran Dynamic Island impeccable, testé sur 45 points de contrôle. Fourni avec câble et garantie 6 mois.',
-      brand: 'IPHONE',
-      categoryId: catApple.id,
-      condition: 'NEUF_NON_SCELLE',
-      tradeEligible: true,
-      basePrice: 590000,
-      promoPrice: 520000,
-      isActive: true,
-      isFeatured: false,
-      rating: 4.7,
-      reviewsCount: 28,
-      warrantyMonths: 6,
-      specsJson: JSON.stringify({
-        'État': 'Reconditionné Grade A+ (Comme neuf)',
-        'Batterie': 'Santé 100% garantie constructeur',
-        'Écran': 'Super Retina XDR 6,1 pouces OLED 120Hz',
-        'Puce': 'A16 Bionic avec GPU 5 cœurs',
-      }),
-      images: {
-        create: [
-          {
-            url: '/images/products/anh-nhat-PdALQmfEqvE-unsplash.jpg',
-            altText: 'iPhone 14 Pro reconditionné A+ couleur Deep Purple',
-            position: 0,
-          },
-          {
-            url: '/images/products/anh-nhat-uCqMa_s-JDg-unsplash.jpg',
-            altText: 'iPhone 14 Pro vue arrière et capteurs photo',
-            position: 1,
-          },
-        ],
-      },
-      variants: {
-        create: [
-          { storage: '128 Go', color: 'Deep Purple', colorCode: '#4A3B52', priceOverride: 520000, promoPrice: 520000, stock: 12, sku: 'IP14P-128-PUR-REC' },
-        ],
-      },
-    },
-  });
-
-  // Produit 4: Samsung Galaxy Z Fold 5
-  const p4 = await prisma.product.create({
-    data: {
-      slug: 'samsung-galaxy-z-fold-5-512go-noir-phantom',
-      name: 'Samsung Galaxy Z Fold 5 512Go Noir Phantom',
-      description: 'Le smartphone pliant de référence. Écran immersif 7,6" pliable, charnière Flex sans espace, multitâche puissant à 3 applications simultanées et processeur Snapdragon 8 Gen 2.',
-      brand: 'SAMSUNG',
-      categoryId: catSamsung.id,
-      condition: 'NEUF_SCELLE',
-      tradeEligible: true,
-      basePrice: 950000,
-      promoPrice: 820000,
-      isActive: true,
-      isFeatured: true,
-      rating: 4.9,
-      reviewsCount: 19,
+      reviewsCount: 52,
       warrantyMonths: 12,
       specsJson: JSON.stringify({
-        'Écran Principal': '7.6" Dynamic AMOLED 2X 120Hz pliable',
-        'Écran Externe': '6.2" Dynamic AMOLED 2X',
-        'Puce': 'Snapdragon 8 Gen 2 for Galaxy',
+        'Autonomie': 'Jusqu\'à 6h par charge (30h avec boîtier)',
+        'Technologies': 'ANC hybride + Mode Transparence + Bluetooth 5.3',
+        'Résistance': 'Norme étanche IPX4',
       }),
       images: {
         create: [
           {
-            url: '/images/products/shiwa-id-Uae7ouMw91A-unsplash.jpg',
-            altText: 'Samsung Galaxy Z Fold 5 ouvert et fermé',
+            url: '/images/products/amanz-MYFySiWABQE-unsplash.jpg',
+            altText: 'Écouteurs Pro Sans-fil dans leur étui de charge',
             position: 0,
-          },
-          {
-            url: '/images/products/filip-baotic-DV0mB2uJM34-unsplash.jpg',
-            altText: 'Samsung Galaxy Z Fold 5 vue latérale charnière',
-            position: 1,
           },
         ],
       },
       variants: {
         create: [
-          { storage: '512 Go', color: 'Noir Phantom', colorCode: '#111111', priceOverride: 820000, promoPrice: 820000, stock: 5, sku: 'ZFOLD5-512-BLK' },
+          { color: 'Blanc Pur', colorCode: '#FFFFFF', priceOverride: 1490, stock: 25, sku: 'DM-AUDIO-ANC-W' },
+          { color: 'Noir Mat', colorCode: '#111827', priceOverride: 1490, stock: 20, sku: 'DM-AUDIO-ANC-B' },
         ],
       },
     },
   });
 
-  // Produit 5: Chargeur Apple 20W Authentique
-  const p5 = await prisma.product.create({
+  // PRODUIT 3 (BEAUTÉ & SOINS) : Sérum Hydratant Visage Acide Hyaluronique & Vitamine C
+  const p3 = await prisma.product.create({
     data: {
-      slug: 'adaptateur-secteur-apple-usb-c-20w-authentique',
-      name: 'Adaptateur Secteur Apple USB-C 20W Authentique',
-      description: 'Chargeur officiel Apple 20W Power Delivery. Assure une charge rapide et préserve la longévité de votre batterie iPhone. 100% garanti authentique Apple.',
-      brand: 'ACCESSOIRE',
-      categoryId: catAccessories.id,
+      slug: 'serum-visage-eclat-acide-hyaluronique',
+      name: 'Sérum Visage Éclat & Jeunesse (Acide Hyaluronique + Vitamine C)',
+      description: 'Formule dermatologique concentrée enrichie en acide hyaluronique pur et antioxydants naturels. Hydrate intensément, illumine le teint et protège la peau contre la pollution et les rayons UV. Convient à tous types de peaux.',
+      brand: 'SOLOMON GLOW',
+      categoryId: catBeauty.id,
       condition: 'NEUF_SCELLE',
-      tradeEligible: false,
-      basePrice: 22000,
-      promoPrice: 18500,
+      basePrice: 420,
+      promoPrice: 350,
       isActive: true,
       isFeatured: true,
       rating: 5.0,
-      reviewsCount: 88,
-      warrantyMonths: 12,
+      reviewsCount: 64,
+      warrantyMonths: 0,
       specsJson: JSON.stringify({
-        'Puissance': '20W USB Power Delivery',
-        'Connectique': 'USB-C',
-        'Norme': 'Certifié Apple Original avec numéro de série',
+        'Contenance': '50 ml / 1.7 fl.oz',
+        'Ingrédients clés': 'Acide Hyaluronique, Vitamine C stabilisée, Niacinamide',
+        'Type de peau': 'Tous types de peau, testé sous contrôle dermatologique',
+        'Origine': 'Formulation premium certifiée sans parabènes',
       }),
       images: {
         create: [
           {
-            url: '/images/products/ubeyonroad-oLZ2htMNhbA-unsplash.jpg',
-            altText: 'Chargeur officiel Apple USB-C 20W boîte scellée',
+            url: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=800&q=80',
+            altText: 'Flacon de sérum visage éclat et soin hydratant',
             position: 0,
-          },
-          {
-            url: '/images/products/ubeyonroad-szNWSe97Mq0-unsplash.jpg',
-            altText: 'Câble et adaptateur USB-C d\'origine',
-            position: 1,
           },
         ],
       },
       variants: {
         create: [
-          { color: 'Blanc', priceOverride: 18500, promoPrice: 18500, stock: 50, sku: 'APL-20W-ORIG' },
+          { storage: '50 ml', color: 'Transparent', priceOverride: 350, stock: 40, sku: 'DM-BEAUTY-SERUM-50' },
+          { storage: '100 ml Format Éco', color: 'Transparent', priceOverride: 590, promoPrice: 520, stock: 25, sku: 'DM-BEAUTY-SERUM-100' },
         ],
       },
     },
   });
 
-  // 4. Création des Codes Promo
-  await prisma.promoCode.createMany({
-    data: [
-      { code: 'COTONOU229', discountType: 'FIXED_AMOUNT', discountValue: 10000, minOrderAmount: 100000, isActive: true },
-      { code: 'BIENVENUE5', discountType: 'PERCENTAGE', discountValue: 5, minOrderAmount: 50000, isActive: true },
-      { code: 'VIPTECH', discountType: 'FIXED_AMOUNT', discountValue: 25000, minOrderAmount: 300000, isActive: true },
-    ],
-  });
-
-  // 5. Création d'une proposition de troc d'exemple
-  await prisma.tradeOffer.create({
+  // PRODUIT 4 (BEAUTÉ & SOINS) : Crème Régénératrice Huile de Coco & Karité Bio
+  const p4 = await prisma.product.create({
     data: {
-      userId: null,
-      customerName: 'Ablam Dossou',
-      customerPhone: '+229 97 12 34 56',
-      customerEmail: 'client.demo@butiky.bj',
-      customerCity: 'Cotonou (Cadjehoun)',
-      productId: p1.id,
-      offeredDeviceModel: 'iPhone 13 Pro Max 128Go Graphite',
-      offeredDeviceDescription: 'Très bon état, batterie à 87%, écran d\'origine sans rayure, boîte d\'origine fournie.',
-      offeredDeviceCondition: 'OCCASION',
-      offeredDevicePhotosJson: JSON.stringify(['https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=600&q=80']),
-      cashComplement: 380000,
-      status: 'PENDING',
-    },
-  });
-
-  // 6. Création d'une commande initiale
-  const initialOrder = await prisma.order.create({
-    data: {
-      orderNumber: 'TP229-928412',
-      userId: null,
-      customerName: 'Ablam Dossou',
-      customerEmail: 'client.demo@butiky.bj',
-      customerPhone: '+229 97 12 34 56',
-      city: 'Cotonou',
-      district: 'Cadjehoun',
-      streetDetails: 'Rue 124, Villa 4B',
-      notes: 'Appeler à l\'arrivée',
-      status: 'PAID',
-      totalAmount: 868500,
-      shippingFee: 0,
-      discountAmount: 0,
-      paymentProvider: 'mtn_momo',
-      paymentRef: 'MTN-BJ-TX-84920491',
-      items: {
+      slug: 'creme-nourrissante-corps-coco-karite',
+      name: 'Crème Corps & Soin Nourrissant Huile de Coco Tropicale & Karité Bio',
+      description: 'Soin corporel riche et soyeux élaboré avec de l\'huile de coco pure des Îles du Pacifique et du beurre de karité bio. Nourrit en profondeur, apaise après le soleil et parfume délicatement la peau toute la journée.',
+      brand: 'PACIFIC BOTANICS',
+      categoryId: catBeauty.id,
+      condition: 'NEUF_SCELLE',
+      basePrice: 280,
+      promoPrice: 220,
+      isActive: true,
+      isFeatured: true,
+      rating: 4.9,
+      reviewsCount: 47,
+      warrantyMonths: 0,
+      specsJson: JSON.stringify({
+        'Volume': '250 ml',
+        'Parfum': 'Noix de Coco douce & Vanille des îles',
+        'Bénéfices': 'Nutrition 48h, non gras, absorption rapide',
+      }),
+      images: {
         create: [
           {
-            productId: p1.id,
-            productName: p1.name,
-            variantInfo: '256 Go - Titane Naturel',
-            quantity: 1,
-            unitPrice: 850000,
-          },
-          {
-            productId: p4.id,
-            productName: p4.name,
-            variantInfo: 'Blanc',
-            quantity: 1,
-            unitPrice: 18500,
+            url: 'https://images.unsplash.com/photo-1608248597359-0a56e72b4c73?auto=format&fit=crop&w=800&q=80',
+            altText: 'Pot de crème nourrissante corps au beurre de karité et coco',
+            position: 0,
           },
         ],
       },
-      statusHistory: {
+      variants: {
         create: [
-          { status: 'PENDING', note: 'Commande initiée sur le site', createdAt: new Date(Date.now() - 3600000) },
-          { status: 'PAID', note: 'Paiement MTN MoMo validé (868 500 FCFA)', createdAt: new Date() },
+          { storage: 'Pot 250 ml', color: 'Blanc Crème', priceOverride: 220, stock: 50, sku: 'DM-BEAUTY-CREAM-250' },
         ],
       },
     },
   });
 
-  // 7. Création de 3 Avis Clients vérifiés et mis en avant sur l'accueil (Choisis par l'Admin)
+  // PRODUIT 5 (MODE) : Montre Homme Chronographe Élégante Étanche
+  const p5 = await prisma.product.create({
+    data: {
+      slug: 'montre-chronographe-acier-inoxydable',
+      name: 'Montre Chronographe Acier Inoxydable & Verre Saphir',
+      description: 'Design contemporain et finitions luxueuses en acier brossé. Cadran chronographe avec aiguilles luminescentes et affichage de la date. Étanche 5 ATM (50 mètres), idéale pour toutes les occasions habillées ou sportives.',
+      brand: 'DEALMART LUXE',
+      categoryId: catFashion.id,
+      condition: 'NEUF_SCELLE',
+      basePrice: 950,
+      promoPrice: 790,
+      isActive: true,
+      isFeatured: true,
+      rating: 4.7,
+      reviewsCount: 31,
+      warrantyMonths: 24,
+      specsJson: JSON.stringify({
+        'Mouvement': 'Quartz haute précision japonais',
+        'Boîtier': 'Acier inoxydable 316L diamètre 42mm',
+        'Étanchéité': '5 ATM / 50 mètres',
+        'Verre': 'Cristal Saphir inrayable',
+      }),
+      images: {
+        create: [
+          {
+            url: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=800&q=80',
+            altText: 'Montre chronographe élégante sur fond sombre',
+            position: 0,
+          },
+        ],
+      },
+      variants: {
+        create: [
+          { color: 'Argent & Cadran Bleu', colorCode: '#0054A4', priceOverride: 790, stock: 12, sku: 'DM-WATCH-SILVER-BL' },
+          { color: 'Or & Cadran Noir', colorCode: '#F1B20B', priceOverride: 890, promoPrice: 850, stock: 10, sku: 'DM-WATCH-GOLD-BK' },
+        ],
+      },
+    },
+  });
+
+  // PRODUIT 6 (MAISON & CUISINE) : Diffuseur d'Arômes Ultrasonique & Lumière d'Ambiance
+  const p6 = await prisma.product.create({
+    data: {
+      slug: 'diffuseur-aromes-ultrasonique-bois-led',
+      name: 'Diffuseur d\'Huiles Essentielles Ultrasonique Effet Bois & LED 7 Couleurs',
+      description: 'Humidificateur d\'air et diffuseur d\'arômes ultrasonique silencieux avec télécommande. Réservoir 500 ml avec arrêt automatique de sécurité. Idéal pour créer une atmosphère apaisante à la maison ou au bureau.',
+      brand: 'DEALMART HOME',
+      categoryId: catHome.id,
+      condition: 'NEUF_SCELLE',
+      basePrice: 480,
+      promoPrice: 390,
+      isActive: true,
+      isFeatured: true,
+      rating: 4.8,
+      reviewsCount: 29,
+      warrantyMonths: 12,
+      specsJson: JSON.stringify({
+        'Capacité': '500 ml (jusqu\'à 12h d\'autonomie continue)',
+        'Technologie': 'Ultrasonique silencieuse (< 25 dB)',
+        'Éclairage': 'LED d\'ambiance 7 couleurs changeantes',
+        'Minuteur': '1h / 3h / 6h / continu avec arrêt automatique',
+      }),
+      images: {
+        create: [
+          {
+            url: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=800&q=80',
+            altText: 'Diffuseur d\'huiles essentielles et humidificateur en bois',
+            position: 0,
+          },
+        ],
+      },
+      variants: {
+        create: [
+          { color: 'Bois Clair Naturel', colorCode: '#D2B48C', priceOverride: 390, stock: 20, sku: 'DM-HOME-DIFF-LIGHT' },
+          { color: 'Bois Sombre Noyer', colorCode: '#5C4033', priceOverride: 390, stock: 15, sku: 'DM-HOME-DIFF-DARK' },
+        ],
+      },
+    },
+  });
+
+  // 3. Avis Clients Localisés aux Îles Salomon
   await prisma.review.createMany({
     data: [
       {
         productId: p1.id,
-        authorName: 'Dr. Aurel Houessou',
-        city: 'Cotonou, Haie Vive',
+        authorName: 'Johnathan Tome',
+        city: 'Honiara, Point Cruz',
         rating: 5,
-        comment: 'J\'ai acheté mon iPhone 15 Pro Max 256Go. Boîte scellée d\'origine vérifiée sur le site d\'Apple. Livraison reçue en moins de 2h à mon cabinet. Service impeccable !',
+        comment: 'Fast same-day delivery right to my office in Point Cruz. Phone came brand new and sealed. DealMart is officially my go-to shop in Solomon Islands!',
+        isApproved: true,
+        isFeaturedHome: true,
+      },
+      {
+        productId: p3.id,
+        authorName: 'Mary Rence',
+        city: 'Honiara, Kukum',
+        rating: 5,
+        comment: 'Love the Solomon Glow serum! Excellent skincare quality, authentic product and very easy Cash on Delivery payment. Highly recommended!',
         isApproved: true,
         isFeaturedHome: true,
       },
       {
         productId: p2.id,
-        authorName: 'Sandrine Agbodjan',
-        city: 'Abomey-Calavi',
+        authorName: 'David Keli',
+        city: 'Gizo, Western Province',
         rating: 5,
-        comment: 'Le service de troc est une merveille. J\'ai fait reprendre mon ancien S21 Ultra pour prendre le S24 Ultra avec un petit complément en MoMo. Transaction très transparente.',
-        isApproved: true,
-        isFeaturedHome: true,
-      },
-      {
-        productId: p5.id,
-        authorName: 'Marius Koudjo',
-        city: 'Cotonou, Cadjehoun',
-        rating: 5,
-        comment: 'Difficile de trouver des chargeurs 20W Apple réellement authentiques à Cotonou avec toutes les contrefaçons. C\'est la seule boutique en qui j\'ai totale confiance.',
+        comment: 'Great noise cancelling earbuds. Shipped to Gizo within 48 hours in perfect condition. Friendly customer support via WhatsApp!',
         isApproved: true,
         isFeaturedHome: true,
       },
     ],
   });
 
-  console.log(`✅ Base de données initialisée avec succès (0 admin par défaut, configuration disponible sur /admin) !`);
+  // 4. Codes Promos de Base
+  await prisma.promoCode.createMany({
+    data: [
+      { code: 'HONIARA2026', discountType: 'FIXED_AMOUNT', discountValue: 50, minOrderAmount: 300, isActive: true },
+      { code: 'DEALMART5', discountType: 'PERCENTAGE', discountValue: 5, minOrderAmount: 150, isActive: true },
+    ],
+  });
+
+  console.log('✅ Peuplement DealMart terminé avec succès !');
+  console.log(`📁 4 Catégories créées, 6 Produits phares multi-rayons injectés en SI$ et 3 Avis vérifiés.`);
 }
 
 main()
   .catch((e) => {
-    console.error('❌ Erreur seed:', e);
+    console.error('❌ Erreur lors du seed :', e);
     process.exit(1);
   })
   .finally(async () => {

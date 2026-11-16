@@ -34,41 +34,35 @@ export const Header: React.FC = () => {
     <header className="bg-white border-b border-[#E2E5E8] sticky top-0 z-30 shadow-xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between gap-4 sm:gap-8">
         {/* 1. Logo & Identité Boutique */}
-        <Link href="/" className="flex items-center gap-2 sm:gap-3 group flex-shrink-0">
-          <Icons.BrandCart
-            size={36}
-            className="text-[#1D2129] group-hover:text-[#0062BD] transition-all flex-shrink-0 sm:w-[42px] sm:h-[42px]"
+        <Link href="/" className="flex items-center gap-2 group flex-shrink-0">
+          <img
+            src="/images/logo/dealmart_logo_horizontal_transparent.svg"
+            alt={siteConfig.name}
+            className="h-8 sm:h-10 w-auto object-contain transition-transform group-hover:scale-[1.02]"
           />
-          <div className="flex flex-col">
-            <span className="font-heading font-black text-xl sm:text-2xl tracking-tight text-[#1D2129] group-hover:text-[#0062BD] leading-none transition-colors">
-              {siteConfig.name}
-            </span>
-            <span className="text-[9px] sm:text-[10px] text-gray-500 font-bold tracking-wider uppercase mt-0.5">
-              By {siteConfig.legalName}
-            </span>
-          </div>
         </Link>
 
         {/* 2. Barre de recherche avec sélecteur de catégorie */}
         <div className="flex-1 max-w-2xl hidden md:block">
           <form onSubmit={handleSearch} className="flex items-center">
-            <div className="relative flex-1 flex border-2 border-[#FED700] rounded-xl overflow-hidden shadow-xs focus-within:border-[#0062BD] transition-colors">
+            <div className="relative flex-1 flex border-2 border-[#F1B20B] rounded-xl overflow-hidden shadow-xs focus-within:border-[#0054A4] transition-colors">
               {/* Sélecteur de rayon */}
               <select
                 value={searchCategory}
                 onChange={(e) => setSearchCategory(e.target.value)}
                 className="bg-gray-50 text-xs font-semibold text-gray-700 border-r border-gray-200 px-3 py-2.5 outline-none cursor-pointer hover:bg-gray-100 transition-colors"
               >
-                <option value="ALL">Tous les rayons</option>
-                <option value="IPHONE">Apple iPhone</option>
-                <option value="SAMSUNG">Samsung Galaxy</option>
-                <option value="ACCESSOIRE">Accessoires</option>
+                <option value="ALL">All Categories</option>
+                <option value="electronics-gadgets">Electronics & Tech</option>
+                <option value="beauty-cosmetics-skincare">Beauty & Skincare</option>
+                <option value="fashion-accessories">Fashion & Style</option>
+                <option value="home-kitchen-living">Home & Living</option>
               </select>
 
               {/* Champ texte */}
               <input
                 type="text"
-                placeholder="Quel smartphone ou accessoire recherchez-vous (iPhone 15 Pro, S24 Ultra, chargeur 20W)..."
+                placeholder="Search products across Solomon Islands (Electronics, Beauty, Fashion, Home)..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="flex-1 px-4 py-2.5 text-xs text-gray-900 placeholder-gray-400 outline-none"
@@ -77,7 +71,7 @@ export const Header: React.FC = () => {
               {/* Bouton de recherche */}
               <button
                 type="submit"
-                className="bg-[#FED700] hover:bg-[#E8C400] text-[#1D2129] px-6 font-bold flex items-center justify-center transition-colors cursor-pointer"
+                className="bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] px-6 font-bold flex items-center justify-center transition-colors cursor-pointer"
                 title="Lancer la recherche"
               >
                 <Icons.Search size={18} />
@@ -94,9 +88,9 @@ export const Header: React.FC = () => {
               <div>
                 <button
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                  className="flex items-center gap-2 text-gray-700 hover:text-[#0062BD] transition-colors p-1.5 rounded-lg hover:bg-gray-50 cursor-pointer"
+                  className="flex items-center gap-2 text-gray-700 hover:text-[#0054A4] transition-colors p-1.5 rounded-lg hover:bg-gray-50 cursor-pointer"
                 >
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs ${isAdmin ? 'bg-[#1D2129] text-[#FED700]' : 'bg-[#0062BD] text-white'}`}>
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs ${isAdmin ? 'bg-[#1D2129] text-[#F1B20B]' : 'bg-[#0054A4] text-white'}`}>
                     {user.firstName ? user.firstName[0] : 'U'}{user.lastName ? user.lastName[0] : ''}
                   </div>
                   <div className="hidden lg:flex flex-col text-left">
@@ -132,7 +126,7 @@ export const Header: React.FC = () => {
                             <Link
                               href="/compte"
                               onClick={() => setIsUserMenuOpen(false)}
-                              className="flex items-center gap-2.5 px-4 py-2 text-gray-700 hover:bg-amber-50 hover:text-[#0062BD] font-medium"
+                              className="flex items-center gap-2.5 px-4 py-2 text-gray-700 hover:bg-amber-50 hover:text-[#0054A4] font-medium"
                             >
                               <Icons.User size={14} />
                               <span>Mon Espace Client</span>
@@ -140,18 +134,10 @@ export const Header: React.FC = () => {
                             <Link
                               href="/compte/commandes"
                               onClick={() => setIsUserMenuOpen(false)}
-                              className="flex items-center gap-2.5 px-4 py-2 text-gray-700 hover:bg-amber-50 hover:text-[#0062BD] font-medium"
+                              className="flex items-center gap-2.5 px-4 py-2 text-gray-700 hover:bg-amber-50 hover:text-[#0054A4] font-medium"
                             >
                               <Icons.ShoppingBag size={14} />
                               <span>Mes Commandes</span>
-                            </Link>
-                            <Link
-                              href="/compte/troc"
-                              onClick={() => setIsUserMenuOpen(false)}
-                              className="flex items-center gap-2.5 px-4 py-2 text-gray-700 hover:bg-amber-50 hover:text-[#0062BD] font-medium"
-                            >
-                              <Icons.Repeat size={14} />
-                              <span>Mes Trocs</span>
                             </Link>
                           </>
                         ) : (
@@ -185,7 +171,7 @@ export const Header: React.FC = () => {
             ) : (
               <Link
                 href="/connexion"
-                className="flex items-center gap-2 text-gray-700 hover:text-[#0062BD] transition-colors p-1.5 rounded-lg hover:bg-gray-50"
+                className="flex items-center gap-2 text-gray-700 hover:text-[#0054A4] transition-colors p-1.5 rounded-lg hover:bg-gray-50"
                 title="Se connecter"
               >
                 <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-700">
@@ -207,7 +193,7 @@ export const Header: React.FC = () => {
           >
             <Icons.Heart size={24} className={wishlist.length > 0 ? "text-[#DC3545] fill-[#DC3545]" : ""} />
             {wishlist.length > 0 && (
-              <span className="absolute -top-1 -right-1 bg-[#FED700] text-[#1D2129] border border-white font-extrabold rounded-full w-5 h-5 flex items-center justify-center text-[10px] shadow-xs">
+              <span className="absolute -top-1 -right-1 bg-[#F1B20B] text-[#1D2129] border border-white font-extrabold rounded-full w-5 h-5 flex items-center justify-center text-[10px] shadow-xs">
                 {wishlist.length}
               </span>
             )}
@@ -216,11 +202,11 @@ export const Header: React.FC = () => {
           {/* Panier Interactif */}
           <button
             onClick={() => setIsCartDrawerOpen(true)}
-            className="flex items-center gap-3 bg-gray-50 hover:bg-amber-50/80 p-2 sm:px-3 sm:py-2 rounded-xl border border-gray-200 hover:border-[#FED700] transition-all cursor-pointer group"
+            className="flex items-center gap-3 bg-gray-50 hover:bg-amber-50/80 p-2 sm:px-3 sm:py-2 rounded-xl border border-gray-200 hover:border-[#F1B20B] transition-all cursor-pointer group"
             title="Ouvrir mon Panier"
           >
             <div className="relative">
-              <Icons.ShoppingCart size={24} className="text-gray-800 group-hover:text-[#0062BD] transition-colors" />
+              <Icons.ShoppingCart size={24} className="text-gray-800 group-hover:text-[#0054A4] transition-colors" />
               {cartCount > 0 && (
                 <span className="absolute -top-2 -right-2 bg-[#DC3545] text-white font-extrabold rounded-full w-5 h-5 flex items-center justify-center text-[10px] shadow-xs animate-pulse">
                   {cartCount}

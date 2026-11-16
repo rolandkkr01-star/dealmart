@@ -115,7 +115,7 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
 
         <button
           onClick={() => setIsFormOpen(!isFormOpen)}
-          className="bg-[#FED700] hover:bg-[#E8C400] text-[#1D2129] font-heading font-black text-xs uppercase tracking-wider px-5 py-2.5 rounded-xl shadow-xs transition-colors self-start sm:self-auto cursor-pointer inline-flex items-center gap-1.5"
+          className="bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase tracking-wider px-5 py-2.5 rounded-xl shadow-xs transition-colors self-start sm:self-auto cursor-pointer inline-flex items-center gap-1.5"
         >
           {isFormOpen ? (
             'Fermer le formulaire'
@@ -158,7 +158,7 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
                         size={22}
                         className={`${
                           (hoverRating || newRating) >= star
-                            ? 'text-[#FED700] fill-[#FED700]'
+                            ? 'text-[#F1B20B] fill-[#F1B20B]'
                             : 'text-gray-300'
                         }`}
                       />
@@ -179,7 +179,7 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
                     placeholder="Votre nom complet (ex: Jean H.)"
                     value={authorName}
                     onChange={(e) => setAuthorName(e.target.value)}
-                    className="w-full bg-white border border-gray-300 rounded-lg p-2.5 text-xs focus:ring-1 focus:ring-[#0062BD] focus:outline-none"
+                    className="w-full bg-white border border-gray-300 rounded-lg p-2.5 text-xs focus:ring-1 focus:ring-[#0054A4] focus:outline-none"
                   />
                 </div>
                 <div>
@@ -189,7 +189,7 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
                     placeholder="Votre ville & quartier (ex: Cotonou, Haie Vive)"
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
-                    className="w-full bg-white border border-gray-300 rounded-lg p-2.5 text-xs focus:ring-1 focus:ring-[#0062BD] focus:outline-none"
+                    className="w-full bg-white border border-gray-300 rounded-lg p-2.5 text-xs focus:ring-1 focus:ring-[#0054A4] focus:outline-none"
                   />
                 </div>
               </div>
@@ -202,13 +202,13 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
                   placeholder="Partagez votre expérience avec cet appareil (authenticité, performances, batterie, livraison)..."
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
-                  className="w-full bg-white border border-gray-300 rounded-lg p-2.5 text-xs focus:ring-1 focus:ring-[#0062BD] focus:outline-none"
+                  className="w-full bg-white border border-gray-300 rounded-lg p-2.5 text-xs focus:ring-1 focus:ring-[#0054A4] focus:outline-none"
                 />
               </div>
 
               <button
                 type="submit"
-                className="bg-[#1D2129] hover:bg-[#2C3039] text-[#FED700] font-heading font-black text-xs uppercase tracking-wider px-6 py-3 rounded-lg shadow-xs transition-colors cursor-pointer"
+                className="bg-[#1D2129] hover:bg-[#2C3039] text-[#F1B20B] font-heading font-black text-xs uppercase tracking-wider px-6 py-3 rounded-lg shadow-xs transition-colors cursor-pointer"
               >
                 Publier mon avis
               </button>
@@ -249,7 +249,7 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
                 </span>
                 <div className="flex-1 bg-gray-200 rounded-full h-2 overflow-hidden">
                   <div
-                    className="bg-[#FED700] h-full rounded-full transition-all duration-500"
+                    className="bg-[#F1B20B] h-full rounded-full transition-all duration-500"
                     style={{ width: `${percentage}%` }}
                   />
                 </div>
@@ -266,7 +266,7 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
           <div key={rev.id} className="p-4 rounded-xl border border-gray-100 hover:border-gray-200 transition-colors">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-[#FED700] text-[#1D2129] font-black text-xs flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full bg-[#F1B20B] text-[#1D2129] font-black text-xs flex items-center justify-center">
                   {rev.authorName.charAt(0).toUpperCase()}
                 </div>
                 <div>

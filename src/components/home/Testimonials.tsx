@@ -84,7 +84,7 @@ export const Testimonials: React.FC<TestimonialsProps> = ({ reviews = [] }) => {
                 {rev.productName && (
                   <span className="text-[10px] bg-gray-100 text-gray-600 font-bold px-2 py-0.5 rounded truncate max-w-[150px]">
                     {rev.productSlug ? (
-                      <Link href={`/produit/${rev.productSlug}`} className="hover:text-[#0062BD]">
+                      <Link href={`/produit/${rev.productSlug}`} className="hover:text-[#0054A4]">
                         {rev.productName}
                       </Link>
                     ) : (
@@ -101,7 +101,7 @@ export const Testimonials: React.FC<TestimonialsProps> = ({ reviews = [] }) => {
 
             <div className="pt-4 border-t border-gray-100 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-full bg-[#1D2129] text-[#FED700] font-black text-[11px] flex items-center justify-center">
+                <div className="w-7 h-7 rounded-full bg-[#1D2129] text-[#F1B20B] font-black text-[11px] flex items-center justify-center">
                   {rev.name.charAt(0).toUpperCase()}
                 </div>
                 <div>

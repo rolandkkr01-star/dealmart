@@ -11,7 +11,6 @@ async function cleanReset() {
   await prisma.orderStatusEvent.deleteMany();
   await prisma.orderItem.deleteMany();
   await prisma.order.deleteMany();
-  await prisma.tradeOffer.deleteMany();
   await prisma.favorite.deleteMany();
   await prisma.productVariant.deleteMany();
   await prisma.productImage.deleteMany();
@@ -23,8 +22,8 @@ async function cleanReset() {
   await prisma.user.deleteMany();
 
   // 2. Recréation unique du compte SuperAdmin officiel
-  const defaultEmail = process.env.ADMIN_EMAIL || 'admin@butiky.bj';
-  const defaultPassword = process.env.ADMIN_PASSWORD || 'AdminButiky2026!';
+  const defaultEmail = process.env.ADMIN_EMAIL || 'admin@dealmart.sb';
+  const defaultPassword = process.env.ADMIN_PASSWORD || 'DealMart2026!Securise';
   const adminPasswordHash = await bcrypt.hash(defaultPassword, 12);
 
   const superAdmin = await prisma.user.create({
@@ -32,21 +31,21 @@ async function cleanReset() {
       email: defaultEmail,
       passwordHash: adminPasswordHash,
       role: 'SUPERADMIN',
-      firstName: 'Directeur',
-      lastName: process.env.NEXT_PUBLIC_STORE_NAME || 'Boutique',
-      phone: '+229 97 00 00 00',
+      firstName: 'Manager',
+      lastName: process.env.NEXT_PUBLIC_STORE_NAME || 'DealMart',
+      phone: '+677 7465588',
       emailVerified: true,
     },
   });
 
-  // 3. Création des catégories officielles de la boutique
+  // 3. Création des catégories officielles de la boutique DealMart (Solomon Islands)
   const categories = [
-    { slug: 'smartphones-apple', name: 'Smartphones Apple iPhone' },
-    { slug: 'smartphones-samsung', name: 'Smartphones Samsung Galaxy' },
-    { slug: 'accessoires-originaux', name: 'Accessoires & Chargeurs Originaux' },
-    { slug: 'audio-ecouteurs', name: 'Audio & Écouteurs Sans-Fil' },
-    { slug: 'coques-protections', name: 'Coques & Verres Trempés' },
-    { slug: 'powerbanks-energie', name: 'Powerbanks & Énergie' },
+    { slug: 'electronics-gadgets', name: 'Électronique & High-Tech' },
+    { slug: 'beauty-cosmetics-skincare', name: 'Beauté, Cosmétiques & Soins' },
+    { slug: 'fashion-accessories', name: 'Mode & Habillement' },
+    { slug: 'home-kitchen-living', name: 'Maison, Déco & Cuisine' },
+    { slug: 'audio-accessories', name: 'Audio & Casques Multimédia' },
+    { slug: 'health-wellness', name: 'Santé & Bien-être' },
   ];
 
   for (const cat of categories) {
@@ -56,8 +55,8 @@ async function cleanReset() {
   // 4. Codes promos de base
   await prisma.promoCode.createMany({
     data: [
-      { code: 'COTONOU229', discountType: 'FIXED_AMOUNT', discountValue: 10000, minOrderAmount: 100000, isActive: true },
-      { code: 'BIENVENUE5', discountType: 'PERCENTAGE', discountValue: 5, minOrderAmount: 50000, isActive: true },
+      { code: 'HONIARA2026', discountType: 'FIXED_AMOUNT', discountValue: 50, minOrderAmount: 300, isActive: true },
+      { code: 'DEALMART5', discountType: 'PERCENTAGE', discountValue: 5, minOrderAmount: 150, isActive: true },
     ],
   });
 

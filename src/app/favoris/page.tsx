@@ -6,7 +6,6 @@ import { useCart } from '@/context/CartContext';
 import { Product } from '@/types';
 import { getProductsAction } from '@/actions/products';
 import { ProductCard } from '@/components/product/ProductCard';
-import { TradeModal } from '@/components/product/TradeModal';
 import { Icons } from '@/components/ui/Icons';
 import { Pagination } from '@/components/ui/Pagination';
 
@@ -14,8 +13,6 @@ export default function PublicFavorisPage() {
   const { wishlist } = useCart();
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedTradeProduct, setSelectedTradeProduct] = useState<Product | null>(null);
-  const [isTradeModalOpen, setIsTradeModalOpen] = useState(false);
 
   // Filtres & Pagination
   const [selectedBrand, setSelectedBrand] = useState<string>('ALL');
@@ -65,16 +62,11 @@ export default function PublicFavorisPage() {
     return favoriteProducts.slice(start, start + pageSize);
   }, [favoriteProducts, currentPage, pageSize]);
 
-  const handleOpenTrade = (product: Product) => {
-    setSelectedTradeProduct(product);
-    setIsTradeModalOpen(true);
-  };
-
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Fil d'Ariane */}
       <nav className="flex items-center gap-2 text-xs text-gray-500 mb-6">
-        <Link href="/" className="hover:text-[#0062BD]">Accueil</Link>
+        <Link href="/" className="hover:text-[#0054A4]">Accueil</Link>
         <span>/</span>
         <span className="text-gray-900 font-bold">Mes Favoris</span>
       </nav>
@@ -86,7 +78,7 @@ export default function PublicFavorisPage() {
             <span>Ma Liste de Favoris</span>
           </h1>
           <p className="text-xs text-gray-500 mt-1">
-            Vos smartphones et accessoires enregistrés (conservés automatiquement sur votre appareil).
+            Vos articles enregistrés (conservés automatiquement sur votre appareil).
           </p>
         </div>
         <span className="text-xs font-bold bg-gray-100 text-gray-800 px-3 py-1.5 rounded-full self-start sm:self-auto">
@@ -106,7 +98,7 @@ export default function PublicFavorisPage() {
                 setSearchQuery(e.target.value);
                 setCurrentPage(1);
               }}
-              className="w-full pl-9 pr-3 py-2 bg-[#F8F9FA] border border-[#E2E5E8] rounded-xl text-xs font-semibold focus:outline-none focus:border-[#0062BD]"
+              className="w-full pl-9 pr-3 py-2 bg-[#F8F9FA] border border-[#E2E5E8] rounded-xl text-xs font-semibold focus:outline-none focus:border-[#0054A4]"
             />
             <Icons.Search size={15} className="absolute left-3 top-2.5 text-gray-400" />
             {searchQuery && (
@@ -137,7 +129,7 @@ export default function PublicFavorisPage() {
                 }}
                 className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                   selectedBrand === tab.value
-                    ? 'bg-[#1D2129] text-[#FED700] shadow-xs'
+                    ? 'bg-[#1D2129] text-[#F1B20B] shadow-xs'
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
               >
@@ -150,7 +142,7 @@ export default function PublicFavorisPage() {
 
       {loading ? (
         <div className="p-16 text-center text-xs text-gray-500">
-          <div className="w-8 h-8 border-3 border-[#FED700] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+          <div className="w-8 h-8 border-3 border-[#F1B20B] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
           <p>Chargement de vos favoris...</p>
         </div>
       ) : wishlist.length === 0 ? (
@@ -166,9 +158,9 @@ export default function PublicFavorisPage() {
           </p>
           <Link
             href="/boutique"
-            className="bg-[#FED700] hover:bg-[#E8C400] text-[#1D2129] font-heading font-black text-xs uppercase px-6 py-3 rounded-xl inline-block shadow-sm transition-transform hover:scale-105"
+            className="bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase px-6 py-3 rounded-xl inline-block shadow-sm transition-transform hover:scale-105"
           >
-            Découvrir les smartphones & accessoires
+            Découvrir le catalogue DealMart
           </Link>
         </div>
       ) : favoriteProducts.length === 0 ? (
@@ -180,7 +172,7 @@ export default function PublicFavorisPage() {
               setSearchQuery('');
               setCurrentPage(1);
             }}
-            className="bg-[#FED700] text-[#1D2129] font-heading font-black text-xs uppercase px-6 py-2.5 rounded-xl"
+            className="bg-[#F1B20B] text-[#1D2129] font-heading font-black text-xs uppercase px-6 py-2.5 rounded-xl"
           >
             Réinitialiser les filtres
           </button>
@@ -192,7 +184,6 @@ export default function PublicFavorisPage() {
               <ProductCard
                 key={product.id}
                 product={product}
-                onOpenTrade={handleOpenTrade}
               />
             ))}
           </div>
@@ -218,13 +209,6 @@ export default function PublicFavorisPage() {
           </div>
         </>
       )}
-
-      {/* Modal Troc */}
-      <TradeModal
-        product={selectedTradeProduct}
-        isOpen={isTradeModalOpen}
-        onClose={() => setIsTradeModalOpen(false)}
-      />
     </div>
   );
 }

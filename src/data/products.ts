@@ -5,17 +5,17 @@ export const INITIAL_PRODUCTS: Product[] = [];
 
 export const INITIAL_PROMO_CODES: PromoCode[] = [
   {
-    code: 'COTONOU229',
+    code: 'HONIARA2026',
     discountType: 'FIXED_AMOUNT',
-    discountValue: 10000,
-    minOrderAmount: 100000,
+    discountValue: 50,
+    minOrderAmount: 300,
     isActive: true,
   },
   {
-    code: 'BIENVENUE5',
+    code: 'DEALMART5',
     discountType: 'PERCENTAGE',
     discountValue: 5,
-    minOrderAmount: 50000,
+    minOrderAmount: 150,
     isActive: true,
   },
 ];

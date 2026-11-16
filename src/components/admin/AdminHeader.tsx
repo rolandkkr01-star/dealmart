@@ -13,9 +13,8 @@ export function AdminHeader() {
 
   const navItems = [
     { label: 'Tableau de bord', href: '/admin', icon: Icons.TrendingUp, exact: true },
-    { label: 'Catalogue Produits', href: '/admin/produits', icon: Icons.Smartphone, exact: false },
+    { label: 'Catalogue Produits', href: '/admin/produits', icon: Icons.Package, exact: false },
     { label: 'Commandes', href: '/admin/commandes', icon: Icons.ShoppingBag, exact: false },
-    { label: 'Demandes de Troc', href: '/admin/troc', icon: Icons.Repeat, exact: false },
     { label: 'Avis Clients', href: '/admin/avis', icon: Icons.Star, exact: false },
   ];
 
@@ -23,18 +22,14 @@ export function AdminHeader() {
     <header className="bg-[#1E293B] border-b border-gray-800 text-white sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Logo Admin Caddie */}
-          <div className="flex items-center gap-3">
-            <Icons.BrandCart size={32} className="text-[#FED700] flex-shrink-0" />
-            <div>
-              <span className="font-heading font-black text-base text-white tracking-tight block leading-tight">
-                {siteConfig.name}
-              </span>
-              <span className="text-[10px] font-bold text-[#FED700] uppercase tracking-widest block leading-none">
-                Console d'Administration
-              </span>
-            </div>
-          </div>
+          {/* Logo DealMart */}
+          <Link href="/admin" className="flex items-center gap-3">
+            <img
+              src="/images/logo/dealmart_logo_horizontal_transparent.svg"
+              alt={siteConfig.name}
+              className="h-8 w-auto object-contain brightness-0 invert"
+            />
+          </Link>
 
           {/* Navigation interne Admin */}
           <nav className="hidden md:flex items-center gap-1">
@@ -47,7 +42,7 @@ export function AdminHeader() {
                   href={item.href}
                   className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-colors ${
                     isActive
-                      ? 'bg-[#FED700] text-[#1D2129] shadow-xs'
+                      ? 'bg-[#F1B20B] text-[#1D2129] shadow-xs'
                       : 'text-gray-300 hover:text-white hover:bg-gray-800'
                   }`}
                 >
@@ -87,7 +82,7 @@ export function AdminHeader() {
                 href={item.href}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold whitespace-nowrap transition-colors ${
                   isActive
-                    ? 'bg-[#FED700] text-[#1D2129]'
+                    ? 'bg-[#F1B20B] text-[#1D2129]'
                     : 'text-gray-300 hover:text-white hover:bg-gray-800'
                 }`}
               >

@@ -69,7 +69,7 @@ export default function AdminCommandesPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       {/* Fil d'ariane */}
       <nav className="flex items-center gap-2 text-xs text-gray-500">
-        <Link href="/admin" className="hover:text-[#0062BD]">Administration</Link>
+        <Link href="/admin" className="hover:text-[#0054A4]">Administration</Link>
         <span>/</span>
         <span className="text-gray-900 font-bold">Gestion des Commandes</span>
       </nav>
@@ -78,7 +78,7 @@ export default function AdminCommandesPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-gray-200 shadow-xs">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-[10px] font-black uppercase tracking-wider bg-[#FED700] text-[#1D2129] px-2 py-0.5 rounded">
+            <span className="text-[10px] font-black uppercase tracking-wider bg-[#F1B20B] text-[#1D2129] px-2 py-0.5 rounded">
               Ventes & Expéditions
             </span>
             <span className="text-xs text-gray-500 font-bold">
@@ -114,7 +114,7 @@ export default function AdminCommandesPage() {
               setSearchQuery(e.target.value);
               setCurrentPage(1);
             }}
-            className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-1 focus:ring-[#0062BD] focus:outline-none font-medium"
+            className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-1 focus:ring-[#0054A4] focus:outline-none font-medium"
           />
           {searchQuery && (
             <button
@@ -153,7 +153,7 @@ export default function AdminCommandesPage() {
 
       {loading ? (
         <div className="p-16 text-center text-xs text-gray-500 bg-white border border-[#E2E5E8] rounded-2xl shadow-xs">
-          <div className="w-8 h-8 border-3 border-[#FED700] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+          <div className="w-8 h-8 border-3 border-[#F1B20B] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
           <p>Chargement des commandes depuis la base de données...</p>
         </div>
       ) : orders.length === 0 ? (
@@ -177,7 +177,7 @@ export default function AdminCommandesPage() {
               setSearchQuery('');
               setCurrentPage(1);
             }}
-            className="bg-[#FED700] text-[#1D2129] font-heading font-black text-xs uppercase px-5 py-2.5 rounded-xl cursor-pointer"
+            className="bg-[#F1B20B] text-[#1D2129] font-heading font-black text-xs uppercase px-5 py-2.5 rounded-xl cursor-pointer"
           >
             Réinitialiser les filtres
           </button>
@@ -204,7 +204,7 @@ export default function AdminCommandesPage() {
                   return (
                     <tr key={ord.id} className="hover:bg-gray-50/80 transition-colors">
                       <td className="p-4 font-heading font-bold text-gray-900 font-price">
-                        <Link href={`/commande/${ord.orderNumber}`} className="text-[#0062BD] hover:underline font-black">
+                        <Link href={`/commande/${ord.orderNumber}`} className="text-[#0054A4] hover:underline font-black">
                           {ord.orderNumber}
                         </Link>
                         <span className="block text-[10px] text-gray-400 font-normal">
@@ -250,7 +250,7 @@ export default function AdminCommandesPage() {
                           value={ord.status}
                           disabled={updatingId === ord.id}
                           onChange={(e) => handleStatusChange(ord.id, e.target.value as OrderStatus)}
-                          className="border border-gray-300 rounded-xl p-2 text-xs font-bold focus:outline-none focus:ring-1 focus:ring-[#0062BD] bg-white cursor-pointer disabled:opacity-50 shadow-2xs"
+                          className="border border-gray-300 rounded-xl p-2 text-xs font-bold focus:outline-none focus:ring-1 focus:ring-[#0054A4] bg-white cursor-pointer disabled:opacity-50 shadow-2xs"
                         >
                           <option value="PENDING">PENDING</option>
                           <option value="PAID">PAID</option>

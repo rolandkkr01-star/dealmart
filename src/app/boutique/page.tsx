@@ -26,7 +26,7 @@ export default async function BoutiquePage() {
     categoryId: p.categoryId,
     categoryName: p.category?.name || '',
     condition: p.condition as any,
-    tradeEligible: p.tradeEligible,
+    category: p.category,
     basePrice: p.basePrice,
     promoPrice: p.promoPrice || undefined,
     warrantyMonths: p.warrantyMonths,

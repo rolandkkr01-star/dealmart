@@ -76,7 +76,7 @@ export function ConnexionForm({ redirectTarget }: { redirectTarget: string }) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Votre adresse email (ex: nom@domaine.com)"
-              className="w-full border border-gray-300 rounded-xl px-3.5 py-2.5 text-xs focus:ring-1 focus:ring-[#0062BD] focus:outline-none"
+              className="w-full border border-gray-300 rounded-xl px-3.5 py-2.5 text-xs focus:ring-1 focus:ring-[#0054A4] focus:outline-none"
             />
           </div>
 
@@ -85,7 +85,7 @@ export function ConnexionForm({ redirectTarget }: { redirectTarget: string }) {
               <label className="block text-gray-700 font-bold">Mot de passe</label>
               <Link
                 href="/mot-de-passe-oublie"
-                className="text-[11px] font-bold text-[#0062BD] hover:underline"
+                className="text-[11px] font-bold text-[#0054A4] hover:underline"
               >
                 Mot de passe oublié ?
               </Link>
@@ -96,14 +96,14 @@ export function ConnexionForm({ redirectTarget }: { redirectTarget: string }) {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Votre mot de passe secret"
-              className="w-full border border-gray-300 rounded-xl px-3.5 py-2.5 text-xs focus:ring-1 focus:ring-[#0062BD] focus:outline-none"
+              className="w-full border border-gray-300 rounded-xl px-3.5 py-2.5 text-xs focus:ring-1 focus:ring-[#0054A4] focus:outline-none"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#FED700] hover:bg-[#E8C400] text-[#1D2129] font-heading font-black text-xs uppercase py-3 rounded-xl shadow-xs transition-all cursor-pointer disabled:opacity-50 mt-2"
+            className="w-full bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase py-3 rounded-xl shadow-xs transition-all cursor-pointer disabled:opacity-50 mt-2"
           >
             {loading ? 'Connexion en cours...' : 'Se connecter'}
           </button>
@@ -111,7 +111,7 @@ export function ConnexionForm({ redirectTarget }: { redirectTarget: string }) {
 
         <div className="mt-6 pt-6 border-t border-gray-100 text-center text-xs text-gray-500">
           Pas encore de compte ?{' '}
-          <Link href={`/inscription?redirect=${encodeURIComponent(redirectTarget)}`} className="text-[#0062BD] font-bold hover:underline">
+          <Link href={`/inscription?redirect=${encodeURIComponent(redirectTarget)}`} className="text-[#0054A4] font-bold hover:underline">
             Créer un compte
           </Link>
         </div>

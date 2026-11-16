@@ -68,10 +68,9 @@ export default function NewProductPage() {
   // Form states
   const [name, setName] = useState('');
   const [slug, setSlug] = useState('');
-  const [brand, setBrand] = useState<'IPHONE' | 'SAMSUNG' | 'ACCESSOIRE'>('IPHONE');
+  const [brand, setBrand] = useState('DealMart');
   const [categoryId, setCategoryId] = useState('');
   const [condition, setCondition] = useState<'NEUF_SCELLE' | 'NEUF_NON_SCELLE' | 'OCCASION'>('NEUF_SCELLE');
-  const [tradeEligible, setTradeEligible] = useState(false);
   const [basePrice, setBasePrice] = useState('');
   const [promoPrice, setPromoPrice] = useState('');
   const [warrantyMonths, setWarrantyMonths] = useState(12);
@@ -80,11 +79,11 @@ export default function NewProductPage() {
   const [description, setDescription] = useState('');
 
   const generateSku = (brandName: string, prodName: string, colorVal?: string) => {
-    const brandCode = brandName === 'IPHONE' ? 'APL' : brandName === 'SAMSUNG' ? 'SAM' : 'ACC';
-    const nameClean = (prodName || 'PROD').replace(/[^a-zA-Z0-9]/g, '').slice(0, 5).toUpperCase();
+    const brandCode = (brandName || 'DM').replace(/[^a-zA-Z0-9]/g, '').slice(0, 3).toUpperCase() || 'DM';
+    const nameClean = (prodName || 'PROD').replace(/[^a-zA-Z0-9]/g, '').slice(0, 5).toUpperCase() || 'PROD';
     const colorClean = colorVal ? colorVal.replace(/[^a-zA-Z0-9]/g, '').slice(0, 3).toUpperCase() : 'DEF';
     const rand = Math.floor(1000 + Math.random() * 9000);
-    return `TP229-${brandCode}-${nameClean}-${colorClean}-${rand}`;
+    return `DM-${brandCode}-${nameClean}-${colorClean}-${rand}`;
   };
 
   // Variantes axées sur les Couleurs (1 fiche produit = 1 modèle et 1 capacité)
@@ -124,7 +123,7 @@ export default function NewProductPage() {
   }, []);
 
   // Synchronisation dynamique du SKU lors du changement de marque
-  const handleBrandChange = (newBrand: 'IPHONE' | 'SAMSUNG' | 'ACCESSOIRE') => {
+  const handleBrandChange = (newBrand: string) => {
     setBrand(newBrand);
     setVariants((prev) =>
       prev.map((v) => ({
@@ -340,7 +339,6 @@ export default function NewProductPage() {
       brand,
       categoryId,
       condition,
-      tradeEligible,
       basePrice: parseInt(basePrice, 10),
       promoPrice: promoPrice ? parseInt(promoPrice, 10) : null,
       warrantyMonths,
@@ -392,7 +390,7 @@ export default function NewProductPage() {
       <div className="flex items-center justify-between">
         <Link
           href="/admin/produits"
-          className="text-xs font-bold text-gray-500 hover:text-[#0062BD] flex items-center gap-1.5"
+          className="text-xs font-bold text-gray-500 hover:text-[#0054A4] flex items-center gap-1.5"
         >
           <Icons.ArrowLeft size={16} />
           <span>Retour aux produits</span>
@@ -421,7 +419,7 @@ export default function NewProductPage() {
           {/* Section 1 : Informations Générales */}
           <div className="space-y-4">
             <h2 className="font-heading font-bold text-sm text-gray-900 border-b pb-2 flex items-center gap-2">
-              <Icons.Smartphone size={16} className="text-[#0062BD]" />
+              <Icons.Smartphone size={16} className="text-[#0054A4]" />
               <span>1. Modèle & Caractéristiques Principales</span>
             </h2>
 
@@ -436,7 +434,7 @@ export default function NewProductPage() {
                   placeholder="Ex: iPhone 15 Pro 128 Go"
                   value={name}
                   onChange={(e) => handleNameChange(e.target.value)}
-                  className="w-full p-3 border border-gray-300 rounded-xl font-bold text-gray-900 focus:ring-1 focus:ring-[#0062BD] focus:outline-none"
+                  className="w-full p-3 border border-gray-300 rounded-xl font-bold text-gray-900 focus:ring-1 focus:ring-[#0054A4] focus:outline-none"
                 />
                 <span className="text-[11px] text-gray-400 mt-1 block">
                   Indiquez le modèle et le stockage exact dans le titre pour une parfaite clarté client.
@@ -444,16 +442,15 @@ export default function NewProductPage() {
               </div>
 
               <div>
-                <label className="block font-bold text-gray-700 mb-1">Marque *</label>
-                <select
+                <label className="block font-bold text-gray-700 mb-1">Marque / Fabricant *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Ex: Apple, Samsung, Sony, Anker, CeraVe, Seiko..."
                   value={brand}
-                  onChange={(e) => handleBrandChange(e.target.value as any)}
-                  className="w-full p-3 border border-gray-300 rounded-xl bg-white font-bold text-gray-900 focus:outline-none"
-                >
-                  <option value="IPHONE">Apple iPhone</option>
-                  <option value="SAMSUNG">Samsung Galaxy</option>
-                  <option value="ACCESSOIRE">Accessoires & Chargeurs</option>
-                </select>
+                  onChange={(e) => handleBrandChange(e.target.value)}
+                  className="w-full p-3 border border-gray-300 rounded-xl font-bold text-gray-900 focus:outline-none"
+                />
               </div>
 
               <div>
@@ -521,22 +518,22 @@ export default function NewProductPage() {
             </div>
           </div>
 
-          {/* Section 2 : Tarification & Troc */}
+          {/* Section 2 : Tarification */}
           <div className="space-y-4">
             <h2 className="font-heading font-bold text-sm text-gray-900 border-b pb-2 flex items-center gap-2">
-              <Icons.CreditCard size={16} className="text-[#0062BD]" />
-              <span>2. Tarification en FCFA & Éligibilité au Troc</span>
+              <Icons.CreditCard size={16} className="text-[#0054A4]" />
+              <span>2. Tarification en SI$ (Dollars des Îles Salomon)</span>
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block font-bold text-gray-700 mb-1">Prix du Produit (FCFA) *</label>
+                <label className="block font-bold text-gray-700 mb-1">Prix du Produit (SI$) *</label>
                 <input
                   type="number"
                   required
                   min="0"
                   step="1"
-                  placeholder="Ex: 580000"
+                  placeholder="Ex: 850"
                   value={basePrice}
                   onChange={(e) => setBasePrice(e.target.value)}
                   className="w-full p-3 border border-gray-300 rounded-xl font-bold text-gray-900 text-sm focus:outline-none"
@@ -544,12 +541,12 @@ export default function NewProductPage() {
               </div>
 
               <div>
-                <label className="block font-bold text-gray-700 mb-1">Prix Promotionnel Barré (FCFA - Optionnel)</label>
+                <label className="block font-bold text-gray-700 mb-1">Prix Promotionnel (SI$ - Optionnel)</label>
                 <input
                   type="number"
                   min="0"
                   step="1"
-                  placeholder="Ex: 550000"
+                  placeholder="Ex: 750"
                   value={promoPrice}
                   onChange={(e) => setPromoPrice(e.target.value)}
                   className="w-full p-3 border border-gray-300 rounded-xl font-bold text-red-600 focus:outline-none"
@@ -557,31 +554,14 @@ export default function NewProductPage() {
               </div>
             </div>
 
-            {/* Options Troc & Mise en avant */}
+            {/* Mise en avant */}
             <div className="p-4 bg-gray-50 border border-gray-200 rounded-2xl space-y-3 mt-4">
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={tradeEligible}
-                  onChange={(e) => setTradeEligible(e.target.checked)}
-                  className="w-5 h-5 text-[#FED700] rounded focus:ring-0 cursor-pointer"
-                />
-                <div>
-                  <span className="font-bold text-gray-900 text-xs block">
-                    Éligible au Troc (Reprise d'ancien smartphone acceptée)
-                  </span>
-                  <span className="text-[11px] text-gray-500 block">
-                    Permet aux clients de proposer leur ancien téléphone pour cet achat. L'achat direct reste actif en parallèle.
-                  </span>
-                </div>
-              </label>
-
               <label className="flex items-center gap-3 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={isFeatured}
                   onChange={(e) => setIsFeatured(e.target.checked)}
-                  className="w-5 h-5 text-[#FED700] rounded focus:ring-0 cursor-pointer"
+                  className="w-5 h-5 text-[#F1B20B] rounded focus:ring-0 cursor-pointer"
                 />
                 <div>
                   <span className="font-bold text-gray-900 text-xs block">
@@ -595,7 +575,7 @@ export default function NewProductPage() {
                   type="checkbox"
                   checked={isActive}
                   onChange={(e) => setIsActive(e.target.checked)}
-                  className="w-5 h-5 text-[#FED700] rounded focus:ring-0 cursor-pointer"
+                  className="w-5 h-5 text-[#F1B20B] rounded focus:ring-0 cursor-pointer"
                 />
                 <div>
                   <span className="font-bold text-gray-900 text-xs block">
@@ -611,7 +591,7 @@ export default function NewProductPage() {
             <div className="flex items-center justify-between border-b pb-2">
               <div>
                 <h2 className="font-heading font-bold text-sm text-gray-900 flex items-center gap-2">
-                  <Icons.Layers size={16} className="text-[#0062BD]" />
+                  <Icons.Layers size={16} className="text-[#0054A4]" />
                   <span>3. Couleurs Disponibles & Photos Associées ({variants.length})</span>
                 </h2>
                 <p className="text-[11px] text-gray-500">
@@ -621,7 +601,7 @@ export default function NewProductPage() {
               <button
                 type="button"
                 onClick={addVariant}
-                className="bg-[#0062BD] hover:bg-[#00519E] text-white px-3.5 py-2 rounded-xl font-bold flex items-center gap-1.5 cursor-pointer shadow-xs"
+                className="bg-[#0054A4] hover:bg-[#00519E] text-white px-3.5 py-2 rounded-xl font-bold flex items-center gap-1.5 cursor-pointer shadow-xs"
               >
                 <Icons.Plus size={14} />
                 <span>Ajouter une couleur</span>
@@ -734,7 +714,7 @@ export default function NewProductPage() {
                   <div className="bg-white p-3.5 rounded-2xl border border-gray-200 space-y-2.5">
                     <div className="flex items-center justify-between">
                       <span className="font-bold text-gray-800 text-[11px] flex items-center gap-1.5">
-                        <Icons.Image size={14} className="text-[#0062BD]" />
+                        <Icons.Image size={14} className="text-[#0054A4]" />
                         <span>Photos pour la couleur <strong>« {variant.color || 'Sans titre'} »</strong> ({variant.images.length})</span>
                       </span>
 
@@ -754,7 +734,7 @@ export default function NewProductPage() {
                           type="button"
                           disabled={variantUploadingIdx === index}
                           onClick={() => variantFileInputRefs.current[index]?.click()}
-                          className="bg-blue-50 hover:bg-blue-100 text-[#0062BD] px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                          className="bg-blue-50 hover:bg-blue-100 text-[#0054A4] px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
                         >
                           <Icons.Upload size={13} className={variantUploadingIdx === index ? 'animate-bounce' : ''} />
                           <span>{variantUploadingIdx === index ? 'Téléversement...' : '+ Ajouter des photos'}</span>
@@ -802,7 +782,7 @@ export default function NewProductPage() {
             <div className="flex items-center justify-between border-b pb-2">
               <div>
                 <h2 className="font-heading font-bold text-sm text-gray-900 flex items-center gap-2">
-                  <Icons.Image size={16} className="text-[#0062BD]" />
+                  <Icons.Image size={16} className="text-[#0054A4]" />
                   <span>4. Galerie Globale du Produit ({images.length})</span>
                 </h2>
                 <p className="text-[11px] text-gray-500">
@@ -825,11 +805,11 @@ export default function NewProductPage() {
               onClick={() => fileInputRef.current?.click()}
               className={`border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-2 ${
                 uploading
-                  ? 'border-[#0062BD] bg-blue-50/50'
-                  : 'border-gray-300 hover:border-[#0062BD] hover:bg-blue-50/20'
+                  ? 'border-[#0054A4] bg-blue-50/50'
+                  : 'border-gray-300 hover:border-[#0054A4] hover:bg-blue-50/20'
               }`}
             >
-              <div className="w-10 h-10 rounded-xl bg-blue-100 text-[#0062BD] flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-blue-100 text-[#0054A4] flex items-center justify-center">
                 <Icons.Upload size={20} className={uploading ? 'animate-bounce' : ''} />
               </div>
               <p className="font-heading font-bold text-xs text-gray-900">
@@ -871,7 +851,7 @@ export default function NewProductPage() {
           <div className="space-y-4">
             <div className="flex items-center justify-between border-b pb-2">
               <h2 className="font-heading font-bold text-sm text-gray-900 flex items-center gap-2">
-                <Icons.Sliders size={16} className="text-[#0062BD]" />
+                <Icons.Sliders size={16} className="text-[#0054A4]" />
                 <span>5. Spécifications Techniques ({specs.length})</span>
               </h2>
               <button
@@ -930,7 +910,7 @@ export default function NewProductPage() {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full sm:w-auto px-8 py-3.5 bg-[#FED700] hover:bg-[#E8C400] text-[#1D2129] font-heading font-black text-xs uppercase rounded-xl shadow-xs transition-all cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-8 py-3.5 bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase rounded-xl shadow-xs transition-all cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {submitting ? (
                 <>

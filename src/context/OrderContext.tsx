@@ -21,13 +21,14 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   useEffect(() => {
     try {
-      const storeVersion = localStorage.getItem('butiky_store_v');
-      if (storeVersion === '2.0.0') {
-        const saved = localStorage.getItem('butiky_orders');
+      const storeVersion = localStorage.getItem('dealmart_store_v');
+      if (storeVersion === '3.0.0') {
+        const saved = localStorage.getItem('dealmart_orders');
         if (saved && saved !== 'undefined' && saved !== 'null') {
           try { setOrders(JSON.parse(saved)); } catch (_) {}
         }
       } else {
+        localStorage.removeItem('dealmart_orders');
         localStorage.removeItem('butiky_orders');
         setOrders([]);
       }
@@ -40,7 +41,7 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   useEffect(() => {
     if (!mounted) return;
     try {
-      localStorage.setItem('butiky_orders', JSON.stringify(orders));
+      localStorage.setItem('dealmart_orders', JSON.stringify(orders));
     } catch (e) {
       console.error('Erreur sauvegarde orders:', e);
     }

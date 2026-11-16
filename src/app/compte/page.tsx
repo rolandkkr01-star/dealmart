@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import { useCart } from '@/context/CartContext';
 import { getUserOrdersAction } from '@/actions/orders';
-import { formatFCFA, getOrderStatusInfo } from '@/lib/utils';
+import { formatPrice, getOrderStatusInfo } from '@/lib/utils';
 import { Icons } from '@/components/ui/Icons';
 
 export default function ClientDashboardPage() {
@@ -32,7 +32,7 @@ export default function ClientDashboardPage() {
       {/* Entête client */}
       <div className="bg-white border border-[#E2E5E8] rounded-3xl p-6 sm:p-8 shadow-xs mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-[#0062BD] text-white flex items-center justify-center font-heading font-black text-xl shadow-xs">
+          <div className="w-14 h-14 rounded-2xl bg-[#0054A4] text-white flex items-center justify-center font-heading font-black text-xl shadow-xs">
             {user?.firstName ? user.firstName[0].toUpperCase() : 'U'}
             {user?.lastName ? user.lastName[0].toUpperCase() : ''}
           </div>
@@ -74,7 +74,7 @@ export default function ClientDashboardPage() {
             </div>
             <Link
               href="/compte/commandes"
-              className="bg-[#FED700] hover:bg-[#E8C400] text-[#1D2129] font-heading font-black text-xs uppercase px-6 py-3 rounded-xl shadow-xs transition-all inline-flex items-center gap-2"
+              className="bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase px-6 py-3 rounded-xl shadow-xs transition-all inline-flex items-center gap-2"
             >
               <Icons.CreditCard size={16} />
               <span>Régler maintenant</span>
@@ -87,7 +87,7 @@ export default function ClientDashboardPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
         <Link
           href="/compte/commandes"
-          className="bg-white border border-[#E2E5E8] hover:border-[#0062BD] rounded-3xl p-6 shadow-xs transition-all flex items-center justify-between group"
+          className="bg-white border border-[#E2E5E8] hover:border-[#0054A4] rounded-3xl p-6 shadow-xs transition-all flex items-center justify-between group"
         >
           <div>
             <span className="text-xs font-bold text-gray-500 uppercase tracking-wider block mb-1">Mes Commandes</span>
@@ -95,7 +95,7 @@ export default function ClientDashboardPage() {
               {orders.length} commande(s)
             </span>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-blue-50 text-[#0062BD] flex items-center justify-center group-hover:scale-110 transition-transform">
+          <div className="w-12 h-12 rounded-2xl bg-blue-50 text-[#0054A4] flex items-center justify-center group-hover:scale-110 transition-transform">
             <Icons.ShoppingBag size={24} />
           </div>
         </Link>
@@ -115,7 +115,7 @@ export default function ClientDashboardPage() {
 
         <Link
           href="/compte/troc"
-          className="bg-white border border-[#E2E5E8] hover:border-[#FED700] rounded-3xl p-6 shadow-xs transition-all flex items-center justify-between group"
+          className="bg-white border border-[#E2E5E8] hover:border-[#F1B20B] rounded-3xl p-6 shadow-xs transition-all flex items-center justify-between group"
         >
           <div>
             <span className="text-xs font-bold text-gray-500 uppercase tracking-wider block mb-1">Mes Échanges</span>
@@ -146,7 +146,7 @@ export default function ClientDashboardPage() {
           <h2 className="font-heading font-black text-base text-gray-900">
             Dernières Commandes
           </h2>
-          <Link href="/compte/commandes" className="text-xs font-bold text-[#0062BD] hover:underline">
+          <Link href="/compte/commandes" className="text-xs font-bold text-[#0054A4] hover:underline">
             Voir tout ({orders.length}) →
           </Link>
         </div>
@@ -170,7 +170,7 @@ export default function ClientDashboardPage() {
                       </span>
                     </div>
                     <span className="text-[11px] text-gray-400 block mt-0.5">
-                      {new Date(ord.createdAt).toLocaleDateString('fr-FR')} • {formatFCFA(ord.totalAmount)}
+                      {new Date(ord.createdAt).toLocaleDateString('fr-FR')} • {formatPrice(ord.totalAmount)}
                     </span>
                   </div>
 
@@ -178,7 +178,7 @@ export default function ClientDashboardPage() {
                     {isPending ? (
                       <Link
                         href={`/commande/${ord.orderNumber}`}
-                        className="bg-[#FED700] hover:bg-[#E8C400] text-[#1D2129] font-bold text-xs uppercase px-4 py-2 rounded-xl transition-all"
+                        className="bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-bold text-xs uppercase px-4 py-2 rounded-xl transition-all"
                       >
                         Payer
                       </Link>
@@ -206,9 +206,9 @@ export default function ClientDashboardPage() {
         <div className="flex flex-wrap gap-4 text-xs">
           <Link
             href="/boutique"
-            className="bg-[#FED700] hover:bg-[#E8C400] text-[#1D2129] font-heading font-black text-xs uppercase px-5 py-3 rounded-xl inline-block shadow-xs"
+            className="bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase px-5 py-3 rounded-xl inline-block shadow-xs"
           >
-            Explorer les smartphones & accessoires
+            Explorer les rayons & articles DealMart
           </Link>
           <Link
             href="/suivi"

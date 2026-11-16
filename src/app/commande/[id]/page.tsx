@@ -124,7 +124,7 @@ export default function OrderTrackingDetailPage({ params }: { params: Promise<{ 
   if (loading) {
     return (
       <div className="max-w-xl mx-auto px-4 py-20 text-center text-xs text-gray-500">
-        <div className="w-8 h-8 border-3 border-[#FED700] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+        <div className="w-8 h-8 border-3 border-[#F1B20B] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
         <p>Recherche de la commande <strong>{orderNumber}</strong> en base de données...</p>
       </div>
     );
@@ -142,7 +142,7 @@ export default function OrderTrackingDetailPage({ params }: { params: Promise<{ 
         </p>
         <Link
           href="/suivi"
-          className="bg-[#FED700] hover:bg-[#E8C400] text-[#1D2129] font-heading font-black text-xs uppercase px-6 py-3 rounded-xl inline-block shadow-sm"
+          className="bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase px-6 py-3 rounded-xl inline-block shadow-sm"
         >
           Nouvelle recherche
         </Link>
@@ -168,7 +168,7 @@ export default function OrderTrackingDetailPage({ params }: { params: Promise<{ 
             {isPending ? <Icons.AlertCircle size={32} /> : <Icons.ShieldCheck size={32} />}
           </div>
 
-          <span className="text-[11px] font-bold text-[#0062BD] uppercase tracking-widest block mb-1">
+          <span className="text-[11px] font-bold text-[#0054A4] uppercase tracking-widest block mb-1">
             {siteConfig.name} • Suivi & Facture Sécurisée
           </span>
           <h1 className="font-heading font-black text-2xl sm:text-3xl text-gray-900 mb-2 tracking-tight">
@@ -177,7 +177,7 @@ export default function OrderTrackingDetailPage({ params }: { params: Promise<{ 
 
           <div className="inline-flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-xl text-xs font-mono font-bold text-gray-800 my-2">
             <span>Référence :</span>
-            <span className="text-[#0062BD] font-black">{order.orderNumber}</span>
+            <span className="text-[#0054A4] font-black">{order.orderNumber}</span>
           </div>
         </div>
 
@@ -209,7 +209,7 @@ export default function OrderTrackingDetailPage({ params }: { params: Promise<{ 
                 type="button"
                 onClick={handlePayKkiapay}
                 disabled={isPaying}
-                className="bg-[#FED700] hover:bg-[#E8C400] text-[#1D2129] font-heading font-black text-xs uppercase p-4 rounded-2xl shadow-xs transition-all flex items-center justify-center gap-3 cursor-pointer disabled:opacity-50"
+                className="bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase p-4 rounded-2xl shadow-xs transition-all flex items-center justify-center gap-3 cursor-pointer disabled:opacity-50"
               >
                 <img src="/images/gateways/kkiapay.svg" alt="Kkiapay" className="h-5 w-auto object-contain" />
                 <span>Payer avec Kkiapay</span>
@@ -219,7 +219,7 @@ export default function OrderTrackingDetailPage({ params }: { params: Promise<{ 
                 type="button"
                 onClick={handlePayFedaPay}
                 disabled={isPaying}
-                className="bg-[#0062BD] hover:bg-[#00519E] text-white font-heading font-black text-xs uppercase p-4 rounded-2xl shadow-xs transition-all flex items-center justify-center gap-3 cursor-pointer disabled:opacity-50"
+                className="bg-[#0054A4] hover:bg-[#00519E] text-white font-heading font-black text-xs uppercase p-4 rounded-2xl shadow-xs transition-all flex items-center justify-center gap-3 cursor-pointer disabled:opacity-50"
               >
                 <img src="/images/gateways/fedapay.svg" alt="FedaPay" className="h-5 w-auto object-contain brightness-0 invert" />
                 <span>Payer avec FedaPay</span>
@@ -232,7 +232,7 @@ export default function OrderTrackingDetailPage({ params }: { params: Promise<{ 
         <div className="bg-white border border-[#E2E5E8] rounded-3xl p-6 sm:p-8 shadow-xs mb-8">
           <div className="flex items-center justify-between pb-4 border-b border-gray-100 mb-6">
             <h3 className="font-heading font-black text-base text-gray-900 flex items-center gap-2">
-              <Icons.Truck size={18} className="text-[#0062BD]" />
+              <Icons.Truck size={18} className="text-[#0054A4]" />
               <span>Statut de Livraison en Direct</span>
             </h3>
             <span className={`text-xs font-black uppercase px-3.5 py-1 rounded-full border ${statusInfo.className}`}>
@@ -246,7 +246,7 @@ export default function OrderTrackingDetailPage({ params }: { params: Promise<{ 
               <div key={ev.id} className="relative">
                 <div
                   className={`absolute -left-6 top-1 w-3.5 h-3.5 rounded-full border-2 border-white ${
-                    idx === 0 ? 'bg-[#0062BD] ring-4 ring-blue-100' : 'bg-gray-400'
+                    idx === 0 ? 'bg-[#0054A4] ring-4 ring-blue-100' : 'bg-gray-400'
                   }`}
                 />
                 <div className="bg-gray-50 p-4 rounded-2xl border border-gray-200">
@@ -299,7 +299,7 @@ export default function OrderTrackingDetailPage({ params }: { params: Promise<{ 
             </div>
             <div className="flex justify-between pt-3 border-t border-gray-100">
               <span className="font-bold text-gray-900">Total commande :</span>
-              <span className="font-price font-black text-sm text-[#0062BD]">
+              <span className="font-price font-black text-sm text-[#0054A4]">
                 {formatFCFA(order.totalAmount)}
               </span>
             </div>

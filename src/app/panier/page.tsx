@@ -38,7 +38,7 @@ export default function CartPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Fil d'Ariane */}
       <nav className="flex items-center gap-2 text-xs text-gray-500 mb-6">
-        <Link href="/" className="hover:text-[#0062BD]">Accueil</Link>
+        <Link href="/" className="hover:text-[#0054A4]">Accueil</Link>
         <span>/</span>
         <span className="text-gray-900 font-bold">Mon Panier d'Achats</span>
       </nav>
@@ -49,16 +49,16 @@ export default function CartPage() {
 
       {cart.length === 0 ? (
         <div className="bg-white border border-[#E2E5E8] rounded-2xl p-12 text-center max-w-xl mx-auto shadow-xs">
-          <div className="w-20 h-20 rounded-full bg-amber-50 text-[#FED700] flex items-center justify-center mx-auto mb-4">
+          <div className="w-20 h-20 rounded-full bg-amber-50 text-[#F1B20B] flex items-center justify-center mx-auto mb-4">
             <Icons.ShoppingCart size={40} className="text-[#1D2129]" />
           </div>
           <h2 className="font-heading font-bold text-xl text-gray-900 mb-2">Votre panier est actuellement vide</h2>
           <p className="text-xs text-gray-500 mb-8">
-            Parcourez notre collection d'iPhones, de smartphones Samsung et d'accessoires certifiés.
+            Parcourez notre collection multi-rayons de produits et gadgets de qualité certifiée.
           </p>
           <Link
             href="/boutique"
-            className="bg-[#FED700] hover:bg-[#E8C400] text-[#1D2129] font-heading font-black text-xs uppercase tracking-wider px-8 py-4 rounded-xl shadow-md transition-all inline-block"
+            className="bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase tracking-wider px-8 py-4 rounded-xl shadow-md transition-all inline-block"
           >
             Découvrir la boutique
           </Link>
@@ -78,13 +78,13 @@ export default function CartPage() {
                 <div>
                   <div className="flex justify-between text-xs mb-1.5">
                     <span className="text-gray-700">
-                      Plus que <strong className="text-[#0062BD]">{formatFCFA(freeShippingThreshold - subtotal)}</strong> pour la <strong>livraison gratuite</strong>
+                      Plus que <strong className="text-[#0054A4]">{formatFCFA(freeShippingThreshold - subtotal)}</strong> pour la <strong>livraison gratuite</strong>
                     </span>
                     <span className="font-bold text-gray-900">{freeShippingProgress}%</span>
                   </div>
                   <div className="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-[#0062BD] rounded-full shipping-progress"
+                      className="h-full bg-[#0054A4] rounded-full shipping-progress"
                       style={{ width: `${freeShippingProgress}%` }}
                     />
                   </div>
@@ -105,7 +105,7 @@ export default function CartPage() {
                   <div className="flex-1 min-w-0">
                     <Link
                       href={`/produit/${item.product.slug}`}
-                      className="font-bold text-sm text-gray-900 hover:text-[#0062BD] line-clamp-2 mb-1"
+                      className="font-bold text-sm text-gray-900 hover:text-[#0054A4] line-clamp-2 mb-1"
                     >
                       {item.product.name}
                     </Link>
@@ -117,7 +117,7 @@ export default function CartPage() {
                       </p>
                     )}
 
-                    <div className="text-xs font-black text-[#0062BD] font-price">
+                    <div className="text-xs font-black text-[#0054A4] font-price">
                       Prix unitaire : {formatFCFA(item.unitPrice)}
                     </div>
                   </div>
@@ -161,7 +161,7 @@ export default function CartPage() {
             <div className="flex justify-between items-center pt-2">
               <Link
                 href="/boutique"
-                className="text-xs font-bold text-[#0062BD] hover:underline flex items-center gap-1"
+                className="text-xs font-bold text-[#0054A4] hover:underline flex items-center gap-1"
               >
                 <Icons.ChevronRight size={14} className="rotate-180" />
                 <span>Poursuivre mes achats</span>
@@ -190,11 +190,11 @@ export default function CartPage() {
                     placeholder="Code Promo (ex: COTONOU229)"
                     value={promoInput}
                     onChange={(e) => setPromoInput(e.target.value)}
-                    className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-[#0062BD] uppercase"
+                    className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-[#0054A4] uppercase"
                   />
                   <button
                     type="submit"
-                    className="bg-[#1D2129] hover:bg-[#2C3039] text-[#FED700] font-bold text-xs px-4 py-2 rounded-lg transition-colors cursor-pointer"
+                    className="bg-[#1D2129] hover:bg-[#2C3039] text-[#F1B20B] font-bold text-xs px-4 py-2 rounded-lg transition-colors cursor-pointer"
                   >
                     Appliquer
                   </button>
@@ -240,13 +240,13 @@ export default function CartPage() {
 
                 <div className="flex justify-between items-baseline text-base font-black text-gray-900 pt-3 border-t border-gray-200">
                   <span>Total à payer</span>
-                  <span className="text-xl text-[#0062BD] font-price">{formatFCFA(total)}</span>
+                  <span className="text-xl text-[#0054A4] font-price">{formatFCFA(total)}</span>
                 </div>
               </div>
 
               <Link
                 href="/checkout"
-                className="w-full bg-[#FED700] hover:bg-[#E8C400] text-[#1D2129] font-heading font-black text-xs uppercase tracking-wider py-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2"
+                className="w-full bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase tracking-wider py-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2"
               >
                 <span>Passer au Paiement Sécurisé</span>
                 <Icons.ArrowRight size={16} />

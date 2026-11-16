@@ -3,32 +3,26 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { getAdminOrdersAction } from '@/actions/orders';
-import { getAdminTradeOffersAction } from '@/actions/trades';
 import { getAdminProductsAction } from '@/actions/admin-products';
-import { formatFCFA, getOrderStatusInfo, getTradeStatusInfo } from '@/lib/utils';
+import { formatFCFA, getOrderStatusInfo } from '@/lib/utils';
 import { Icons } from '@/components/ui/Icons';
 import { siteConfig } from '@/lib/site-config';
 
 export default function AdminDashboardPage() {
   const [orders, setOrders] = useState<any[]>([]);
-  const [tradeOffers, setTradeOffers] = useState<any[]>([]);
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadDashboardData() {
       setLoading(true);
-      const [ordersRes, tradesRes, productsRes] = await Promise.all([
+      const [ordersRes, productsRes] = await Promise.all([
         getAdminOrdersAction(),
-        getAdminTradeOffersAction(),
         getAdminProductsAction(),
       ]);
 
       if (ordersRes.success && Array.isArray(ordersRes.orders)) {
         setOrders(ordersRes.orders);
-      }
-      if (tradesRes.success && Array.isArray(tradesRes.offers)) {
-        setTradeOffers(tradesRes.offers);
       }
       if (productsRes.success && Array.isArray(productsRes.products)) {
         setProducts(productsRes.products);
@@ -54,10 +48,6 @@ export default function AdminDashboardPage() {
     return orders.filter((o) => o.status === 'PAID' || o.status === 'PROCESSING').length;
   }, [orders]);
 
-  const pendingTrades = useMemo(() => {
-    return tradeOffers.filter((t) => t.status === 'PENDING').length;
-  }, [tradeOffers]);
-
   // Alertes de stock critique (produits avec totalStock <= 3)
   const lowStockProducts = useMemo(() => {
     return products.filter((p) => {
@@ -66,12 +56,12 @@ export default function AdminDashboardPage() {
     });
   }, [products]);
 
-  // Activités récentes combinées (Dernières commandes + Derniers trocs + Alertes stock)
+  // Activités récentes combinées (Dernières commandes + Alertes stock)
   const recentActivities = useMemo(() => {
     const list: any[] = [];
 
-    // Ajouter les 4 dernières commandes
-    orders.slice(0, 4).forEach((ord) => {
+    // Ajouter les 6 dernières commandes
+    orders.slice(0, 6).forEach((ord) => {
       list.push({
         id: `ord-${ord.id}`,
         type: 'COMMANDE',
@@ -83,19 +73,6 @@ export default function AdminDashboardPage() {
       });
     });
 
-    // Ajouter les 4 derniers trocs
-    tradeOffers.slice(0, 4).forEach((troc) => {
-      list.push({
-        id: `troc-${troc.id}`,
-        type: 'TROC',
-        title: `Troc #${troc.id.slice(-6)} - ${troc.offeredDeviceModel}`,
-        subtitle: `Cible : ${troc.productName} • Client : ${troc.customerName}`,
-        status: troc.status,
-        date: troc.createdAt,
-        link: `/admin/troc`,
-      });
-    });
-
     // Ajouter les alertes stock
     lowStockProducts.slice(0, 3).forEach((prod) => {
       const totalStock = prod.variants?.reduce((acc: number, v: any) => acc + (v.stock || 0), 0) ?? 0;
@@ -103,7 +80,7 @@ export default function AdminDashboardPage() {
         id: `stock-${prod.id}`,
         type: 'STOCK',
         title: `Stock critique : ${prod.name}`,
-        subtitle: `${totalStock} restant(s) en stock (${prod.category?.name || 'Smartphones'})`,
+        subtitle: `${totalStock} restant(s) en stock (${prod.category?.name || 'Catalogue'})`,
         status: totalStock === 0 ? 'RUPTURE' : 'FAIBLE',
         date: prod.updatedAt || prod.createdAt || new Date().toISOString(),
         link: `/admin/produits`,
@@ -112,7 +89,7 @@ export default function AdminDashboardPage() {
 
     // Trier par date décroissante
     return list.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 6);
-  }, [orders, tradeOffers, lowStockProducts]);
+  }, [orders, lowStockProducts]);
 
   return (
     <div className="p-4 sm:p-8 max-w-7xl mx-auto space-y-8">
@@ -121,7 +98,7 @@ export default function AdminDashboardPage() {
         <nav aria-label="Breadcrumb" className="flex text-xs text-gray-500 font-bold">
           <ol className="inline-flex items-center space-x-1.5">
             <li className="inline-flex items-center">
-              <Link href="/" className="hover:text-[#0062BD] transition-colors">
+              <Link href="/" className="hover:text-[#0054A4] transition-colors">
                 Accueil
               </Link>
             </li>
@@ -147,7 +124,7 @@ export default function AdminDashboardPage() {
           <div className="flex items-center gap-2 self-start sm:self-center">
             <Link
               href="/admin/produits/nouveau"
-              className="bg-[#FED700] hover:bg-[#E8C400] text-[#1D2129] font-heading font-black text-xs uppercase px-4 py-2.5 rounded-xl shadow-xs transition-all flex items-center gap-2"
+              className="bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase px-4 py-2.5 rounded-xl shadow-xs transition-all flex items-center gap-2"
             >
               <Icons.Plus size={16} />
               <span>Nouveau Produit</span>
@@ -184,7 +161,7 @@ export default function AdminDashboardPage() {
 
         {/* Stat Card 2 : Commandes en cours */}
         <div className="bg-white border border-[#E2E5E8] rounded-2xl p-5 sm:p-6 shadow-xs hover:shadow-md transition-all relative overflow-hidden group">
-          <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity pointer-events-none text-[#0062BD]">
+          <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity pointer-events-none text-[#0054A4]">
             <Icons.Truck size={64} />
           </div>
           <div className="relative z-10 space-y-2">
@@ -196,7 +173,7 @@ export default function AdminDashboardPage() {
                 {loading ? '...' : activeOrders}
               </span>
               {urgentOrders > 0 && (
-                <span className="text-[10px] font-black text-[#0062BD] bg-blue-100 px-2 py-0.5 rounded-full mb-1">
+                <span className="text-[10px] font-black text-[#0054A4] bg-blue-100 px-2 py-0.5 rounded-full mb-1">
                   {urgentOrders} à préparer
                 </span>
               )}
@@ -205,45 +182,44 @@ export default function AdminDashboardPage() {
           </div>
         </div>
 
-        {/* Stat Card 3 : Demandes de Troc */}
-        <div className="bg-white border border-[#E2E5E8] rounded-2xl p-5 sm:p-6 shadow-xs hover:shadow-md transition-all relative overflow-hidden group">
-          <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity pointer-events-none text-amber-600">
-            <Icons.Repeat size={64} />
-          </div>
-          <div className="relative z-10 space-y-2">
-            <h3 className="font-bold text-[11px] text-gray-500 uppercase tracking-wider">
-              Demandes de Troc
-            </h3>
-            <div className="flex items-baseline gap-2">
-              <span className="font-heading font-black text-2xl text-gray-900 font-price">
-                {loading ? '...' : tradeOffers.length}
-              </span>
-              {pendingTrades > 0 && (
-                <span className="text-[10px] font-black text-amber-900 bg-amber-100 px-2 py-0.5 rounded-full mb-1 flex items-center gap-1 border border-amber-200">
-                  <Icons.AlertCircle size={11} className="text-amber-700" />
-                  <span>{pendingTrades} en attente</span>
-                </span>
-              )}
-            </div>
-            <p className="text-[10px] text-gray-400">Évaluations techniques d'anciens téléphones</p>
-          </div>
-        </div>
-
-        {/* Stat Card 4 : Catalogue Produits */}
+        {/* Stat Card 3 : Catalogue Produits */}
         <div className="bg-white border border-[#E2E5E8] rounded-2xl p-5 sm:p-6 shadow-xs hover:shadow-md transition-all relative overflow-hidden group">
           <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity pointer-events-none text-gray-800">
-            <Icons.Smartphone size={64} />
+            <Icons.Package size={64} />
           </div>
           <div className="relative z-10 space-y-2">
             <h3 className="font-bold text-[11px] text-gray-500 uppercase tracking-wider">
-              Catalogue Produits
+              Produits en Ligne
             </h3>
             <div className="flex items-baseline gap-2">
               <span className="font-heading font-black text-2xl text-gray-900 font-price">
                 {loading ? '...' : products.length}
               </span>
             </div>
-            <p className="text-[10px] text-gray-400">Smartphones & accessoires actifs</p>
+            <p className="text-[10px] text-gray-400">Articles actifs au catalogue</p>
+          </div>
+        </div>
+
+        {/* Stat Card 4 : Alertes Stocks Faibles */}
+        <div className="bg-white border border-[#E2E5E8] rounded-2xl p-5 sm:p-6 shadow-xs hover:shadow-md transition-all relative overflow-hidden group">
+          <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity pointer-events-none text-red-600">
+            <Icons.AlertCircle size={64} />
+          </div>
+          <div className="relative z-10 space-y-2">
+            <h3 className="font-bold text-[11px] text-gray-500 uppercase tracking-wider">
+              Stocks Critiques
+            </h3>
+            <div className="flex items-baseline gap-2">
+              <span className="font-heading font-black text-2xl text-red-600 font-price">
+                {loading ? '...' : lowStockProducts.length}
+              </span>
+              {lowStockProducts.length > 0 && (
+                <span className="text-[10px] font-black text-red-900 bg-red-100 px-2 py-0.5 rounded-full mb-1 border border-red-200">
+                  Réapprovisionnement requis
+                </span>
+              )}
+            </div>
+            <p className="text-[10px] text-gray-400">Articles avec stock ≤ 3</p>
           </div>
         </div>
       </div>
@@ -253,46 +229,46 @@ export default function AdminDashboardPage() {
         {/* Action Panel 1 : Gestion du Catalogue */}
         <div className="bg-white border border-[#E2E5E8] rounded-2xl p-6 shadow-xs flex flex-col sm:flex-row gap-5 items-start sm:items-center justify-between hover:border-gray-300 transition-all">
           <div className="flex items-start gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-[#FED700] text-[#1D2129] flex flex-shrink-0 items-center justify-center shadow-xs">
-              <Icons.Smartphone size={28} />
+            <div className="w-14 h-14 rounded-2xl bg-[#F1B20B] text-[#1D2129] flex flex-shrink-0 items-center justify-center shadow-xs">
+              <Icons.Package size={28} />
             </div>
             <div>
               <h3 className="font-heading font-bold text-base text-gray-900 mb-1">
                 Gestion du Catalogue
               </h3>
               <p className="text-xs text-gray-500 max-w-sm leading-relaxed">
-                Ajoutez, modifiez ou supprimez des smartphones. Mettez à jour les stocks, variantes et éligibilités au troc.
+                Ajoutez, modifiez ou organisez vos produits par rayons (Électronique, Beauté, Mode, Maison).
               </p>
             </div>
           </div>
           <Link
             href="/admin/produits"
-            className="bg-[#1D2129] hover:bg-[#0062BD] text-white font-heading font-black text-xs uppercase py-3 px-5 rounded-xl transition-all whitespace-nowrap flex-shrink-0 self-stretch sm:self-auto text-center"
+            className="bg-[#1D2129] hover:bg-[#0054A4] text-white font-heading font-black text-xs uppercase py-3 px-5 rounded-xl transition-all whitespace-nowrap flex-shrink-0 self-stretch sm:self-auto text-center"
           >
-            Accéder au catalogue
+            Gérer les produits
           </Link>
         </div>
 
-        {/* Action Panel 2 : Examen des Trocs */}
+        {/* Action Panel 2 : Commandes & Expéditions */}
         <div className="bg-white border border-[#E2E5E8] rounded-2xl p-6 shadow-xs flex flex-col sm:flex-row gap-5 items-start sm:items-center justify-between hover:border-gray-300 transition-all">
           <div className="flex items-start gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-[#191C22] text-[#FED700] flex flex-shrink-0 items-center justify-center shadow-xs">
-              <Icons.Repeat size={28} />
+            <div className="w-14 h-14 rounded-2xl bg-[#0054A4] text-white flex flex-shrink-0 items-center justify-center shadow-xs">
+              <Icons.Truck size={28} />
             </div>
             <div>
               <h3 className="font-heading font-bold text-base text-gray-900 mb-1">
-                Examen des Trocs & Échanges
+                Commandes & Expéditions
               </h3>
               <p className="text-xs text-gray-500 max-w-sm leading-relaxed">
-                Gérez les demandes de troc des clients. Validez les conditions, formulez des contre-offres et organisez les retraits.
+                Suivez les nouvelles commandes, validez les paiements à la livraison et mettez à jour les statuts de livraison.
               </p>
             </div>
           </div>
           <Link
-            href="/admin/troc"
-            className="bg-[#FED700] hover:bg-[#E8C400] text-[#1D2129] font-heading font-black text-xs uppercase py-3 px-5 rounded-xl transition-all whitespace-nowrap flex-shrink-0 self-stretch sm:self-auto text-center"
+            href="/admin/commandes"
+            className="bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase py-3 px-5 rounded-xl transition-all whitespace-nowrap flex-shrink-0 self-stretch sm:self-auto text-center"
           >
-            Voir les demandes
+            Voir les commandes
           </Link>
         </div>
       </div>
@@ -304,11 +280,11 @@ export default function AdminDashboardPage() {
             <h3 className="font-heading font-bold text-sm text-gray-900">
               Dernières Activités
             </h3>
-            <p className="text-[11px] text-gray-500">Flux combiné des commandes, trocs et alertes de stock en temps réel.</p>
+            <p className="text-[11px] text-gray-500">Flux des commandes et alertes de stock en temps réel.</p>
           </div>
           <Link
             href="/admin/commandes"
-            className="font-bold text-xs text-[#0062BD] hover:underline"
+            className="font-bold text-xs text-[#0054A4] hover:underline"
           >
             Tout voir →
           </Link>
@@ -316,14 +292,14 @@ export default function AdminDashboardPage() {
 
         {loading ? (
           <div className="p-12 text-center text-xs text-gray-500">
-            <div className="w-8 h-8 border-3 border-[#FED700] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+            <div className="w-8 h-8 border-3 border-[#F1B20B] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
             <p>Chargement des activités récentes...</p>
           </div>
         ) : recentActivities.length === 0 ? (
           <div className="p-12 text-center text-xs text-gray-500">
             <Icons.ShoppingBag size={32} className="text-gray-300 mx-auto mb-2" />
             <p className="font-bold text-gray-700">Aucune activité enregistrée</p>
-            <p className="text-[11px] text-gray-400">Les nouvelles commandes et propositions de troc apparaîtront ici.</p>
+            <p className="text-[11px] text-gray-400">Les nouvelles commandes apparaîtront ici.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -338,16 +314,12 @@ export default function AdminDashboardPage() {
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {recentActivities.map((act) => {
-                  let typeIcon = <Icons.ShoppingBag size={16} className="text-[#0062BD]" />;
-                  let typeBadgeClass = 'bg-blue-50 text-[#0062BD] border-blue-200';
+                  let typeIcon = <Icons.ShoppingBag size={16} className="text-[#0054A4]" />;
+                  let typeBadgeClass = 'bg-blue-50 text-[#0054A4] border-blue-200';
                   let typeLabel = 'Commande';
 
-                  if (act.type === 'TROC') {
-                    typeIcon = <Icons.Repeat size={16} className="text-amber-600" />;
-                    typeBadgeClass = 'bg-amber-50 text-amber-800 border-amber-200';
-                    typeLabel = 'Troc';
-                  } else if (act.type === 'STOCK') {
-                    typeIcon = <Icons.Smartphone size={16} className="text-red-600" />;
+                  if (act.type === 'STOCK') {
+                    typeIcon = <Icons.Package size={16} className="text-red-600" />;
                     typeBadgeClass = 'bg-red-50 text-red-700 border-red-200';
                     typeLabel = 'Stock';
                   }
@@ -360,13 +332,6 @@ export default function AdminDashboardPage() {
 
                   if (act.type === 'COMMANDE') {
                     const info = getOrderStatusInfo(act.status);
-                    statusBadge = (
-                      <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${info.className}`}>
-                        {info.label}
-                      </span>
-                    );
-                  } else if (act.type === 'TROC') {
-                    const info = getTradeStatusInfo(act.status);
                     statusBadge = (
                       <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${info.className}`}>
                         {info.label}
@@ -392,7 +357,7 @@ export default function AdminDashboardPage() {
                         </span>
                       </td>
                       <td className="py-3.5 px-5">
-                        <Link href={act.link} className="font-bold text-gray-900 hover:text-[#0062BD] block">
+                        <Link href={act.link} className="font-bold text-gray-900 hover:text-[#0054A4] block">
                           {act.title}
                         </Link>
                         <span className="text-[11px] text-gray-500 block">{act.subtitle}</span>

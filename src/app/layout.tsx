@@ -3,7 +3,6 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/context/AuthContext';
 import { CartProvider } from '@/context/CartContext';
-import { TradeProvider } from '@/context/TradeContext';
 import { OrderProvider } from '@/context/OrderContext';
 import { AppShell } from '@/components/layout/AppShell';
 import { siteConfig } from '@/lib/site-config';
@@ -17,23 +16,31 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: `${siteConfig.name} - ${siteConfig.slogan}`,
-  description: `Boutique n°1 au ${siteConfig.country} pour l'achat d'iPhone et Samsung Galaxy avec garantie constructeur, livraison express à ${siteConfig.city} et paiement sécurisé Mobile Money.`,
-  keywords: ['smartphone Cotonou', 'iPhone Bénin', 'Samsung Galaxy Cotonou', 'troc téléphone Bénin', siteConfig.name, 'achat téléphone MoMo'],
+  description: `${siteConfig.name} is Solomon Islands' premier online marketplace for Electronics, Beauty, Cosmetics, Fashion and Home essentials. Fast delivery in ${siteConfig.city} and nationwide.`,
+  keywords: [
+    siteConfig.name,
+    'Dealmart Solomon Islands',
+    'online shopping Honiara',
+    'electronics Solomon Islands',
+    'cosmetics Honiara',
+    'beauty Solomon Islands',
+    'fashion Solomon Islands'
+  ],
   openGraph: {
-    title: `${siteConfig.name} - L'excellence technologique garantie au ${siteConfig.country}`,
-    description: `Vente d'iPhones, Samsung et accessoires 100% authentiques. Livraison express à ${siteConfig.city} et reprise de votre ancien téléphone en troc.`,
+    title: `${siteConfig.name} - ${siteConfig.slogan}`,
+    description: `Shop Electronics, Beauty, Cosmetics, Fashion and more with fast delivery in Honiara and across the Solomon Islands.`,
     url: siteConfig.url,
     siteName: siteConfig.name,
-    locale: 'fr_FR',
+    locale: 'en_US',
     type: 'website',
   },
   icons: {
     icon: [
-      { url: '/icon.svg', type: 'image/svg+xml' },
-      { url: '/icon', type: 'image/png' },
+      { url: '/dealmart_favicon_transparent.svg', type: 'image/svg+xml' },
+      { url: '/favicon.ico', type: 'image/x-icon' },
     ],
-    shortcut: '/icon.svg',
-    apple: '/icon.svg',
+    shortcut: '/favicon.ico',
+    apple: '/dealmart_favicon_fond_clair_512.png',
   },
 };
 
@@ -44,23 +51,23 @@ export default function RootLayout({
 }) {
   const jsonLdOrganization = {
     '@context': 'https://schema.org',
-    '@type': 'ElectronicsStore',
+    '@type': 'OnlineStore',
     name: siteConfig.name,
-    description: `Boutique de smartphones iPhone et Samsung neufs garantis et accessoires certifiés au ${siteConfig.country}.`,
+    description: siteConfig.slogan,
     url: siteConfig.url,
     telephone: siteConfig.phone,
-    priceRange: '15000 XOF - 1500000 XOF',
     address: {
       '@type': 'PostalAddress',
+      streetAddress: siteConfig.address,
       addressLocality: siteConfig.city,
-      addressCountry: 'BJ',
+      addressCountry: 'SB',
     },
-    currenciesAccepted: 'XOF',
-    paymentAccepted: 'Cash, Mobile Money (MTN, Moov), Kkiapay, Credit Card',
+    currenciesAccepted: 'SBD',
+    paymentAccepted: 'Cash on Delivery, Direct Bank Transfer (BSP), Credit Card',
   };
 
   return (
-    <html lang="fr" className={inter.variable} suppressHydrationWarning>
+    <html lang="en" className={inter.variable} suppressHydrationWarning>
       <head>
         <script
           type="application/ld+json"
@@ -70,13 +77,11 @@ export default function RootLayout({
       <body className="min-h-screen flex flex-col antialiased" suppressHydrationWarning>
         <AuthProvider>
           <CartProvider>
-            <TradeProvider>
-              <OrderProvider>
-                <AppShell>
-                  {children}
-                </AppShell>
-              </OrderProvider>
-            </TradeProvider>
+            <OrderProvider>
+              <AppShell>
+                {children}
+              </AppShell>
+            </OrderProvider>
           </CartProvider>
         </AuthProvider>
       </body>

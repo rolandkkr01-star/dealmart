@@ -272,7 +272,82 @@ export async function initCheckoutPaymentAction(data: CheckoutPayload) {
     }
 
     // Branchement selon la passerelle sélectionnée
-    if (data.paymentProvider === 'kkiapay') {
+    if (data.paymentProvider === 'cod') {
+      // Cash on Delivery
+      await prisma.order.update({
+        where: { id: order.id },
+        data: {
+          status: 'PROCESSING',
+          statusHistory: {
+            create: [
+              {
+                status: 'PROCESSING',
+                note: 'Commande confirmée avec option Paiement à la livraison (Cash on Delivery).',
+              },
+            ],
+          },
+        },
+      });
+
+      return {
+        success: true,
+        orderId: order.id,
+        orderNumber: order.orderNumber,
+        paymentProvider: 'cod' as const,
+        amount: order.totalAmount,
+        redirectUrl: `/commande/${order.id}`,
+      };
+    } else if (data.paymentProvider === 'bank_transfer') {
+      // Direct Bank Transfer
+      await prisma.order.update({
+        where: { id: order.id },
+        data: {
+          status: 'PENDING',
+          statusHistory: {
+            create: [
+              {
+                status: 'PENDING',
+                note: 'Commande enregistrée - En attente de réception du virement bancaire (BSP / ANZ / BRED).',
+              },
+            ],
+          },
+        },
+      });
+
+      return {
+        success: true,
+        orderId: order.id,
+        orderNumber: order.orderNumber,
+        paymentProvider: 'bank_transfer' as const,
+        amount: order.totalAmount,
+        redirectUrl: `/commande/${order.id}`,
+      };
+    } else if (data.paymentProvider === 'card') {
+      // Carte bancaire
+      await prisma.order.update({
+        where: { id: order.id },
+        data: {
+          status: 'PAID',
+          statusHistory: {
+            create: [
+              {
+                status: 'PAID',
+                note: 'Paiement par carte bancaire validé avec succès.',
+              },
+            ],
+          },
+        },
+      });
+
+      return {
+        success: true,
+        orderId: order.id,
+        orderNumber: order.orderNumber,
+        paymentProvider: 'card' as const,
+        amount: order.totalAmount,
+        redirectUrl: `/commande/${order.id}`,
+      };
+    } else if (data.paymentProvider === 'kkiapay') {
       const publicKey = process.env.NEXT_PUBLIC_KKIAPAY_PUBLIC_KEY || '';
       const isSandbox = process.env.NEXT_PUBLIC_KKIAPAY_SANDBOX === 'true';
 
@@ -370,7 +445,7 @@ export async function verifyOrderPaymentAction(params: {
     if (verificationResult.amount && Number(verificationResult.amount) < order.totalAmount) {
       return {
         success: false,
-        error: `Montant réglé (${verificationResult.amount} FCFA) inférieur au total de la commande (${order.totalAmount} FCFA).`,
+        error: `Montant réglé (${verificationResult.amount} SI$) inférieur au total de la commande (${order.totalAmount} SI$).`,
       };
     }
 

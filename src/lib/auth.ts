@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import { prisma } from './prisma';
 
-const SESSION_COOKIE_NAME = 'tp229_session_token';
+const SESSION_COOKIE_NAME = 'dealmart_session_token';
 const SESSION_EXPIRY_DAYS = 7;
 
 export interface AuthenticatedUser {

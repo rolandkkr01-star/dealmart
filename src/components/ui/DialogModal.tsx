@@ -50,13 +50,13 @@ export const DialogModal: React.FC<DialogModalProps> = ({
     warning: {
       bg: 'bg-amber-50 text-amber-600',
       border: 'border-amber-200',
-      btn: 'bg-[#FED700] hover:bg-[#E8C400] text-[#1D2129]',
+      btn: 'bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129]',
       icon: <Icons.AlertCircle size={24} />,
     },
     info: {
-      bg: 'bg-blue-50 text-[#0062BD]',
+      bg: 'bg-blue-50 text-[#0054A4]',
       border: 'border-blue-200',
-      btn: 'bg-[#0062BD] hover:bg-blue-700 text-white',
+      btn: 'bg-[#0054A4] hover:bg-blue-700 text-white',
       icon: <Icons.ShieldCheck size={24} />,
     },
     success: {

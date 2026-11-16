@@ -90,7 +90,7 @@ export const Pagination: React.FC<PaginationProps> = ({
             <select
               value={itemsPerPage}
               onChange={(e) => onItemsPerPageChange(Number(e.target.value))}
-              className="bg-white border border-gray-200 rounded-lg px-2 py-1 text-xs font-semibold text-gray-800 focus:outline-none focus:border-[#0062BD] cursor-pointer"
+              className="bg-white border border-gray-200 rounded-lg px-2 py-1 text-xs font-semibold text-gray-800 focus:outline-none focus:border-[#0054A4] cursor-pointer"
               aria-label="Nombre d'éléments par page"
             >
               {pageSizeOptions.map((size) => (
@@ -144,7 +144,7 @@ export const Pagination: React.FC<PaginationProps> = ({
                 aria-current={isActive ? 'page' : undefined}
                 className={`w-8 h-8 rounded-xl text-xs font-heading font-black transition-all cursor-pointer ${
                   isActive
-                    ? 'bg-[#FED700] text-[#1D2129] shadow-xs scale-105 border border-[#E8C400]'
+                    ? 'bg-[#F1B20B] text-[#1D2129] shadow-xs scale-105 border border-[#D99F07]'
                     : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300'
                 }`}
               >

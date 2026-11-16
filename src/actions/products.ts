@@ -43,7 +43,6 @@ export async function updateProductStockAndPriceAction(data: {
   productId: string;
   basePrice: number;
   promoPrice?: number;
-  tradeEligible: boolean;
 }) {
   try {
     const admin = await requireAdmin();
@@ -53,7 +52,6 @@ export async function updateProductStockAndPriceAction(data: {
       data: {
         basePrice: data.basePrice,
         promoPrice: data.promoPrice || null,
-        tradeEligible: data.tradeEligible,
       },
     });
 

@@ -14,9 +14,8 @@ export function AdminSidebar() {
 
   const navItems = [
     { label: 'Tableau de bord', href: '/admin', icon: Icons.TrendingUp, exact: true },
-    { label: 'Catalogue Produits', href: '/admin/produits', icon: Icons.Smartphone, exact: false },
+    { label: 'Catalogue Produits', href: '/admin/produits', icon: Icons.Package, exact: false },
     { label: 'Commandes', href: '/admin/commandes', icon: Icons.ShoppingBag, exact: false },
-    { label: 'Demandes de Troc', href: '/admin/troc', icon: Icons.Repeat, exact: false },
     { label: 'Avis Clients', href: '/admin/avis', icon: Icons.Star, exact: false },
   ];
 
@@ -25,15 +24,11 @@ export function AdminSidebar() {
       {/* Top Header pour Mobile */}
       <header className="md:hidden h-16 fixed top-0 left-0 w-full z-40 bg-[#1D2129] border-b border-gray-800 flex justify-between items-center px-4 shadow-sm text-white">
         <div className="flex items-center gap-2.5">
-          <Icons.BrandCart size={28} className="text-[#FED700]" />
-          <div>
-            <h1 className="font-heading font-black text-base text-[#FED700] tracking-tight leading-tight">
-              {siteConfig.name}
-            </h1>
-            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider leading-none">
-              Admin Console
-            </p>
-          </div>
+          <img
+            src="/images/logo/dealmart_logo_horizontal_transparent.svg"
+            alt={siteConfig.name}
+            className="h-8 w-auto object-contain brightness-0 invert"
+          />
         </div>
 
         <button
@@ -51,11 +46,11 @@ export function AdminSidebar() {
           <div className="w-72 bg-[#191C22] h-full flex flex-col p-5 text-white shadow-2xl border-r border-gray-800">
             <div className="flex items-center justify-between pb-4 border-b border-gray-800 mb-4">
               <div className="flex items-center gap-2.5">
-                <Icons.BrandCart size={28} className="text-[#FED700]" />
-                <div>
-                  <h2 className="font-heading font-black text-base text-[#FED700]">{siteConfig.name}</h2>
-                  <p className="text-[10px] text-gray-400 font-bold uppercase">Console Admin</p>
-                </div>
+                <img
+                  src="/images/logo/dealmart_logo_horizontal_transparent.svg"
+                  alt={siteConfig.name}
+                  className="h-7 w-auto object-contain brightness-0 invert"
+                />
               </div>
               <button
                 onClick={() => setMobileMenuOpen(false)}
@@ -76,7 +71,7 @@ export function AdminSidebar() {
                     onClick={() => setMobileMenuOpen(false)}
                     className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all ${
                       isActive
-                        ? 'bg-[#FED700] text-[#1D2129] shadow-xs'
+                        ? 'bg-[#F1B20B] text-[#1D2129] shadow-xs'
                         : 'text-gray-300 hover:text-white hover:bg-gray-800/70'
                     }`}
                   >
@@ -90,7 +85,7 @@ export function AdminSidebar() {
             {/* Profil Mobile */}
             <div className="pt-4 border-t border-gray-800 mt-auto space-y-3">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-gray-800 text-[#FED700] flex items-center justify-center font-black">
+                <div className="w-9 h-9 rounded-xl bg-gray-800 text-[#F1B20B] flex items-center justify-center font-black">
                   <Icons.User size={18} />
                 </div>
                 <div className="truncate">
@@ -115,17 +110,13 @@ export function AdminSidebar() {
       <aside className="w-64 h-full fixed left-0 top-0 border-r border-gray-800/60 bg-[#191C22] shadow-xl z-30 flex-col hidden md:flex text-white">
         {/* Brand Header */}
         <div className="p-6 border-b border-gray-800/80 mb-2">
-          <div className="flex items-center gap-3">
-            <Icons.BrandCart size={32} className="text-[#FED700] flex-shrink-0" />
-            <div>
-              <h1 className="font-heading font-black text-xl text-[#FED700] tracking-tight leading-tight">
-                {siteConfig.name}
-              </h1>
-              <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider opacity-80 leading-none">
-                Admin Console
-              </p>
-            </div>
-          </div>
+          <Link href="/admin" className="flex items-center gap-3">
+            <img
+              src="/images/logo/dealmart_logo_horizontal_transparent.svg"
+              alt={siteConfig.name}
+              className="h-9 w-auto object-contain brightness-0 invert"
+            />
+          </Link>
         </div>
 
         {/* Navigation Items */}
@@ -139,7 +130,7 @@ export function AdminSidebar() {
                 href={item.href}
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold transition-all ${
                   isActive
-                    ? 'bg-[#FED700] text-[#1D2129] font-black shadow-xs translate-x-1'
+                    ? 'bg-[#F1B20B] text-[#1D2129] font-black shadow-xs translate-x-1'
                     : 'text-gray-300 hover:text-white hover:bg-gray-800/60 hover:translate-x-1'
                 }`}
               >
@@ -158,7 +149,7 @@ export function AdminSidebar() {
             className="flex items-center justify-between p-3 rounded-xl bg-gray-800/40 hover:bg-gray-800 border border-gray-700/60 text-xs font-bold text-gray-300 hover:text-white transition-all group"
           >
             <span className="flex items-center gap-2">
-              <Icons.ExternalLink size={14} className="text-[#FED700]" />
+              <Icons.ExternalLink size={14} className="text-[#F1B20B]" />
               <span>Voir la Boutique</span>
             </span>
             <Icons.ChevronRight size={14} className="text-gray-500 group-hover:text-white transition-colors" />
@@ -168,7 +159,7 @@ export function AdminSidebar() {
         {/* Footer Profile & Logout */}
         <div className="p-4 border-t border-gray-800/80 mt-auto bg-[#14171C]/50 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2.5 truncate">
-            <div className="w-9 h-9 rounded-xl bg-gray-800 text-[#FED700] flex items-center justify-center font-bold flex-shrink-0 border border-gray-700">
+            <div className="w-9 h-9 rounded-xl bg-gray-800 text-[#F1B20B] flex items-center justify-center font-bold flex-shrink-0 border border-gray-700">
               <Icons.User size={18} />
             </div>
             <div className="truncate">

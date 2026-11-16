@@ -10,25 +10,24 @@ export const MainNav: React.FC = () => {
   const [isDepartmentMenuOpen, setIsDepartmentMenuOpen] = useState(false);
 
   const departments = [
-    { name: 'Smartphones Apple iPhone', href: '/boutique?brand=IPHONE', icon: Icons.Smartphone },
-    { name: 'Samsung Galaxy Série S & Fold', href: '/boutique?brand=SAMSUNG', icon: Icons.Smartphone },
-    { name: 'Occasions & Reconditionnés Certifiés', href: '/boutique?condition=OCCASION', icon: Icons.ShieldCheck },
-    { name: 'Chargeurs Originaux & Câbles Rapides', href: '/boutique?brand=ACCESSOIRE', icon: Icons.Zap },
-    { name: 'Écouteurs & Audio (AirPods, Galaxy Buds)', href: '/boutique?search=audio', icon: Icons.Headset },
-    { name: 'Module Troc & Échange Smartphone', href: '/boutique?trade=true', icon: Icons.Repeat }
+    { name: 'Électronique & High-Tech', href: '/boutique?category=electronics-gadgets', icon: Icons.Smartphone },
+    { name: 'Beauté, Cosmétiques & Soins', href: '/boutique?category=beauty-cosmetics-skincare', icon: Icons.Sparkles },
+    { name: 'Mode & Habillement', href: '/boutique?category=fashion-accessories', icon: Icons.Tag },
+    { name: 'Maison, Déco & Cuisine', href: '/boutique?category=home-kitchen-living', icon: Icons.Package },
+    { name: 'Audio & Accessoires Multimédia', href: '/boutique?search=audio', icon: Icons.Headset },
   ];
 
   return (
-    <nav className="bg-[#FED700] border-b border-[#E8C400] text-[#1D2129] relative z-20 shadow-xs">
+    <nav className="bg-[#F1B20B] border-b border-[#D99F07] text-[#1D2129] relative z-20 shadow-xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-12">
         {/* Bouton "Tout le catalogue" */}
         <div className="relative">
           <button
             onClick={() => setIsDepartmentMenuOpen(!isDepartmentMenuOpen)}
-            className="bg-[#1D2129] text-[#FED700] hover:bg-[#2C3039] font-bold text-xs uppercase tracking-wider px-5 h-12 flex items-center gap-2.5 transition-colors cursor-pointer"
+            className="bg-[#1D2129] text-[#F1B20B] hover:bg-[#2C3039] font-bold text-xs uppercase tracking-wider px-5 h-12 flex items-center gap-2.5 transition-colors cursor-pointer"
           >
             <Icons.Menu size={18} />
-            <span>Tout le catalogue</span>
+            <span>All Departments</span>
             <Icons.ChevronDown size={16} className={`transition-transform duration-200 ${isDepartmentMenuOpen ? 'rotate-180' : ''}`} />
           </button>
 
@@ -47,9 +46,9 @@ export const MainNav: React.FC = () => {
                       key={idx}
                       href={dept.href}
                       onClick={() => setIsDepartmentMenuOpen(false)}
-                      className="flex items-center gap-3 px-4 py-2.5 hover:bg-amber-50 text-gray-700 hover:text-[#0062BD] text-xs font-semibold transition-colors"
+                      className="flex items-center gap-3 px-4 py-2.5 hover:bg-amber-50 text-gray-700 hover:text-[#0054A4] text-xs font-semibold transition-colors"
                     >
-                      <Icon size={16} className="text-[#0062BD] flex-shrink-0" />
+                      <Icon size={16} className="text-[#0054A4] flex-shrink-0" />
                       <span>{dept.name}</span>
                     </Link>
                   );
@@ -62,43 +61,42 @@ export const MainNav: React.FC = () => {
         {/* Liens de navigation principaux */}
         <div className="hidden md:flex items-center gap-7 text-xs font-extrabold uppercase tracking-wide">
           <Link
-            href="/boutique?brand=IPHONE"
-            className={`hover:text-[#0062BD] transition-colors py-1 ${pathname.includes('IPHONE') ? 'border-b-2 border-[#1D2129]' : ''}`}
+            href="/boutique?category=electronics-gadgets"
+            className={`hover:text-[#0054A4] transition-colors py-1 ${pathname.includes('electronics') ? 'border-b-2 border-[#1D2129]' : ''}`}
           >
-            IPHONE
+            ELECTRONICS
           </Link>
           <Link
-            href="/boutique?brand=SAMSUNG"
-            className={`hover:text-[#0062BD] transition-colors py-1 ${pathname.includes('SAMSUNG') ? 'border-b-2 border-[#1D2129]' : ''}`}
+            href="/boutique?category=beauty-cosmetics-skincare"
+            className={`hover:text-[#0054A4] transition-colors py-1 ${pathname.includes('beauty') ? 'border-b-2 border-[#1D2129]' : ''}`}
           >
-            SAMSUNG
+            BEAUTY & SKINCARE
           </Link>
           <Link
-            href="/boutique?brand=ACCESSOIRE"
-            className="hover:text-[#0062BD] transition-colors py-1"
+            href="/boutique?category=fashion-accessories"
+            className={`hover:text-[#0054A4] transition-colors py-1 ${pathname.includes('fashion') ? 'border-b-2 border-[#1D2129]' : ''}`}
           >
-            ACCESSOIRES
+            FASHION
           </Link>
           <Link
-            href="/boutique?trade=true"
-            className="flex items-center gap-1 bg-[#1D2129] text-white px-2.5 py-1 rounded-md hover:bg-[#0062BD] transition-all"
+            href="/boutique?category=home-kitchen-living"
+            className={`hover:text-[#0054A4] transition-colors py-1 ${pathname.includes('home') ? 'border-b-2 border-[#1D2129]' : ''}`}
           >
-            <Icons.Repeat size={13} className="text-[#FED700]" />
-            <span>TROC & ÉCHANGE</span>
+            HOME & LIVING
           </Link>
           <Link
             href="/boutique?promo=true"
             className="text-[#DC3545] hover:underline flex items-center gap-1 font-black"
           >
             <Icons.Flame size={14} />
-            <span>OFFRES FLASH</span>
+            <span>FLASH DEALS</span>
           </Link>
         </div>
 
         {/* Info livraison rapide */}
         <div className="hidden xl:flex items-center gap-2 text-xs font-semibold text-[#1D2129]/90">
           <Icons.Truck size={16} />
-          <span>Livraison Express à Cotonou & environs</span>
+          <span>Fast Delivery across Honiara & Solomon Islands</span>
         </div>
       </div>
     </nav>

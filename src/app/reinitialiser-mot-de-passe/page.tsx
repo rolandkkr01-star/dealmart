@@ -85,7 +85,7 @@ function ResetPasswordContent() {
         </p>
         <Link
           href="/mot-de-passe-oublie"
-          className="inline-flex items-center gap-2 bg-[#FED700] hover:bg-[#E8C400] text-[#1D2129] font-bold text-xs uppercase px-5 py-2.5 rounded-xl transition-all"
+          className="inline-flex items-center gap-2 bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-bold text-xs uppercase px-5 py-2.5 rounded-xl transition-all"
         >
           <span>Faire une nouvelle demande</span>
         </Link>
@@ -110,7 +110,7 @@ function ResetPasswordContent() {
         </div>
         <Link
           href="/connexion"
-          className="inline-flex items-center justify-center gap-2 bg-[#1D2129] hover:bg-[#0062BD] text-white font-heading font-black text-xs uppercase px-6 py-3 rounded-xl transition-all shadow-xs w-full"
+          className="inline-flex items-center justify-center gap-2 bg-[#1D2129] hover:bg-[#0054A4] text-white font-heading font-black text-xs uppercase px-6 py-3 rounded-xl transition-all shadow-xs w-full"
         >
           <span>Se connecter immédiatement</span>
           <Icons.ArrowRight size={14} />
@@ -123,7 +123,7 @@ function ResetPasswordContent() {
     <form onSubmit={handleSubmit} className="space-y-4 text-xs">
       <div className="text-center mb-6">
         <div className="w-12 h-12 bg-amber-50 rounded-2xl flex items-center justify-center mx-auto mb-3 border border-amber-100 text-[#1D2129]">
-          <Icons.Lock size={24} className="text-[#0062BD]" />
+          <Icons.Lock size={24} className="text-[#0054A4]" />
         </div>
         <h1 className="font-heading font-black text-xl text-gray-900 tracking-tight">
           Nouveau mot de passe
@@ -150,7 +150,7 @@ function ResetPasswordContent() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Minimum 10 caractères avec majuscule, chiffre..."
-            className="w-full border border-gray-300 rounded-xl px-3.5 py-2.5 pr-10 text-xs focus:ring-1 focus:ring-[#0062BD] focus:outline-none"
+            className="w-full border border-gray-300 rounded-xl px-3.5 py-2.5 pr-10 text-xs focus:ring-1 focus:ring-[#0054A4] focus:outline-none"
           />
           <button
             type="button"
@@ -174,7 +174,7 @@ function ResetPasswordContent() {
           className={`w-full border rounded-xl px-3.5 py-2.5 text-xs focus:outline-none ${
             confirmPassword && !isMatch
               ? 'border-red-300 focus:ring-1 focus:ring-red-500'
-              : 'border-gray-300 focus:ring-1 focus:ring-[#0062BD]'
+              : 'border-gray-300 focus:ring-1 focus:ring-[#0054A4]'
           }`}
         />
         {confirmPassword && !isMatch && (
@@ -212,7 +212,7 @@ function ResetPasswordContent() {
       <button
         type="submit"
         disabled={loading || !isFormValid}
-        className="w-full bg-[#FED700] hover:bg-[#E8C400] text-[#1D2129] font-heading font-black text-xs uppercase py-3 rounded-xl shadow-xs transition-all cursor-pointer disabled:opacity-50 mt-2 flex items-center justify-center gap-2"
+        className="w-full bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase py-3 rounded-xl shadow-xs transition-all cursor-pointer disabled:opacity-50 mt-2 flex items-center justify-center gap-2"
       >
         {loading ? (
           <>
@@ -234,7 +234,7 @@ export default function ResetPasswordPage() {
         <Suspense
           fallback={
             <div className="p-8 text-center text-xs text-gray-500">
-              <div className="w-6 h-6 border-2 border-[#FED700] border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+              <div className="w-6 h-6 border-2 border-[#F1B20B] border-t-transparent rounded-full animate-spin mx-auto mb-2" />
               <p>Chargement du formulaire sécurisé...</p>
             </div>
           }

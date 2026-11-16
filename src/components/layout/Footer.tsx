@@ -10,11 +10,12 @@ export const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-10 border-b border-gray-800 text-xs">
           {/* Colonne 1: Marque & Coordonnées */}
           <div>
-            <div className="flex items-center gap-3 mb-3">
-              <Icons.BrandCart size={36} className="text-[#FED700] flex-shrink-0" />
-              <span className="font-heading font-black text-2xl tracking-tight text-white">
-                {siteConfig.name}
-              </span>
+            <div className="flex items-center gap-3 mb-4">
+              <img
+                src="/images/logo/dealmart_logo_horizontal_transparent.svg"
+                alt={siteConfig.name}
+                className="h-9 w-auto object-contain brightness-0 invert"
+              />
             </div>
             <p className="text-gray-400 leading-relaxed mb-5">
               {siteConfig.slogan}
@@ -25,54 +26,54 @@ export const Footer: React.FC = () => {
                 <Icons.Headset size={14} />
               </div>
               <div>
-                <p className="text-[10px] uppercase tracking-wider text-gray-500 font-semibold">Service Client & Conseils</p>
-                <a href={`tel:${siteConfig.phone.replace(/\s+/g, '')}`} className="text-xs font-bold text-white hover:text-[#FED700] transition-colors">
+                <p className="text-[10px] uppercase tracking-wider text-gray-500 font-semibold">Customer Service & Orders</p>
+                <a href={`tel:${siteConfig.phone.replace(/\s+/g, '')}`} className="text-xs font-bold text-white hover:text-[#F1B20B] transition-colors">
                   {siteConfig.phone}
                 </a>
               </div>
             </div>
 
             <div className="text-gray-400 space-y-1.5 pt-2">
-              <p><span className="text-gray-500 font-medium">Adresse :</span> {siteConfig.address}</p>
-              <p><span className="text-gray-500 font-medium">Email :</span> {siteConfig.email}</p>
-              <p><span className="text-gray-500 font-medium">Horaires :</span> {siteConfig.openingHours}</p>
+              <p><span className="text-gray-500 font-medium">Location:</span> {siteConfig.address}</p>
+              <p><span className="text-gray-500 font-medium">Email:</span> {siteConfig.email}</p>
+              <p><span className="text-gray-500 font-medium">Hours:</span> {siteConfig.openingHours}</p>
             </div>
           </div>
 
-          {/* Colonne 2: Rayons & Smartphones */}
+          {/* Colonne 2: Rayons Populaires */}
           <div>
             <h4 className="font-heading text-xs font-bold text-white uppercase tracking-wider mb-4 pb-2 border-b border-gray-800">
-              Rayons Phares
+              Top Departments
             </h4>
             <ul className="space-y-2.5">
               <li>
-                <Link href="/boutique?brand=IPHONE" className="text-gray-400 hover:text-white transition-colors flex items-center gap-2">
+                <Link href="/boutique?category=electronics-gadgets" className="text-gray-400 hover:text-white transition-colors flex items-center gap-2">
                   <Icons.ChevronRight size={12} className="text-gray-600" />
-                  <span>Smartphones Apple iPhone</span>
+                  <span>Electronics & Tech</span>
                 </Link>
               </li>
               <li>
-                <Link href="/boutique?brand=SAMSUNG" className="text-gray-400 hover:text-white transition-colors flex items-center gap-2">
+                <Link href="/boutique?category=beauty-cosmetics-skincare" className="text-gray-400 hover:text-white transition-colors flex items-center gap-2">
                   <Icons.ChevronRight size={12} className="text-gray-600" />
-                  <span>Samsung Galaxy Série S & Fold</span>
+                  <span>Beauty, Cosmetics & Skincare</span>
                 </Link>
               </li>
               <li>
-                <Link href="/boutique?condition=OCCASION" className="text-gray-400 hover:text-white transition-colors flex items-center gap-2">
+                <Link href="/boutique?category=fashion-accessories" className="text-gray-400 hover:text-white transition-colors flex items-center gap-2">
                   <Icons.ChevronRight size={12} className="text-gray-600" />
-                  <span>Occasions & Reconditionnés A+</span>
+                  <span>Fashion & Accessories</span>
                 </Link>
               </li>
               <li>
-                <Link href="/boutique?brand=ACCESSOIRE" className="text-gray-400 hover:text-white transition-colors flex items-center gap-2">
+                <Link href="/boutique?category=home-kitchen-living" className="text-gray-400 hover:text-white transition-colors flex items-center gap-2">
                   <Icons.ChevronRight size={12} className="text-gray-600" />
-                  <span>Chargeurs & Accessoires</span>
+                  <span>Home, Kitchen & Living</span>
                 </Link>
               </li>
               <li>
-                <Link href="/boutique?trade=true" className="text-gray-400 hover:text-white transition-colors flex items-center gap-2">
-                  <Icons.ChevronRight size={12} className="text-gray-600" />
-                  <span>Faire un Troc / Échange</span>
+                <Link href="/boutique?promo=true" className="text-[#DC3545] hover:text-red-400 transition-colors flex items-center gap-2 font-bold">
+                  <Icons.Flame size={12} />
+                  <span>Flash Deals & Specials</span>
                 </Link>
               </li>
             </ul>
@@ -81,31 +82,31 @@ export const Footer: React.FC = () => {
           {/* Colonne 3: Service Client */}
           <div>
             <h4 className="font-heading text-xs font-bold text-white uppercase tracking-wider mb-4 pb-2 border-b border-gray-800">
-              Service Client
+              Customer Care
             </h4>
             <ul className="space-y-2.5">
               <li>
                 <Link href="/suivi" className="text-gray-400 hover:text-white transition-colors flex items-center gap-2">
                   <Icons.Truck size={12} className="text-gray-600" />
-                  <span>Suivre ma commande</span>
+                  <span>Track My Order</span>
                 </Link>
               </li>
               <li>
                 <Link href="/favoris" className="text-gray-400 hover:text-white transition-colors flex items-center gap-2">
                   <Icons.Heart size={12} className="text-gray-600" />
-                  <span>Ma Liste de Favoris</span>
+                  <span>Wishlist</span>
                 </Link>
               </li>
               <li>
                 <Link href="/compte" className="text-gray-400 hover:text-white transition-colors flex items-center gap-2">
                   <Icons.User size={12} className="text-gray-600" />
-                  <span>Mon Espace Client</span>
+                  <span>My Account</span>
                 </Link>
               </li>
               <li>
-                <Link href="/compte/troc" className="text-gray-400 hover:text-white transition-colors flex items-center gap-2">
-                  <Icons.Repeat size={12} className="text-gray-600" />
-                  <span>Mes Propositions de Troc</span>
+                <Link href="/compte/commandes" className="text-gray-400 hover:text-white transition-colors flex items-center gap-2">
+                  <Icons.ShoppingBag size={12} className="text-gray-600" />
+                  <span>Order History</span>
                 </Link>
               </li>
             </ul>
@@ -114,44 +115,37 @@ export const Footer: React.FC = () => {
           {/* Colonne 4: Paiements & Sécurité */}
           <div>
             <h4 className="font-heading text-xs font-bold text-white uppercase tracking-wider mb-4 pb-2 border-b border-gray-800">
-              Paiements & Sécurité
+              Payment & Security
             </h4>
             <p className="text-gray-400 mb-4 leading-relaxed">
-              Transactions 100% sécurisées via Mobile Money et Cartes Bancaires.
+              Safe & flexible checkout options available across Honiara and Solomon Islands.
             </p>
 
-            {/* Passerelles en version éteinte / feutrée monochrome */}
-            <div className="flex flex-wrap items-center gap-4 my-4">
-              <img
-                src="/images/gateways/kkiapay.svg"
-                alt="Kkiapay"
-                title="Kkiapay Bénin"
-                className="h-7 w-auto max-w-[110px] object-contain opacity-50 grayscale brightness-150 hover:opacity-100 hover:grayscale-0 hover:brightness-100 transition-all duration-300 cursor-pointer"
-              />
-              <img
-                src="/images/gateways/fedapay.svg"
-                alt="FedaPay"
-                title="FedaPay Bénin"
-                className="h-7 w-auto max-w-[110px] object-contain opacity-50 grayscale brightness-150 hover:opacity-100 hover:grayscale-0 hover:brightness-100 transition-all duration-300 cursor-pointer"
-              />
+            <div className="flex flex-col gap-2 my-4 text-[11px] text-gray-300">
+              <div className="flex items-center gap-2 bg-gray-800/80 p-2 rounded-lg border border-gray-700">
+                <Icons.Wallet size={16} className="text-[#F1B20B]" />
+                <span className="font-semibold">Cash on Delivery (Honiara)</span>
+              </div>
+              <div className="flex items-center gap-2 bg-gray-800/80 p-2 rounded-lg border border-gray-700">
+                <Icons.CreditCard size={16} className="text-[#0054A4]" />
+                <span className="font-semibold">Direct Bank Transfer (BSP / ANZ)</span>
+              </div>
             </div>
 
             <div className="flex items-center gap-2 text-[11px] text-gray-400 pt-2">
               <Icons.ShieldCheck size={14} className="text-gray-500" />
-              <span>Garantie authenticité & SAV local</span>
+              <span>100% Genuine Products & Local Support</span>
             </div>
           </div>
         </div>
 
         {/* Copyright & Mentions */}
         <div className="pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-[11px] text-gray-500">
-          <p className="text-center sm:text-left">© {new Date().getFullYear()} {siteConfig.name} • Exploité par {siteConfig.legalName}. Tous droits réservés. {siteConfig.city}, République du {siteConfig.country}.</p>
+          <p className="text-center sm:text-left">© {new Date().getFullYear()} {siteConfig.name} • Operated by {siteConfig.legalName}. All rights reserved. {siteConfig.city}, {siteConfig.country}.</p>
           <div className="flex flex-wrap justify-center sm:justify-end items-center gap-x-4 gap-y-2 text-gray-500 text-center sm:text-right">
-            <Link href="/cgv" className="hover:text-gray-300 transition-colors">Conditions Générales de Vente</Link>
+            <Link href="/cgv" className="hover:text-gray-300 transition-colors">Terms of Service</Link>
             <span>•</span>
-            <Link href="/confidentialite" className="hover:text-gray-300 transition-colors">Politique de Confidentialité</Link>
-            <span>•</span>
-            <Link href="/cgv#garantie" className="hover:text-gray-300 transition-colors">Garantie & Retours</Link>
+            <Link href="/confidentialite" className="hover:text-gray-300 transition-colors">Privacy Policy</Link>
           </div>
         </div>
       </div>

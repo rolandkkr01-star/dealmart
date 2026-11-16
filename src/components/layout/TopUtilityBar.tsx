@@ -21,15 +21,15 @@ export const TopUtilityBar: React.FC = () => {
         <div className="flex items-center gap-2 sm:gap-4 font-medium flex-shrink-0">
           <Link
             href="/suivi"
-            className="hidden sm:flex hover:text-[#0062BD] transition-colors items-center gap-1 text-gray-600"
+            className="hidden sm:flex hover:text-[#0054A4] transition-colors items-center gap-1 text-gray-600"
           >
-            <Icons.Truck size={13} className="text-[#0062BD]" />
+            <Icons.Truck size={13} className="text-[#0054A4]" />
             <span>Suivi de commande</span>
           </Link>
           <span className="hidden sm:inline text-gray-300">|</span>
           <a
             href={`tel:${siteConfig.phone.replace(/\s+/g, '')}`}
-            className="hover:text-[#0062BD] transition-colors flex items-center gap-1.5 font-bold text-gray-900 bg-white sm:bg-transparent px-2.5 py-1 sm:p-0 rounded-full sm:rounded-none border border-gray-200 sm:border-0 shadow-2xs sm:shadow-none"
+            className="hover:text-[#0054A4] transition-colors flex items-center gap-1.5 font-bold text-gray-900 bg-white sm:bg-transparent px-2.5 py-1 sm:p-0 rounded-full sm:rounded-none border border-gray-200 sm:border-0 shadow-2xs sm:shadow-none"
             title="Appeler notre service client"
           >
             <Icons.Phone size={13} className="text-emerald-600 flex-shrink-0" />

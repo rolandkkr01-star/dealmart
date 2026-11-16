@@ -1,4 +1,4 @@
-export type PaymentGateway = 'kkiapay' | 'fedapay';
+export type PaymentGateway = 'cod' | 'bank_transfer' | 'card' | 'kkiapay' | 'fedapay';
 
 export interface PaymentInitParams {
   orderNumber: string;

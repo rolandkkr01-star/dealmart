@@ -23,7 +23,7 @@ export async function submitReviewAction(data: {
       data: {
         productId: data.productId,
         authorName: data.authorName.trim(),
-        city: data.city?.trim() || 'Cotonou, Bénin',
+        city: data.city?.trim() || 'Honiara, Solomon Islands',
         rating: Math.min(5, Math.max(1, data.rating)),
         comment: data.comment.trim(),
         isApproved: true,
@@ -119,7 +119,7 @@ export async function getFeaturedHomeReviewsAction() {
     return featured.map((r) => ({
       id: r.id,
       name: r.authorName,
-      city: r.city || 'Cotonou, Bénin',
+      city: r.city || 'Honiara, Solomon Islands',
       rating: r.rating,
       comment: r.comment,
       productName: r.product?.name || 'Smartphone',

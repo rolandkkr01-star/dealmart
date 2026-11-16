@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { getUserOrdersAction, cancelPendingOrderAction } from '@/actions/orders';
-import { formatFCFA, getOrderStatusInfo } from '@/lib/utils';
+import { formatPrice, getOrderStatusInfo } from '@/lib/utils';
 import { Icons } from '@/components/ui/Icons';
 import { DialogModal } from '@/components/ui/DialogModal';
 import { Pagination } from '@/components/ui/Pagination';
@@ -108,9 +108,9 @@ export default function MesCommandesPage() {
         onClose={() => setDialogState((prev) => ({ ...prev, isOpen: false }))}
       />
       <nav className="flex items-center gap-2 text-xs text-gray-500 mb-6">
-        <Link href="/" className="hover:text-[#0062BD]">Accueil</Link>
+        <Link href="/" className="hover:text-[#0054A4]">Accueil</Link>
         <span>/</span>
-        <Link href="/compte" className="hover:text-[#0062BD]">Mon Compte</Link>
+        <Link href="/compte" className="hover:text-[#0054A4]">Mon Compte</Link>
         <span>/</span>
         <span className="text-gray-900 font-bold">Mes Commandes</span>
       </nav>
@@ -147,7 +147,7 @@ export default function MesCommandesPage() {
                 setSearchQuery(e.target.value);
                 setCurrentPage(1);
               }}
-              className="w-full pl-9 pr-3 py-2 bg-[#F8F9FA] border border-[#E2E5E8] rounded-xl text-xs font-semibold focus:outline-none focus:border-[#0062BD]"
+              className="w-full pl-9 pr-3 py-2 bg-[#F8F9FA] border border-[#E2E5E8] rounded-xl text-xs font-semibold focus:outline-none focus:border-[#0054A4]"
             />
             <Icons.Search size={15} className="absolute left-3 top-2.5 text-gray-400" />
             {searchQuery && (
@@ -182,7 +182,7 @@ export default function MesCommandesPage() {
                 }}
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                   statusFilter === tab.value
-                    ? 'bg-[#1D2129] text-[#FED700] shadow-xs'
+                    ? 'bg-[#1D2129] text-[#F1B20B] shadow-xs'
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
               >
@@ -195,12 +195,12 @@ export default function MesCommandesPage() {
 
       {loading ? (
         <div className="p-16 text-center text-xs text-gray-500">
-          <div className="w-8 h-8 border-3 border-[#FED700] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+          <div className="w-8 h-8 border-3 border-[#F1B20B] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
           <p>Chargement de vos commandes...</p>
         </div>
       ) : orders.length === 0 ? (
         <div className="bg-white border border-[#E2E5E8] rounded-3xl p-12 text-center max-w-lg mx-auto shadow-xs">
-          <div className="w-16 h-16 rounded-2xl bg-blue-50 text-[#0062BD] flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 rounded-2xl bg-blue-50 text-[#0054A4] flex items-center justify-center mx-auto mb-4">
             <Icons.ShoppingBag size={32} />
           </div>
           <h3 className="font-heading font-black text-lg text-gray-900 mb-2">
@@ -211,7 +211,7 @@ export default function MesCommandesPage() {
           </p>
           <Link
             href="/boutique"
-            className="bg-[#FED700] hover:bg-[#E8C400] text-[#1D2129] font-heading font-black text-xs uppercase px-8 py-3.5 rounded-xl inline-block shadow-xs transition-all"
+            className="bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase px-8 py-3.5 rounded-xl inline-block shadow-xs transition-all"
           >
             Explorer la boutique
           </Link>
@@ -225,7 +225,7 @@ export default function MesCommandesPage() {
               setSearchQuery('');
               setCurrentPage(1);
             }}
-            className="bg-[#FED700] text-[#1D2129] font-heading font-black text-xs uppercase px-6 py-2.5 rounded-xl"
+            className="bg-[#F1B20B] text-[#1D2129] font-heading font-black text-xs uppercase px-6 py-2.5 rounded-xl"
           >
             Réinitialiser les filtres
           </button>
@@ -297,8 +297,8 @@ export default function MesCommandesPage() {
                     <div className="flex flex-col sm:flex-row lg:flex-col items-start sm:items-center lg:items-end justify-between w-full lg:w-auto gap-4 border-t lg:border-t-0 pt-4 lg:pt-0 border-gray-100">
                       <div className="text-left lg:text-right">
                         <span className="text-[10px] text-gray-400 block uppercase font-bold tracking-wider">Montant total</span>
-                        <span className="font-heading font-black text-xl text-[#0062BD]">
-                          {formatFCFA(ord.totalAmount)}
+                        <span className="font-heading font-black text-xl text-[#0054A4]">
+                          {formatPrice(ord.totalAmount)}
                         </span>
                       </div>
 
@@ -308,7 +308,7 @@ export default function MesCommandesPage() {
                           <>
                             <Link
                               href={`/commande/${ord.orderNumber}`}
-                              className="flex-1 sm:flex-initial bg-[#FED700] hover:bg-[#E8C400] text-[#1D2129] font-heading font-black text-xs uppercase px-5 py-3 rounded-xl shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
+                              className="flex-1 sm:flex-initial bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase px-5 py-3 rounded-xl shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
                             >
                               <Icons.CreditCard size={15} />
                               <span>Régler maintenant</span>
@@ -330,7 +330,7 @@ export default function MesCommandesPage() {
                         ) : (
                           <Link
                             href={`/commande/${ord.orderNumber}`}
-                            className="flex-1 sm:flex-initial bg-white border border-gray-300 hover:border-[#0062BD] hover:text-[#0062BD] text-gray-800 font-bold text-xs uppercase px-5 py-2.5 rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5"
+                            className="flex-1 sm:flex-initial bg-white border border-gray-300 hover:border-[#0054A4] hover:text-[#0054A4] text-gray-800 font-bold text-xs uppercase px-5 py-2.5 rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5"
                           >
                             <Icons.Truck size={14} />
                             <span>Suivre le colis</span>

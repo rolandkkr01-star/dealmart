@@ -165,9 +165,9 @@ export default function ClientAddressesPage() {
       />
       {/* Fil d'Ariane */}
       <nav className="flex items-center gap-2 text-xs text-gray-500 mb-6">
-        <Link href="/" className="hover:text-[#0062BD]">Accueil</Link>
+        <Link href="/" className="hover:text-[#0054A4]">Accueil</Link>
         <span>/</span>
-        <Link href="/compte" className="hover:text-[#0062BD]">Mon Compte</Link>
+        <Link href="/compte" className="hover:text-[#0054A4]">Mon Compte</Link>
         <span>/</span>
         <span className="text-gray-900 font-bold">Mes Adresses de Livraison</span>
       </nav>
@@ -175,7 +175,7 @@ export default function ClientAddressesPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-200 pb-5 mb-6">
         <div>
           <h1 className="font-heading font-black text-2xl sm:text-3xl text-gray-900 tracking-tight flex items-center gap-3">
-            <Icons.MapPin size={28} className="text-[#0062BD]" />
+            <Icons.MapPin size={28} className="text-[#0054A4]" />
             <span>Mes Adresses de Livraison</span>
           </h1>
           <p className="text-xs text-gray-500 mt-1">
@@ -185,7 +185,7 @@ export default function ClientAddressesPage() {
 
         <button
           onClick={handleOpenAddModal}
-          className="bg-[#FED700] hover:bg-[#E8C400] text-[#1D2129] font-heading font-black text-xs uppercase px-5 py-3 rounded-xl shadow-xs transition-colors inline-flex items-center gap-2 cursor-pointer self-start sm:self-auto"
+          className="bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase px-5 py-3 rounded-xl shadow-xs transition-colors inline-flex items-center gap-2 cursor-pointer self-start sm:self-auto"
         >
           <Icons.Plus size={16} />
           <span>Ajouter une adresse</span>
@@ -219,7 +219,7 @@ export default function ClientAddressesPage() {
                 setSearchQuery(e.target.value);
                 setCurrentPage(1);
               }}
-              className="w-full pl-10 pr-4 py-2 bg-[#F8F9FA] border border-[#E2E5E8] rounded-xl text-xs font-semibold focus:outline-none focus:border-[#0062BD]"
+              className="w-full pl-10 pr-4 py-2 bg-[#F8F9FA] border border-[#E2E5E8] rounded-xl text-xs font-semibold focus:outline-none focus:border-[#0054A4]"
             />
             {searchQuery && (
               <button
@@ -241,12 +241,12 @@ export default function ClientAddressesPage() {
 
       {loading ? (
         <div className="p-16 text-center text-xs text-gray-500">
-          <div className="w-8 h-8 border-3 border-[#FED700] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+          <div className="w-8 h-8 border-3 border-[#F1B20B] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
           <p>Chargement de vos adresses...</p>
         </div>
       ) : addresses.length === 0 ? (
         <div className="bg-white border border-[#E2E5E8] rounded-3xl p-12 text-center max-w-lg mx-auto shadow-xs">
-          <div className="w-16 h-16 rounded-2xl bg-blue-50 text-[#0062BD] flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 rounded-2xl bg-blue-50 text-[#0054A4] flex items-center justify-center mx-auto mb-4">
             <Icons.MapPin size={32} />
           </div>
           <h3 className="font-heading font-bold text-base text-gray-900 mb-2">
@@ -257,7 +257,7 @@ export default function ClientAddressesPage() {
           </p>
           <button
             onClick={handleOpenAddModal}
-            className="bg-[#FED700] hover:bg-[#E8C400] text-[#1D2129] font-heading font-black text-xs uppercase px-6 py-3 rounded-xl shadow-xs transition-colors cursor-pointer inline-flex items-center gap-2"
+            className="bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase px-6 py-3 rounded-xl shadow-xs transition-colors cursor-pointer inline-flex items-center gap-2"
           >
             <Icons.Plus size={16} />
             <span>Ajouter ma première adresse</span>
@@ -271,7 +271,7 @@ export default function ClientAddressesPage() {
               setSearchQuery('');
               setCurrentPage(1);
             }}
-            className="bg-[#FED700] text-[#1D2129] font-heading font-black text-xs uppercase px-5 py-2.5 rounded-xl cursor-pointer"
+            className="bg-[#F1B20B] text-[#1D2129] font-heading font-black text-xs uppercase px-5 py-2.5 rounded-xl cursor-pointer"
           >
             Réinitialiser la recherche
           </button>
@@ -283,13 +283,13 @@ export default function ClientAddressesPage() {
               <div
                 key={addr.id}
                 className={`bg-white border-2 rounded-2xl p-5 shadow-xs transition-all flex flex-col justify-between ${
-                  addr.isDefault ? 'border-[#0062BD] bg-blue-50/20' : 'border-gray-200 hover:border-gray-300'
+                  addr.isDefault ? 'border-[#0054A4] bg-blue-50/20' : 'border-gray-200 hover:border-gray-300'
                 }`}
               >
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-heading font-bold text-sm text-gray-900 flex items-center gap-2">
-                      <Icons.MapPin size={16} className={addr.isDefault ? 'text-[#0062BD]' : 'text-gray-400'} />
+                      <Icons.MapPin size={16} className={addr.isDefault ? 'text-[#0054A4]' : 'text-gray-400'} />
                       <span>{addr.label}</span>
                     </span>
                     {addr.isDefault ? (
@@ -299,7 +299,7 @@ export default function ClientAddressesPage() {
                     ) : (
                       <button
                         onClick={() => handleSetDefault(addr.id)}
-                        className="text-[11px] font-bold text-[#0062BD] hover:underline cursor-pointer"
+                        className="text-[11px] font-bold text-[#0054A4] hover:underline cursor-pointer"
                       >
                         Définir par défaut
                       </button>
@@ -364,7 +364,7 @@ export default function ClientAddressesPage() {
           <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl border border-gray-100">
             <div className="flex items-center justify-between pb-3 border-b border-gray-100 mb-5">
               <h3 className="font-heading font-black text-lg text-gray-900 flex items-center gap-2">
-                <Icons.MapPin size={20} className="text-[#0062BD]" />
+                <Icons.MapPin size={20} className="text-[#0054A4]" />
                 <span>Nouvelle Adresse de Livraison</span>
               </h3>
               <button
@@ -386,7 +386,7 @@ export default function ClientAddressesPage() {
                   placeholder="Ex: Domicile"
                   value={label}
                   onChange={(e) => setLabel(e.target.value)}
-                  className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0062BD] focus:outline-none font-bold text-gray-900"
+                  className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0054A4] focus:outline-none font-bold text-gray-900"
                 />
               </div>
 
@@ -396,7 +396,7 @@ export default function ClientAddressesPage() {
                   <select
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
-                    className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0062BD] focus:outline-none bg-white font-bold text-gray-900"
+                    className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0054A4] focus:outline-none bg-white font-bold text-gray-900"
                   >
                     <option value="Cotonou">Cotonou</option>
                     <option value="Abomey-Calavi">Abomey-Calavi</option>
@@ -415,7 +415,7 @@ export default function ClientAddressesPage() {
                     placeholder="Ex: Cadjehoun, Akpakpa, Zogbo..."
                     value={district}
                     onChange={(e) => setDistrict(e.target.value)}
-                    className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0062BD] focus:outline-none"
+                    className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0054A4] focus:outline-none"
                   />
                 </div>
               </div>
@@ -430,7 +430,7 @@ export default function ClientAddressesPage() {
                   placeholder="Ex: En face de la Pharmacie, Immeuble vitré au 1er étage"
                   value={street}
                   onChange={(e) => setStreet(e.target.value)}
-                  className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0062BD] focus:outline-none"
+                  className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0054A4] focus:outline-none"
                 />
               </div>
 
@@ -444,7 +444,7 @@ export default function ClientAddressesPage() {
                   placeholder="Ex: +229 97 00 00 00"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0062BD] focus:outline-none"
+                  className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0054A4] focus:outline-none"
                 />
               </div>
 
@@ -454,7 +454,7 @@ export default function ClientAddressesPage() {
                     type="checkbox"
                     checked={isDefault}
                     onChange={(e) => setIsDefault(e.target.checked)}
-                    className="w-4 h-4 rounded text-[#0062BD] focus:ring-[#0062BD] border-gray-300 cursor-pointer"
+                    className="w-4 h-4 rounded text-[#0054A4] focus:ring-[#0054A4] border-gray-300 cursor-pointer"
                   />
                   <span className="font-bold text-gray-900">Définir comme adresse de livraison par défaut</span>
                 </label>
@@ -471,7 +471,7 @@ export default function ClientAddressesPage() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="bg-[#FED700] hover:bg-[#E8C400] text-[#1D2129] font-heading font-black px-6 py-2.5 rounded-xl shadow-xs transition-colors cursor-pointer disabled:opacity-50"
+                  className="bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black px-6 py-2.5 rounded-xl shadow-xs transition-colors cursor-pointer disabled:opacity-50"
                 >
                   {submitting ? 'Enregistrement...' : 'Enregistrer l\'adresse'}
                 </button>

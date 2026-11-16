@@ -37,7 +37,7 @@ export default function MotDePasseOubliePage() {
         {/* Header Branding */}
         <div className="text-center mb-6">
           <div className="w-12 h-12 bg-amber-50 rounded-2xl flex items-center justify-center mx-auto mb-3 border border-amber-100 text-[#1D2129]">
-            <Icons.Lock size={24} className="text-[#0062BD]" />
+            <Icons.Lock size={24} className="text-[#0054A4]" />
           </div>
           <h1 className="font-heading font-black text-xl text-gray-900 tracking-tight">
             Mot de passe oublié ?
@@ -72,7 +72,7 @@ export default function MotDePasseOubliePage() {
             <div className="text-center pt-2">
               <Link
                 href="/connexion"
-                className="inline-flex items-center justify-center gap-2 bg-[#1D2129] hover:bg-[#0062BD] text-white font-heading font-black text-xs uppercase px-6 py-3 rounded-xl transition-all shadow-xs w-full"
+                className="inline-flex items-center justify-center gap-2 bg-[#1D2129] hover:bg-[#0054A4] text-white font-heading font-black text-xs uppercase px-6 py-3 rounded-xl transition-all shadow-xs w-full"
               >
                 <Icons.ArrowLeft size={14} />
                 <span>Retour à la connexion</span>
@@ -92,7 +92,7 @@ export default function MotDePasseOubliePage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="ex: nom@domaine.com"
-                className="w-full border border-gray-300 rounded-xl px-3.5 py-2.5 text-xs focus:ring-1 focus:ring-[#0062BD] focus:outline-none"
+                className="w-full border border-gray-300 rounded-xl px-3.5 py-2.5 text-xs focus:ring-1 focus:ring-[#0054A4] focus:outline-none"
               />
             </div>
 
@@ -109,7 +109,7 @@ export default function MotDePasseOubliePage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#FED700] hover:bg-[#E8C400] text-[#1D2129] font-heading font-black text-xs uppercase py-3 rounded-xl shadow-xs transition-all cursor-pointer disabled:opacity-50 mt-2 flex items-center justify-center gap-2"
+              className="w-full bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase py-3 rounded-xl shadow-xs transition-all cursor-pointer disabled:opacity-50 mt-2 flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>
@@ -127,7 +127,7 @@ export default function MotDePasseOubliePage() {
             <div className="pt-4 border-t border-gray-100 text-center">
               <Link
                 href="/connexion"
-                className="text-xs font-bold text-[#0062BD] hover:underline inline-flex items-center gap-1.5"
+                className="text-xs font-bold text-[#0054A4] hover:underline inline-flex items-center gap-1.5"
               >
                 <Icons.ArrowLeft size={13} />
                 <span>Retour à la page de connexion</span>

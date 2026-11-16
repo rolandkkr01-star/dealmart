@@ -18,7 +18,7 @@ export default function SuiviPage() {
   return (
     <div className="max-w-xl mx-auto px-4 sm:px-6 py-16">
       <div className="bg-white border border-[#E2E5E8] rounded-2xl p-8 shadow-xs text-center">
-        <div className="w-14 h-14 rounded-2xl bg-blue-50 text-[#0062BD] flex items-center justify-center mx-auto mb-4">
+        <div className="w-14 h-14 rounded-2xl bg-blue-50 text-[#0054A4] flex items-center justify-center mx-auto mb-4">
           <Icons.Truck size={28} />
         </div>
 
@@ -36,12 +36,12 @@ export default function SuiviPage() {
             placeholder="Votre référence de commande (ex: CMD-2026-XXXX)"
             value={orderInput}
             onChange={(e) => setOrderInput(e.target.value)}
-            className="w-full border-2 border-gray-300 rounded-xl p-3.5 text-center text-sm font-bold tracking-wider uppercase focus:border-[#0062BD] focus:outline-none"
+            className="w-full border-2 border-gray-300 rounded-xl p-3.5 text-center text-sm font-bold tracking-wider uppercase focus:border-[#0054A4] focus:outline-none"
           />
 
           <button
             type="submit"
-            className="w-full bg-[#FED700] hover:bg-[#E8C400] text-[#1D2129] font-heading font-black text-xs uppercase tracking-wider py-4 rounded-xl shadow-md transition-all cursor-pointer"
+            className="w-full bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase tracking-wider py-4 rounded-xl shadow-md transition-all cursor-pointer"
           >
             Rechercher ma commande
           </button>

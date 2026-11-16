@@ -33,7 +33,7 @@ export const CartDrawer: React.FC = () => {
       <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
         <div className="w-screen max-w-md bg-white shadow-2xl flex flex-col">
           {/* Header du tiroir */}
-          <div className="p-4 bg-[#FED700] text-[#1D2129] flex items-center justify-between border-b border-[#E8C400]">
+          <div className="p-4 bg-[#F1B20B] text-[#1D2129] flex items-center justify-between border-b border-[#D99F07]">
             <div className="flex items-center gap-2">
               <Icons.ShoppingCart size={20} />
               <h3 className="font-heading font-black text-sm uppercase tracking-wide">
@@ -58,11 +58,11 @@ export const CartDrawer: React.FC = () => {
             ) : (
               <div>
                 <p className="text-gray-700 mb-1.5">
-                  Ajoutez encore <strong className="text-[#0062BD]">{formatFCFA(freeShippingThreshold - subtotal)}</strong> pour la <strong>livraison gratuite</strong> !
+                  Ajoutez encore <strong className="text-[#0054A4]">{formatFCFA(freeShippingThreshold - subtotal)}</strong> pour la <strong>livraison gratuite</strong> !
                 </p>
                 <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-[#0062BD] rounded-full shipping-progress"
+                    className="h-full bg-[#0054A4] rounded-full shipping-progress"
                     style={{ width: `${freeShippingProgress}%` }}
                   />
                 </div>
@@ -82,7 +82,7 @@ export const CartDrawer: React.FC = () => {
                 <Link
                   href="/boutique"
                   onClick={() => setIsCartDrawerOpen(false)}
-                  className="bg-[#FED700] hover:bg-[#E8C400] text-[#1D2129] font-bold text-xs uppercase tracking-wider px-6 py-3 rounded-lg shadow-sm transition-all"
+                  className="bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-bold text-xs uppercase tracking-wider px-6 py-3 rounded-lg shadow-sm transition-all"
                 >
                   Découvrir les offres
                 </Link>
@@ -99,7 +99,7 @@ export const CartDrawer: React.FC = () => {
                     <Link
                       href={`/produit/${item.product.slug}`}
                       onClick={() => setIsCartDrawerOpen(false)}
-                      className="text-xs font-bold text-[#0062BD] hover:underline line-clamp-2 leading-tight mb-1"
+                      className="text-xs font-bold text-[#0054A4] hover:underline line-clamp-2 leading-tight mb-1"
                     >
                       {item.product.name}
                     </Link>
@@ -165,7 +165,7 @@ export const CartDrawer: React.FC = () => {
                 </div>
                 <div className="flex justify-between text-sm font-black text-gray-900 pt-2 border-t border-gray-200">
                   <span>Total estimé</span>
-                  <span className="text-base text-[#0062BD] font-price">{formatFCFA(total)}</span>
+                  <span className="text-base text-[#0054A4] font-price">{formatFCFA(total)}</span>
                 </div>
               </div>
 
@@ -180,7 +180,7 @@ export const CartDrawer: React.FC = () => {
                 <Link
                   href="/checkout"
                   onClick={() => setIsCartDrawerOpen(false)}
-                  className="w-full bg-[#FED700] hover:bg-[#E8C400] text-[#1D2129] font-black text-xs uppercase tracking-wider py-3 rounded-lg text-center shadow-md transition-all flex items-center justify-center gap-1"
+                  className="w-full bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-black text-xs uppercase tracking-wider py-3 rounded-lg text-center shadow-md transition-all flex items-center justify-center gap-1"
                 >
                   <span>Commander</span>
                   <Icons.ArrowRight size={14} />

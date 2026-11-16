@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { CartItem, Product, ProductVariant, PromoCode } from '@/types';
 import { PROMO_CODES } from '@/data/products';
+import { siteConfig } from '@/lib/site-config';
 
 interface CartContextType {
   cart: CartItem[];
@@ -43,29 +44,32 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Charger le panier et les favoris depuis localStorage (avec purge des anciennes données factices)
   useEffect(() => {
     try {
-      const storeVersion = localStorage.getItem('butiky_store_v');
-      if (storeVersion !== '2.0.0') {
+      const storeVersion = localStorage.getItem('dealmart_store_v');
+      if (storeVersion !== '3.0.0') {
+        localStorage.removeItem('dealmart_cart');
+        localStorage.removeItem('dealmart_wishlist');
+        localStorage.removeItem('dealmart_promo');
         localStorage.removeItem('butiky_cart');
         localStorage.removeItem('butiky_wishlist');
         localStorage.removeItem('butiky_promo');
         localStorage.removeItem('butiky_trade_offers');
         localStorage.removeItem('butiky_orders');
-        localStorage.setItem('butiky_store_v', '2.0.0');
+        localStorage.setItem('dealmart_store_v', '3.0.0');
         setCart([]);
         setWishlist([]);
         setAppliedPromo(null);
       } else {
-        const savedCart = localStorage.getItem('butiky_cart');
+        const savedCart = localStorage.getItem('dealmart_cart');
         if (savedCart && savedCart !== 'undefined' && savedCart !== 'null') {
           try { setCart(JSON.parse(savedCart)); } catch (_) {}
         }
 
-        const savedWishlist = localStorage.getItem('butiky_wishlist');
+        const savedWishlist = localStorage.getItem('dealmart_wishlist');
         if (savedWishlist && savedWishlist !== 'undefined' && savedWishlist !== 'null') {
           try { setWishlist(JSON.parse(savedWishlist)); } catch (_) {}
         }
 
-        const savedPromo = localStorage.getItem('butiky_promo');
+        const savedPromo = localStorage.getItem('dealmart_promo');
         if (savedPromo && savedPromo !== 'undefined' && savedPromo !== 'null') {
           try { setAppliedPromo(JSON.parse(savedPromo)); } catch (_) {}
         }
@@ -80,7 +84,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     if (!mounted) return;
     try {
-      localStorage.setItem('butiky_cart', JSON.stringify(cart));
+      localStorage.setItem('dealmart_cart', JSON.stringify(cart));
     } catch (e) {
       console.error('Erreur sauvegarde cart:', e);
     }
@@ -89,7 +93,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     if (!mounted) return;
     try {
-      localStorage.setItem('butiky_wishlist', JSON.stringify(wishlist));
+      localStorage.setItem('dealmart_wishlist', JSON.stringify(wishlist));
     } catch (e) {
       console.error('Erreur sauvegarde wishlist:', e);
     }
@@ -175,13 +179,13 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     if (found.minOrderAmount && subtotal < found.minOrderAmount) {
-      setPromoError(`Montant minimum de ${found.minOrderAmount.toLocaleString()} FCFA requis.`);
+      setPromoError(`Minimum order amount of ${siteConfig.currency} ${found.minOrderAmount.toLocaleString()} required.`);
       return false;
     }
 
     setAppliedPromo(found);
     if (typeof window !== 'undefined') {
-      localStorage.setItem('butiky_promo', JSON.stringify(found));
+      localStorage.setItem('dealmart_promo', JSON.stringify(found));
     }
     showToast(`🎉 Code promo ${found.code} appliqué !`);
     return true;
@@ -191,7 +195,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setAppliedPromo(null);
     setPromoError(null);
     if (typeof window !== 'undefined') {
-      localStorage.removeItem('butiky_promo');
+      localStorage.removeItem('dealmart_promo');
     }
   };
 
@@ -213,9 +217,9 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
   const subtotal = cart.reduce((acc, item) => acc + item.unitPrice * item.quantity, 0);
 
-  const freeShippingThreshold = 100000; // 100 000 FCFA
+  const freeShippingThreshold = 500; // SI$ 500 pour livraison offerte
   const freeShippingProgress = Math.min(100, Math.round((subtotal / freeShippingThreshold) * 100));
-  const shippingFee = subtotal >= freeShippingThreshold || subtotal === 0 ? 0 : 2500; // 2500 FCFA livraison standard Cotonou
+  const shippingFee = subtotal >= freeShippingThreshold || subtotal === 0 ? 0 : 35; // SI$ 35 livraison standard Honiara
 
   let discountAmount = 0;
   if (appliedPromo) {

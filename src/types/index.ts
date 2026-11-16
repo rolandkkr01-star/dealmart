@@ -1,6 +1,6 @@
 export type ProductCondition = 'NEUF_SCELLE' | 'NEUF_NON_SCELLE' | 'OCCASION';
 
-export type Brand = 'IPHONE' | 'SAMSUNG' | 'ACCESSOIRE';
+export type Brand = string;
 
 export interface ProductVariant {
   id: string;
@@ -29,14 +29,13 @@ export interface Product {
   slug: string;
   name: string;
   description: string;
-  shortDescription: string;
+  shortDescription?: string;
   brand: Brand;
   categoryId: string;
-  categoryName: string;
+  categoryName?: string;
   condition: ProductCondition;
-  tradeEligible: boolean;
-  basePrice: number; // en FCFA
-  promoPrice?: number; // en FCFA si promo
+  basePrice: number; // en SI$
+  promoPrice?: number; // en SI$
   isActive: boolean;
   isFeatured?: boolean;
   isBestSeller?: boolean;
@@ -46,37 +45,8 @@ export interface Product {
   images: ProductImage[];
   variants: ProductVariant[];
   specs?: Record<string, string>;
-  warrantyMonths: number;
+  warrantyMonths?: number;
   createdAt: string;
-}
-
-export type TradeOfferStatus = 'PENDING' | 'ACCEPTED' | 'COUNTERED' | 'REJECTED' | 'COMPLETED';
-
-export type TradeComplementDirection = 'CLIENT_TO_STORE' | 'STORE_TO_CLIENT' | 'NONE';
-
-export interface TradeOffer {
-  id: string;
-  userId?: string;
-  customerName: string;
-  customerPhone: string;
-  customerEmail: string;
-  customerCity: string;
-  productId: string;
-  productName: string;
-  productImage: string;
-  targetProductPrice: number;
-  offeredDeviceDescription: string;
-  offeredDeviceModel: string;
-  offeredDeviceCondition: ProductCondition;
-  offeredDevicePhotos: string[];
-  complementDirection: TradeComplementDirection;
-  cashComplement?: number; // FCFA
-  status: TradeOfferStatus;
-  adminNote?: string;
-  counterComplementDirection?: TradeComplementDirection;
-  counterOfferAmount?: number;
-  createdAt: string;
-  updatedAt?: string;
 }
 
 export interface CartItem {
@@ -117,11 +87,11 @@ export interface Order {
     quantity: number;
     unitPrice: number;
   }[];
-  totalAmount: number; // FCFA
-  shippingFee: number; // FCFA
-  discountAmount: number; // FCFA
+  totalAmount: number; // SI$
+  shippingFee: number; // SI$
+  discountAmount: number; // SI$
   promoCode?: string;
-  paymentProvider: 'kkiapay' | 'mtn_momo' | 'moov_money' | 'fedapay';
+  paymentProvider: 'cod' | 'bank_transfer' | 'card' | 'kkiapay' | 'fedapay' | 'mtn_momo' | 'moov_money';
   paymentRef?: string;
   status: OrderStatus;
   createdAt: string;

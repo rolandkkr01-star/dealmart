@@ -30,7 +30,6 @@ export default async function HomePage() {
     categoryId: p.categoryId,
     categoryName: p.category?.name || '',
     condition: p.condition as any,
-    tradeEligible: p.tradeEligible,
     basePrice: p.basePrice,
     promoPrice: p.promoPrice || undefined,
     warrantyMonths: p.warrantyMonths,

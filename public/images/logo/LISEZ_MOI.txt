@@ -1,0 +1,18 @@
+DEALMART - BRAND ASSETS
+
+Logo source : fichier image fourni dans la conversation.
+
+PALETTE
+Jaune/or : #F1B20B
+Bleu : #0054A4
+Noir : #000000
+Blanc : #FFFFFF
+
+FICHIERS
+- dealmart_logo_horizontal_* : logo horizontal complet en SVG / PNG.
+- dealmart_logo_carre_* : composition carrée avec le logo horizontal centré.
+- dealmart_monogramme_DM_* : monogramme compact dérivé des lettres D et M d'origine.
+- dealmart_favicon_* : favicon dérivé de la lettre D d'origine.
+- dealmart_mini_charte_graphique.pdf : règles de base et palette.
+
+Les SVG contiennent des tracés vectoriels, pas une image raster incorporée. Les lettres ont été tracées à partir des contours du visuel source ; la forme personnalisée est donc conservée au plus près.

@@ -11,7 +11,7 @@ const envSchema = z.object({
   JWT_SECRET: z.string().min(16, 'JWT_SECRET doit comporter au moins 16 caractères pour être cryptographiquement sûr'),
 
   // Application & Store
-  NEXT_PUBLIC_STORE_NAME: z.string().default('Butiky'),
+  NEXT_PUBLIC_STORE_NAME: z.string().default('DealMart'),
   NEXT_PUBLIC_APP_URL: z.string().url().default('http://localhost:3000'),
 
   // Passerelles de paiement (optionnelles au dev, obligatoires en prod)

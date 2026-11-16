@@ -1,12 +1,20 @@
-import { ProductCondition, OrderStatus, TradeOfferStatus } from '@/types';
+import { ProductCondition, OrderStatus } from '@/types';
+import { siteConfig } from '@/lib/site-config';
 
 /**
- * Formate un montant en FCFA (XOF) sans virgule décimale, avec séparateurs de milliers.
+ * Formate un montant dans la devise officielle (SI$ pour les Îles Salomon).
+ */
+export function formatPrice(amount: number): string {
+  if (typeof amount !== 'number' || isNaN(amount)) return `${siteConfig.currency} 0`;
+  const rounded = Math.round(amount);
+  return `${siteConfig.currency} ${rounded.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
+}
+
+/**
+ * Alias de compatibilité pour le code existant
  */
 export function formatFCFA(amount: number): string {
-  if (typeof amount !== 'number' || isNaN(amount)) return '0 FCFA';
-  const rounded = Math.round(amount);
-  return `${rounded.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} FCFA`;
+  return formatPrice(amount);
 }
 
 /**
@@ -92,64 +100,13 @@ export function getOrderStatusInfo(status: OrderStatus): {
   }
 }
 
-/**
- * Couleurs et libellés pour les statuts de proposition de troc
- */
-export function getTradeStatusInfo(status: TradeOfferStatus): {
-  label: string;
-  className: string;
-} {
-  switch (status) {
-    case 'PENDING':
-      return { label: 'En cours d\'examen', className: 'bg-amber-100 text-amber-800 border-amber-300' };
-    case 'ACCEPTED':
-      return { label: 'Offre acceptée !', className: 'bg-emerald-100 text-emerald-800 border-emerald-300' };
-    case 'COUNTERED':
-      return { label: 'Contre-proposition reçue', className: 'bg-blue-100 text-blue-800 border-blue-300' };
-    case 'REJECTED':
-      return { label: 'Offre non retenue', className: 'bg-red-100 text-red-800 border-red-300' };
-    case 'COMPLETED':
-      return { label: 'Troc finalisé', className: 'bg-purple-100 text-purple-800 border-purple-300' };
-  }
-}
 
 /**
- * Formatage lisible du sens et du montant du complément financier
- */
-export function formatComplementText(
-  direction: 'CLIENT_TO_STORE' | 'STORE_TO_CLIENT' | 'NONE' | string,
-  amount?: number | null
-): { text: string; subtext: string; badge: string; colorClass: string } {
-  if (direction === 'NONE' || !amount || amount === 0) {
-    return {
-      text: 'Échange pur (0 FCFA)',
-      subtext: 'Échange direct sans versement d\'argent supplémentaire',
-      badge: 'Échange 0 FCFA',
-      colorClass: 'text-gray-700 bg-gray-100 border-gray-300',
-    };
-  }
-  if (direction === 'STORE_TO_CLIENT') {
-    return {
-      text: `+${formatFCFA(amount)} versé au client`,
-      subtext: 'La boutique vous verse ce montant en plus de l\'appareil visé (votre téléphone a une valeur supérieure)',
-      badge: `La boutique vous verse : +${formatFCFA(amount)}`,
-      colorClass: 'text-amber-900 bg-amber-50 border-amber-300',
-    };
-  }
-  return {
-    text: `+${formatFCFA(amount)} versé par le client`,
-    subtext: 'Vous versez ce complément pour obtenir l\'appareil visé',
-    badge: `Vous ajoutez : +${formatFCFA(amount)}`,
-    colorClass: 'text-emerald-900 bg-emerald-50 border-emerald-300',
-  };
-}
-
-/**
- * Génère un identifiant de commande lisible client (ex: TP229-847291)
+ * Génère un identifiant de commande lisible client (ex: DM-847291)
  */
 export function generateOrderNumber(): string {
   const randomDigits = Math.floor(100000 + Math.random() * 900000);
-  return `TP229-${randomDigits}`;
+  return `DM-${randomDigits}`;
 }
 
 /**

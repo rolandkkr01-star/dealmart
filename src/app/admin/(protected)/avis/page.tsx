@@ -138,7 +138,7 @@ export default function AdminReviewsPage() {
 
       {/* Fil d'ariane */}
       <nav className="flex items-center gap-2 text-xs text-gray-500">
-        <Link href="/admin" className="hover:text-[#0062BD]">Administration</Link>
+        <Link href="/admin" className="hover:text-[#0054A4]">Administration</Link>
         <span>/</span>
         <span className="text-gray-900 font-bold">Modération des Avis</span>
       </nav>
@@ -195,7 +195,7 @@ export default function AdminReviewsPage() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         <div className="bg-white border border-[#E2E5E8] rounded-2xl p-5 shadow-xs flex items-center gap-4">
           <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
-            <Icons.Star size={24} className="text-[#FED700] fill-[#FED700]" />
+            <Icons.Star size={24} className="text-[#F1B20B] fill-[#F1B20B]" />
           </div>
           <div>
             <span className="text-xs text-gray-500 font-medium block">Note Moyenne Globale</span>
@@ -204,7 +204,7 @@ export default function AdminReviewsPage() {
         </div>
 
         <div className="bg-white border border-[#E2E5E8] rounded-2xl p-5 shadow-xs flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-blue-50 text-[#0062BD] flex items-center justify-center font-bold">
+          <div className="w-12 h-12 rounded-xl bg-blue-50 text-[#0054A4] flex items-center justify-center font-bold">
             <Icons.MessageSquare size={24} />
           </div>
           <div>
@@ -238,7 +238,7 @@ export default function AdminReviewsPage() {
               setSearchQuery(e.target.value);
               setCurrentPage(1);
             }}
-            className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-1 focus:ring-[#0062BD] focus:outline-none font-medium"
+            className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-1 focus:ring-[#0054A4] focus:outline-none font-medium"
           />
           {searchQuery && (
             <button
@@ -302,7 +302,7 @@ export default function AdminReviewsPage() {
 
         {loading ? (
           <div className="p-12 text-center">
-            <div className="w-8 h-8 border-3 border-[#FED700] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+            <div className="w-8 h-8 border-3 border-[#F1B20B] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
             <p className="text-xs text-gray-500">Chargement des avis clients...</p>
           </div>
         ) : reviews.length === 0 ? (
@@ -321,7 +321,7 @@ export default function AdminReviewsPage() {
                 setSearchQuery('');
                 setCurrentPage(1);
               }}
-              className="bg-[#FED700] text-[#1D2129] font-heading font-black text-xs uppercase px-5 py-2.5 rounded-xl cursor-pointer"
+              className="bg-[#F1B20B] text-[#1D2129] font-heading font-black text-xs uppercase px-5 py-2.5 rounded-xl cursor-pointer"
             >
               Réinitialiser les filtres
             </button>
@@ -345,7 +345,7 @@ export default function AdminReviewsPage() {
                         ))}
                       </div>
                       {rev.isFeaturedHome && (
-                        <span className="bg-[#FED700] text-[#1D2129] font-black text-[10px] uppercase px-2 py-0.5 rounded-full flex items-center gap-1 shadow-2xs">
+                        <span className="bg-[#F1B20B] text-[#1D2129] font-black text-[10px] uppercase px-2 py-0.5 rounded-full flex items-center gap-1 shadow-2xs">
                           <Icons.Sparkles size={10} />
                           Épinglé Accueil
                         </span>
@@ -358,7 +358,7 @@ export default function AdminReviewsPage() {
                         <span>Produit :</span>
                         <Link
                           href={`/produit/${rev.product.slug}`}
-                          className="font-bold text-[#0062BD] hover:underline"
+                          className="font-bold text-[#0054A4] hover:underline"
                           target="_blank"
                         >
                           {rev.product.name}
@@ -384,7 +384,7 @@ export default function AdminReviewsPage() {
                       className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs ${
                         rev.isFeaturedHome
                           ? 'bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300'
-                          : 'bg-[#1D2129] hover:bg-[#0062BD] text-[#FED700] hover:text-white'
+                          : 'bg-[#1D2129] hover:bg-[#0054A4] text-[#F1B20B] hover:text-white'
                       }`}
                     >
                       <Icons.Star size={13} className={rev.isFeaturedHome ? 'text-amber-700 fill-amber-700' : ''} />

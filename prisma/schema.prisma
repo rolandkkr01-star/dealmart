@@ -24,7 +24,6 @@ model User {
   orders          Order[]
   favorites       Favorite[]
   sessions        Session[]
-  tradeOffers     TradeOffer[]
 }
 
 model Session {
@@ -65,9 +64,8 @@ model Product {
   brand         String           // "IPHONE" | "SAMSUNG" | "ACCESSOIRE"
   categoryId    String
   condition     String           // "NEUF_SCELLE" | "NEUF_NON_SCELLE" | "OCCASION"
-  tradeEligible Boolean          @default(false)
-  basePrice     Int              // FCFA entier, jamais de float
-  promoPrice    Int?             // FCFA
+  basePrice     Int              // Prix en devise locale (SI$)
+  promoPrice    Int?             // Prix promo
   isActive      Boolean          @default(true)
   isFeatured    Boolean          @default(false)
   rating        Float            @default(5.0)
@@ -81,7 +79,6 @@ model Product {
   images        ProductImage[]
   favorites     Favorite[]
   orderItems    OrderItem[]
-  tradeOffers   TradeOffer[]
   reviews       Review[]
 }
 
@@ -107,30 +104,6 @@ model ProductImage {
   color     String?  // Couleur associée (optionnel)
   position  Int      @default(0)
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-}
-
-model TradeOffer {
-  id                         String    @id @default(cuid())
-  userId                     String?
-  customerName               String
-  customerPhone              String
-  customerEmail              String?
-  customerCity               String
-  productId                  String
-  offeredDeviceModel         String
-  offeredDeviceDescription   String
-  offeredDeviceCondition     String    // "NEUF_SCELLE" | "NEUF_NON_SCELLE" | "OCCASION"
-  offeredDevicePhotosJson    String    // URLs en JSON stringifié
-  complementDirection        String    @default("CLIENT_TO_STORE") // "CLIENT_TO_STORE" | "STORE_TO_CLIENT" | "NONE"
-  cashComplement             Int?      // FCFA
-  status                     String    @default("PENDING") // "PENDING" | "ACCEPTED" | "COUNTERED" | "REJECTED" | "COMPLETED"
-  adminNote                  String?   // Réponse boutique
-  counterComplementDirection String?   // "CLIENT_TO_STORE" | "STORE_TO_CLIENT" | "NONE"
-  counterOfferAmount         Int?      // FCFA
-  createdAt                  DateTime  @default(now())
-  updatedAt                  DateTime  @updatedAt
-  user                       User?     @relation(fields: [userId], references: [id])
-  product                    Product   @relation(fields: [productId], references: [id])
 }
 
 model Favorite {

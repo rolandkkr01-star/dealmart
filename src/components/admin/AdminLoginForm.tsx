@@ -37,10 +37,14 @@ export function AdminLoginForm({ redirectTarget }: { redirectTarget: string }) {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12 bg-[#0F172A]">
       <div className="max-w-md w-full">
-        {/* En-tête / Logo Caddie */}
+        {/* En-tête / Logo DealMart */}
         <div className="text-center mb-8">
-          <Icons.BrandCart size={54} className="text-[#FED700] mx-auto mb-4" />
-          <span className="text-[11px] font-black tracking-widest text-[#FED700] uppercase block mb-1">
+          <img
+            src="/images/logo/dealmart_logo_horizontal_transparent.svg"
+            alt={siteConfig.name}
+            className="h-12 w-auto mx-auto mb-5 brightness-0 invert"
+          />
+          <span className="text-[11px] font-black tracking-widest text-[#F1B20B] uppercase block mb-1">
             Console d'Administration
           </span>
           <h1 className="font-heading font-black text-2xl sm:text-3xl text-white tracking-tight">
@@ -73,7 +77,7 @@ export function AdminLoginForm({ redirectTarget }: { redirectTarget: string }) {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Votre adresse email administrateur"
-                  className="w-full bg-[#0F172A] border border-gray-700 rounded-xl px-4 py-3 pl-10 text-white placeholder-gray-500 focus:outline-none focus:border-[#FED700] transition-colors text-xs"
+                  className="w-full bg-[#0F172A] border border-gray-700 rounded-xl px-4 py-3 pl-10 text-white placeholder-gray-500 focus:outline-none focus:border-[#F1B20B] transition-colors text-xs"
                 />
                 <Icons.Mail size={16} className="absolute left-3.5 top-3.5 text-gray-500" />
               </div>
@@ -93,7 +97,7 @@ export function AdminLoginForm({ redirectTarget }: { redirectTarget: string }) {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Votre mot de passe secret"
-                  className="w-full bg-[#0F172A] border border-gray-700 rounded-xl px-4 py-3 pl-10 pr-10 text-white placeholder-gray-500 focus:outline-none focus:border-[#FED700] transition-colors text-xs"
+                  className="w-full bg-[#0F172A] border border-gray-700 rounded-xl px-4 py-3 pl-10 pr-10 text-white placeholder-gray-500 focus:outline-none focus:border-[#F1B20B] transition-colors text-xs"
                 />
                 <Icons.Lock size={16} className="absolute left-3.5 top-3.5 text-gray-500" />
                 <button
@@ -109,7 +113,7 @@ export function AdminLoginForm({ redirectTarget }: { redirectTarget: string }) {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#FED700] hover:bg-[#E8C400] text-[#1D2129] font-heading font-black text-xs uppercase tracking-wider py-3.5 rounded-xl shadow-lg transition-all cursor-pointer disabled:opacity-50 mt-4"
+              className="w-full bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase tracking-wider py-3.5 rounded-xl shadow-lg transition-all cursor-pointer disabled:opacity-50 mt-4"
             >
               {loading ? 'Connexion en cours...' : 'Accéder à la console'}
             </button>

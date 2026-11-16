@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const sessionToken = request.cookies.get('tp229_session_token')?.value;
+  const sessionToken = request.cookies.get('dealmart_session_token')?.value;
 
   // Protection des routes Administrateur (/admin/* sauf /admin/login)
   if (pathname.startsWith('/admin') && !pathname.startsWith('/admin/login')) {

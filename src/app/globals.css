@@ -2,10 +2,21 @@
 
 @layer base {
   :root {
-    --color-electro-yellow: #FED700;
-    --color-electro-yellow-hover: #E8C400;
-    --color-electro-blue: #0062BD;
-    --color-electro-blue-hover: #004F99;
+    --color-dealmart-yellow: #F1B20B;
+    --color-dealmart-yellow-hover: #D99F07;
+    --color-dealmart-blue: #0054A4;
+    --color-dealmart-blue-hover: #004383;
+    --color-dealmart-red: #DC3545;
+    --color-dealmart-dark: #111827;
+    --color-dealmart-text: #1D2129;
+    --color-dealmart-gray-bg: #F5F7FA;
+    --color-dealmart-gray-border: #E2E5E8;
+
+    /* Compatibilité avec classes existantes */
+    --color-electro-yellow: #F1B20B;
+    --color-electro-yellow-hover: #D99F07;
+    --color-electro-blue: #0054A4;
+    --color-electro-blue-hover: #004383;
     --color-electro-red: #DC3545;
     --color-electro-text: #1D2129;
     --color-electro-gray-bg: #F5F7FA;
@@ -35,27 +46,27 @@
   }
 }
 
-/* Utilitaires spécifiques Thème Electro "Confiance Électronique" */
-.bg-electro-yellow {
-  background-color: #FED700;
+/* Utilitaires officiels Charte DealMart */
+.bg-dealmart-yellow, .bg-electro-yellow {
+  background-color: #F1B20B;
 }
-.bg-electro-yellow:hover {
-  background-color: #E8C400;
+.bg-dealmart-yellow:hover, .bg-electro-yellow:hover {
+  background-color: #D99F07;
 }
-.text-electro-yellow {
-  color: #FED700;
+.text-dealmart-yellow, .text-electro-yellow {
+  color: #F1B20B;
 }
-.text-electro-blue {
-  color: #0062BD;
+.text-dealmart-blue, .text-electro-blue {
+  color: #0054A4;
 }
-.text-electro-blue:hover {
-  color: #004F99;
+.text-dealmart-blue:hover, .text-electro-blue:hover {
+  color: #004383;
 }
-.bg-electro-blue {
-  background-color: #0062BD;
+.bg-dealmart-blue, .bg-electro-blue {
+  background-color: #0054A4;
 }
-.bg-electro-blue:hover {
-  background-color: #004F99;
+.bg-dealmart-blue:hover, .bg-electro-blue:hover {
+  background-color: #004383;
 }
 .text-electro-red {
   color: #DC3545;
@@ -63,11 +74,11 @@
 .bg-electro-red {
   background-color: #DC3545;
 }
-.border-electro-yellow {
-  border-color: #FED700;
+.border-dealmart-yellow, .border-electro-yellow {
+  border-color: #F1B20B;
 }
-.border-electro-blue {
-  border-color: #0062BD;
+.border-dealmart-blue, .border-electro-blue {
+  border-color: #0054A4;
 }
 .border-electro-gray {
   border-color: #E2E5E8;

@@ -44,21 +44,21 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const savedNum = sessionStorage.getItem('butiky_checkout_order_num');
+      const savedNum = sessionStorage.getItem('dealmart_checkout_order_num');
       if (savedNum) {
         setPendingOrderNumber(savedNum);
       }
     }
   }, []);
 
-  // Champs de localisation (sans aucune valeur fictive pré-remplie)
-  const [city, setCity] = useState('Cotonou');
+  // Champs de localisation (Îles Salomon)
+  const [city, setCity] = useState('Honiara');
   const [district, setDistrict] = useState('');
   const [streetDetails, setStreetDetails] = useState('');
   const [notes, setNotes] = useState('');
 
-  // Choix de la passerelle
-  const [paymentProvider, setPaymentProvider] = useState<PaymentGateway>('kkiapay');
+  // Choix du mode de paiement (par défaut Cash on Delivery)
+  const [paymentProvider, setPaymentProvider] = useState<PaymentGateway>('cod');
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [kkiapayLoaded, setKkiapayLoaded] = useState(false);
@@ -87,7 +87,7 @@ export default function CheckoutPage() {
           }
         } else {
           setSelectedAddressMode('new');
-          setCity('Cotonou');
+          setCity('Honiara');
           setDistrict('');
           setStreetDetails('');
         }
@@ -123,11 +123,11 @@ export default function CheckoutPage() {
         </div>
         <h2 className="font-heading font-black text-2xl text-gray-900 mb-2">Votre panier est vide</h2>
         <p className="text-xs text-gray-500 mb-6 max-w-sm mx-auto">
-          Veuillez sélectionner au moins un smartphone ou accessoire pour finaliser votre commande.
+          Veuillez sélectionner au moins un article pour finaliser votre commande.
         </p>
         <Link
           href="/boutique"
-          className="bg-[#FED700] hover:bg-[#E8C400] text-[#1D2129] font-heading font-black text-xs uppercase px-8 py-3.5 rounded-xl inline-flex items-center gap-2 shadow-xs transition-all"
+          className="bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase px-8 py-3.5 rounded-xl inline-flex items-center gap-2 shadow-xs transition-all"
         >
           <Icons.ShoppingCart size={16} />
           <span>Explorer la boutique</span>
@@ -140,7 +140,7 @@ export default function CheckoutPage() {
   if (authLoading) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-24 text-center">
-        <div className="w-10 h-10 border-3 border-[#FED700] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+        <div className="w-10 h-10 border-3 border-[#F1B20B] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
         <p className="text-xs text-gray-500 font-medium">Chargement de votre session sécurisée...</p>
       </div>
     );
@@ -151,7 +151,7 @@ export default function CheckoutPage() {
     return (
       <div className="max-w-3xl mx-auto px-4 py-12">
         <div className="bg-white border-2 border-gray-200 rounded-3xl p-8 sm:p-12 shadow-sm text-center">
-          <div className="w-16 h-16 bg-blue-50 text-[#0062BD] rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 bg-blue-50 text-[#0054A4] rounded-2xl flex items-center justify-center mx-auto mb-4">
             <Icons.Lock size={32} />
           </div>
 
@@ -184,7 +184,7 @@ export default function CheckoutPage() {
             {/* 2. Bouton Connexion Email */}
             <Link
               href={`/connexion?redirect=${encodeURIComponent('/checkout')}`}
-              className="w-full block bg-[#0062BD] hover:bg-[#00519E] text-white font-bold text-xs py-3.5 rounded-2xl shadow-xs transition-all text-center"
+              className="w-full block bg-[#0054A4] hover:bg-[#00519E] text-white font-bold text-xs py-3.5 rounded-2xl shadow-xs transition-all text-center"
             >
               Se connecter avec mon Email
             </Link>
@@ -205,7 +205,7 @@ export default function CheckoutPage() {
               <span>Garantie constructeur certifiée 12 mois</span>
             </div>
             <div className="flex items-start gap-2.5 text-xs text-gray-600">
-              <Icons.Truck size={18} className="text-[#0062BD] flex-shrink-0 mt-0.5" />
+              <Icons.Truck size={18} className="text-[#0054A4] flex-shrink-0 mt-0.5" />
               <span>Livraison rapide à Cotonou et environs</span>
             </div>
             <div className="flex items-start gap-2.5 text-xs text-gray-600">
@@ -270,10 +270,21 @@ export default function CheckoutPage() {
       const orderNumber = initResult.orderNumber;
       setPendingOrderNumber(orderNumber);
       if (typeof window !== 'undefined') {
-        sessionStorage.setItem('butiky_checkout_order_num', orderNumber);
+        sessionStorage.setItem('dealmart_checkout_order_num', orderNumber);
       }
 
-      // 2. Branchement KKIAPAY
+      // Redirection directe pour Cash on Delivery / Direct Bank Transfer / Card
+      if ((initResult as any).redirectUrl) {
+        if (typeof window !== 'undefined') {
+          sessionStorage.removeItem('dealmart_checkout_order_num');
+        }
+        clearCart();
+        setIsProcessing(false);
+        router.push((initResult as any).redirectUrl);
+        return;
+      }
+
+      // 2. Branchement KKIAPAY (si encore configuré)
       if (initResult.paymentProvider === 'kkiapay' && initResult.kkiapay) {
         const kkiapayData = initResult.kkiapay;
 
@@ -291,7 +302,7 @@ export default function CheckoutPage() {
 
               if (verifyRes.success) {
                 if (typeof window !== 'undefined') {
-                  sessionStorage.removeItem('butiky_checkout_order_num');
+                  sessionStorage.removeItem('dealmart_checkout_order_num');
                 }
                 clearCart();
                 router.push(`/commande/${orderNumber}?payment=success`);
@@ -329,7 +340,7 @@ export default function CheckoutPage() {
             provider: 'kkiapay',
           });
           if (typeof window !== 'undefined') {
-            sessionStorage.removeItem('butiky_checkout_order_num');
+            sessionStorage.removeItem('dealmart_checkout_order_num');
           }
           clearCart();
           setIsProcessing(false);
@@ -343,7 +354,7 @@ export default function CheckoutPage() {
         const paymentUrl = initResult.fedapay.paymentUrl;
         if (paymentUrl) {
           if (typeof window !== 'undefined') {
-            sessionStorage.removeItem('butiky_checkout_order_num');
+            sessionStorage.removeItem('dealmart_checkout_order_num');
           }
           clearCart();
           window.location.href = paymentUrl;
@@ -356,7 +367,7 @@ export default function CheckoutPage() {
             provider: 'fedapay',
           });
           if (typeof window !== 'undefined') {
-            sessionStorage.removeItem('butiky_checkout_order_num');
+            sessionStorage.removeItem('dealmart_checkout_order_num');
           }
           clearCart();
           setIsProcessing(false);
@@ -366,7 +377,7 @@ export default function CheckoutPage() {
       }
 
       if (typeof window !== 'undefined') {
-        sessionStorage.removeItem('butiky_checkout_order_num');
+        sessionStorage.removeItem('dealmart_checkout_order_num');
       }
       clearCart();
       setIsProcessing(false);
@@ -390,9 +401,9 @@ export default function CheckoutPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Fil d'Ariane */}
         <nav className="flex items-center gap-2 text-xs text-gray-500 mb-6">
-          <Link href="/" className="hover:text-[#0062BD]">Accueil</Link>
+          <Link href="/" className="hover:text-[#0054A4]">Accueil</Link>
           <span>/</span>
-          <Link href="/panier" className="hover:text-[#0062BD]">Panier</Link>
+          <Link href="/panier" className="hover:text-[#0054A4]">Panier</Link>
           <span>/</span>
           <span className="text-gray-900 font-bold">Paiement Mobile Money Sécurisé</span>
         </nav>
@@ -441,7 +452,7 @@ export default function CheckoutPage() {
             {/* Étape 1 : Coordonnées (Pré-remplies) */}
             <div className="bg-white border border-[#E2E5E8] rounded-3xl p-6 shadow-xs">
               <h3 className="font-heading font-black text-sm uppercase text-gray-900 mb-4 pb-2 border-b border-gray-100 flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-[#FED700] text-[#1D2129] flex items-center justify-center font-bold text-xs">1</span>
+                <span className="w-6 h-6 rounded-full bg-[#F1B20B] text-[#1D2129] flex items-center justify-center font-bold text-xs">1</span>
                 <span>Coordonnées de l'Acheteur</span>
               </h3>
 
@@ -454,20 +465,20 @@ export default function CheckoutPage() {
                     placeholder="Votre nom complet"
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
-                    className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0062BD] focus:outline-none font-bold text-gray-900"
+                    className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0054A4] focus:outline-none font-bold text-gray-900"
                   />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block font-bold text-gray-700 mb-1">Numéro Mobile Money (MTN / Moov / Celtiis) *</label>
+                    <label className="block font-bold text-gray-700 mb-1">Phone Number (Solomon Islands) *</label>
                     <input
                       type="tel"
                       required
-                      placeholder="Ex: +229 97 00 00 00"
+                      placeholder="Ex: +677 7465588"
                       value={customerPhone}
                       onChange={(e) => setCustomerPhone(e.target.value)}
-                      className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0062BD] focus:outline-none font-bold text-gray-900"
+                      className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0054A4] focus:outline-none font-bold text-gray-900"
                     />
                   </div>
                   <div>
@@ -478,7 +489,7 @@ export default function CheckoutPage() {
                       placeholder="nom@domaine.com"
                       value={customerEmail}
                       onChange={(e) => setCustomerEmail(e.target.value)}
-                      className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0062BD] focus:outline-none"
+                      className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0054A4] focus:outline-none"
                     />
                   </div>
                 </div>
@@ -489,14 +500,14 @@ export default function CheckoutPage() {
             <div className="bg-white border border-[#E2E5E8] rounded-3xl p-6 shadow-xs">
               <div className="flex items-center justify-between pb-3 mb-4 border-b border-gray-100">
                 <h3 className="font-heading font-black text-sm uppercase text-gray-900 flex items-center gap-2">
-                  <span className="w-6 h-6 rounded-full bg-[#FED700] text-[#1D2129] flex items-center justify-center font-bold text-xs">2</span>
-                  <span>Lieu de Livraison au Bénin</span>
+                  <span className="w-6 h-6 rounded-full bg-[#F1B20B] text-[#1D2129] flex items-center justify-center font-bold text-xs">2</span>
+                  <span>Delivery Location (Solomon Islands)</span>
                 </h3>
                 {savedAddresses.length > 0 && (
                   <Link
                     href="/compte/adresses"
                     target="_blank"
-                    className="text-[11px] font-bold text-[#0062BD] hover:underline flex items-center gap-1"
+                    className="text-[11px] font-bold text-[#0054A4] hover:underline flex items-center gap-1"
                   >
                     <Icons.Settings size={13} />
                     <span>Gérer mes adresses</span>
@@ -519,13 +530,13 @@ export default function CheckoutPage() {
                           onClick={() => handleSelectSavedAddress(addr)}
                           className={`p-3.5 rounded-2xl border-2 cursor-pointer transition-all flex flex-col justify-between ${
                             isSelected
-                              ? 'border-[#0062BD] bg-blue-50/60 shadow-xs'
+                              ? 'border-[#0054A4] bg-blue-50/60 shadow-xs'
                               : 'border-gray-200 bg-white hover:border-gray-300'
                           }`}
                         >
                           <div className="flex items-center justify-between mb-1.5">
                             <span className="font-bold text-xs text-gray-900 flex items-center gap-1.5">
-                              <Icons.MapPin size={14} className={isSelected ? 'text-[#0062BD]' : 'text-gray-400'} />
+                              <Icons.MapPin size={14} className={isSelected ? 'text-[#0054A4]' : 'text-gray-400'} />
                               <span>{addr.label}</span>
                             </span>
                             {addr.isDefault && (
@@ -552,7 +563,7 @@ export default function CheckoutPage() {
                       onClick={handleSelectNewAddress}
                       className={`p-3.5 rounded-2xl border-2 border-dashed cursor-pointer transition-all flex flex-col items-center justify-center text-center ${
                         selectedAddressMode === 'new'
-                          ? 'border-[#FED700] bg-amber-50/60 shadow-xs'
+                          ? 'border-[#F1B20B] bg-amber-50/60 shadow-xs'
                           : 'border-gray-300 bg-gray-50 hover:bg-gray-100 text-gray-600'
                       }`}
                     >
@@ -571,43 +582,48 @@ export default function CheckoutPage() {
                 <div className="space-y-4 text-xs bg-gray-50/70 p-4 rounded-2xl border border-gray-200">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block font-bold text-gray-700 mb-1">Ville de Destination *</label>
+                      <label className="block font-bold text-gray-700 mb-1">Town / Province *</label>
                       <select
                         value={city}
                         onChange={(e) => setCity(e.target.value)}
-                        className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0062BD] focus:outline-none bg-white font-bold text-gray-900"
+                        className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0054A4] focus:outline-none bg-white font-bold text-gray-900"
                       >
-                        <option value="Cotonou">Cotonou (Livraison express 2h)</option>
-                        <option value="Abomey-Calavi">Abomey-Calavi</option>
-                        <option value="Porto-Novo">Porto-Novo</option>
-                        <option value="Ouidah">Ouidah</option>
-                        <option value="Parakou">Parakou / Nord-Bénin (24h - 48h)</option>
-                        <option value="Autre ville">Autre ville du Bénin</option>
+                        <option value="Honiara">Honiara (Guadalcanal - Express delivery)</option>
+                        <option value="Gizo">Gizo (Western Province)</option>
+                        <option value="Auki">Auki (Malaita Province)</option>
+                        <option value="Noro">Noro (Western Province)</option>
+                        <option value="Munda">Munda (Western Province)</option>
+                        <option value="Kirakira">Kirakira (Makira-Ulawa)</option>
+                        <option value="Lata">Lata (Temotu)</option>
+                        <option value="Taro">Taro (Choiseul)</option>
+                        <option value="Buala">Buala (Isabel)</option>
+                        <option value="Tulagi">Tulagi (Central Province)</option>
+                        <option value="Other Province">Other Solomon Islands Location</option>
                       </select>
                     </div>
 
                     <div>
-                      <label className="block font-bold text-gray-700 mb-1">Quartier / Zone *</label>
+                      <label className="block font-bold text-gray-700 mb-1">Area / Suburb *</label>
                       <input
                         type="text"
                         required
-                        placeholder="Ex: Cadjehoun, Akpakpa, Zogbo, Fidjrossè..."
+                        placeholder="Ex: Kukum, Point Cruz, Panatina, Henderson, White River..."
                         value={district}
                         onChange={(e) => setDistrict(e.target.value)}
-                        className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0062BD] focus:outline-none bg-white font-medium"
+                        className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0054A4] focus:outline-none bg-white font-medium"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block font-bold text-gray-700 mb-1">Repère précis de Livraison (Maison, Rue, Carrefour) *</label>
+                    <label className="block font-bold text-gray-700 mb-1">Street Address, Building & Delivery Notes *</label>
                     <input
                       type="text"
                       required
-                      placeholder="Ex: Face Pharmacie Haie Vive, Immeuble vitré au 1er étage"
+                      placeholder="Ex: Kukum Highway, Transol Building, Office / Floor details"
                       value={streetDetails}
                       onChange={(e) => setStreetDetails(e.target.value)}
-                      className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0062BD] focus:outline-none bg-white font-medium"
+                      className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0054A4] focus:outline-none bg-white font-medium"
                     />
                   </div>
 
@@ -618,7 +634,7 @@ export default function CheckoutPage() {
                         type="checkbox"
                         checked={saveAddress}
                         onChange={(e) => setSaveAddress(e.target.checked)}
-                        className="mt-0.5 w-4 h-4 rounded text-[#0062BD] focus:ring-[#0062BD] border-gray-300 cursor-pointer"
+                        className="mt-0.5 w-4 h-4 rounded text-[#0054A4] focus:ring-[#0054A4] border-gray-300 cursor-pointer"
                       />
                       <div className="text-xs">
                         <span className="font-bold text-gray-900 block">Enregistrer cette adresse dans mon carnet d'adresses</span>
@@ -633,7 +649,7 @@ export default function CheckoutPage() {
                           placeholder="Nom de cette adresse (ex: Domicile, Bureau, Famille)"
                           value={addressLabel}
                           onChange={(e) => setAddressLabel(e.target.value)}
-                          className="w-full sm:w-80 border border-gray-300 rounded-xl p-2.5 text-xs focus:ring-1 focus:ring-[#0062BD] focus:outline-none bg-white font-medium"
+                          className="w-full sm:w-80 border border-gray-300 rounded-xl p-2.5 text-xs focus:ring-1 focus:ring-[#0054A4] focus:outline-none bg-white font-medium"
                         />
                       </div>
                     )}
@@ -649,24 +665,24 @@ export default function CheckoutPage() {
                   placeholder="Ex: M'appeler 15 minutes avant l'arrivée"
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0062BD] focus:outline-none bg-white"
+                  className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0054A4] focus:outline-none bg-white"
                 />
               </div>
             </div>
 
-            {/* Étape 3 : Sélection de la Passerelle de Paiement */}
+            {/* Étape 3 : Sélection du Mode de Paiement */}
             <div className="bg-white border border-[#E2E5E8] rounded-3xl p-6 shadow-xs">
               <h3 className="font-heading font-black text-sm uppercase text-gray-900 mb-4 pb-2 border-b border-gray-100 flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-[#FED700] text-[#1D2129] flex items-center justify-center font-bold text-xs">3</span>
-                <span>Passerelle de Paiement Sécurisée</span>
+                <span className="w-6 h-6 rounded-full bg-[#F1B20B] text-[#1D2129] flex items-center justify-center font-bold text-xs">3</span>
+                <span>Payment Method</span>
               </h3>
 
               <div className="space-y-3">
-                {/* Option 1 : Kkiapay */}
+                {/* Option 1 : Cash on Delivery */}
                 <label
                   className={`flex items-center justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all ${
-                    paymentProvider === 'kkiapay'
-                      ? 'border-emerald-600 bg-emerald-50/50 shadow-xs'
+                    paymentProvider === 'cod'
+                      ? 'border-[#F1B20B] bg-amber-50/50 shadow-xs'
                       : 'border-gray-200 hover:border-gray-300 bg-white'
                   }`}
                 >
@@ -674,31 +690,29 @@ export default function CheckoutPage() {
                     <input
                       type="radio"
                       name="payment"
-                      checked={paymentProvider === 'kkiapay'}
-                      onChange={() => setPaymentProvider('kkiapay')}
-                      className="accent-emerald-600 w-4 h-4 cursor-pointer"
+                      checked={paymentProvider === 'cod'}
+                      onChange={() => setPaymentProvider('cod')}
+                      className="accent-[#F1B20B] w-4 h-4 cursor-pointer"
                     />
                     <div>
                       <span className="font-bold text-xs text-gray-900 block">
-                        Kkiapay (MTN MoMo, Moov Money, Cartes Visa / Mastercard)
+                        Cash on Delivery / Pickup (Honiara & Delivery Hubs)
                       </span>
                       <span className="text-[11px] text-gray-500 block">
-                        Popup interactif certifié Bénin — Débit instantané et reçu automatique
+                        Pay in cash upon inspection and receipt of your order.
                       </span>
                     </div>
                   </div>
-                  <img
-                    src="/images/gateways/kkiapay.svg"
-                    alt="Kkiapay"
-                    className="h-7 w-auto object-contain flex-shrink-0"
-                  />
+                  <div className="w-9 h-9 rounded-xl bg-amber-100 text-amber-900 flex items-center justify-center flex-shrink-0">
+                    <Icons.Wallet size={18} />
+                  </div>
                 </label>
 
-                {/* Option 2 : FedaPay */}
+                {/* Option 2 : Direct Bank Transfer (BSP / ANZ) */}
                 <label
                   className={`flex items-center justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all ${
-                    paymentProvider === 'fedapay'
-                      ? 'border-[#0062BD] bg-blue-50/50 shadow-xs'
+                    paymentProvider === 'bank_transfer'
+                      ? 'border-[#0054A4] bg-blue-50/50 shadow-xs'
                       : 'border-gray-200 hover:border-gray-300 bg-white'
                   }`}
                 >
@@ -706,24 +720,52 @@ export default function CheckoutPage() {
                     <input
                       type="radio"
                       name="payment"
-                      checked={paymentProvider === 'fedapay'}
-                      onChange={() => setPaymentProvider('fedapay')}
-                      className="accent-[#0062BD] w-4 h-4 cursor-pointer"
+                      checked={paymentProvider === 'bank_transfer'}
+                      onChange={() => setPaymentProvider('bank_transfer')}
+                      className="accent-[#0054A4] w-4 h-4 cursor-pointer"
                     />
                     <div>
                       <span className="font-bold text-xs text-gray-900 block">
-                        FedaPay (Mobile Money Panafricain & Cartes Bancaires)
+                        Direct Bank Transfer (Bank South Pacific - BSP / ANZ)
                       </span>
                       <span className="text-[11px] text-gray-500 block">
-                        Agrégateur sécurisé multi-devises (MTN, Moov, Celtiis, Visa)
+                        Transfer directly to our local corporate account. Bank details provided upon checkout.
                       </span>
                     </div>
                   </div>
-                  <img
-                    src="/images/gateways/fedapay.svg"
-                    alt="FedaPay"
-                    className="h-7 w-auto object-contain flex-shrink-0"
-                  />
+                  <div className="w-9 h-9 rounded-xl bg-blue-100 text-[#0054A4] flex items-center justify-center flex-shrink-0">
+                    <Icons.CreditCard size={18} />
+                  </div>
+                </label>
+
+                {/* Option 3 : Credit / Debit Card */}
+                <label
+                  className={`flex items-center justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all ${
+                    paymentProvider === 'card'
+                      ? 'border-[#0054A4] bg-blue-50/50 shadow-xs'
+                      : 'border-gray-200 hover:border-gray-300 bg-white'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="radio"
+                      name="payment"
+                      checked={paymentProvider === 'card'}
+                      onChange={() => setPaymentProvider('card')}
+                      className="accent-[#0054A4] w-4 h-4 cursor-pointer"
+                    />
+                    <div>
+                      <span className="font-bold text-xs text-gray-900 block">
+                        Credit / Debit Card (Visa / Mastercard)
+                      </span>
+                      <span className="text-[11px] text-gray-500 block">
+                        Fast and secure payment with debit or credit card.
+                      </span>
+                    </div>
+                  </div>
+                  <div className="w-9 h-9 rounded-xl bg-gray-100 text-gray-700 flex items-center justify-center flex-shrink-0">
+                    <Icons.ShieldCheck size={18} />
+                  </div>
                 </label>
               </div>
             </div>
@@ -804,7 +846,7 @@ export default function CheckoutPage() {
               <button
                 type="submit"
                 disabled={isProcessing}
-                className="w-full bg-[#FED700] hover:bg-[#E8C400] text-[#1D2129] font-heading font-black text-xs uppercase py-4 rounded-2xl shadow-xs transition-all cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
+                className="w-full bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase py-4 rounded-2xl shadow-xs transition-all cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {isProcessing ? (
                   <>

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { formatFCFA, getConditionBadgeInfo } from '@/lib/utils';
+import { formatPrice, getConditionBadgeInfo } from '@/lib/utils';
 import { Icons } from '@/components/ui/Icons';
 import { getAdminProductsAction, deleteProductAction, toggleProductStatusAction } from '@/actions/admin-products';
 import { DialogModal } from '@/components/ui/DialogModal';
@@ -148,7 +148,7 @@ export default function AdminProductsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-gray-200 shadow-xs">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-[10px] font-black uppercase tracking-wider bg-[#FED700] text-[#1D2129] px-2 py-0.5 rounded">
+            <span className="text-[10px] font-black uppercase tracking-wider bg-[#F1B20B] text-[#1D2129] px-2 py-0.5 rounded">
               Gestion de Stock & Catalogue
             </span>
             <span className="text-xs text-gray-500 font-bold">
@@ -165,7 +165,7 @@ export default function AdminProductsPage() {
 
         <Link
           href="/admin/produits/nouveau"
-          className="bg-[#FED700] hover:bg-[#E8C400] text-[#1D2129] font-heading font-black text-xs uppercase tracking-wider px-5 py-3.5 rounded-xl shadow-xs transition-all flex items-center justify-center gap-2"
+          className="bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase tracking-wider px-5 py-3.5 rounded-xl shadow-xs transition-all flex items-center justify-center gap-2"
         >
           <Icons.Plus size={18} />
           <span>Ajouter un Produit</span>
@@ -209,7 +209,7 @@ export default function AdminProductsPage() {
               setSearchQuery(e.target.value);
               setCurrentPage(1);
             }}
-            className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-1 focus:ring-[#0062BD] focus:outline-none"
+            className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-1 focus:ring-[#0054A4] focus:outline-none"
           />
         </div>
 
@@ -248,7 +248,7 @@ export default function AdminProductsPage() {
       <div className="bg-white border border-gray-200 rounded-2xl shadow-xs overflow-hidden">
         {loading ? (
           <div className="p-16 text-center text-gray-500 text-xs">
-            <div className="w-8 h-8 border-3 border-[#FED700] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+            <div className="w-8 h-8 border-3 border-[#F1B20B] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
             <p>Chargement des produits depuis la base de données...</p>
           </div>
         ) : filteredProducts.length === 0 ? (
@@ -267,7 +267,7 @@ export default function AdminProductsPage() {
             {products.length === 0 && (
               <Link
                 href="/admin/produits/nouveau"
-                className="bg-[#FED700] hover:bg-[#E8C400] text-[#1D2129] font-bold text-xs uppercase px-5 py-3 rounded-xl inline-flex items-center gap-2"
+                className="bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-bold text-xs uppercase px-5 py-3 rounded-xl inline-flex items-center gap-2"
               >
                 <Icons.Plus size={16} />
                 <span>Créer le premier produit</span>
@@ -303,7 +303,7 @@ export default function AdminProductsPage() {
                             <img src={mainImage} alt={prod.name} className="w-full h-full object-contain" />
                           </div>
                           <div>
-                            <Link href={`/produit/${prod.slug}`} target="_blank" className="font-bold text-gray-900 hover:text-[#0062BD] line-clamp-1">
+                            <Link href={`/produit/${prod.slug}`} target="_blank" className="font-bold text-gray-900 hover:text-[#0054A4] line-clamp-1">
                               {prod.name}
                             </Link>
                             <span className="text-[11px] text-gray-400 block">
@@ -328,11 +328,11 @@ export default function AdminProductsPage() {
                       {/* Prix */}
                       <td className="py-3.5 px-4 font-medium">
                         <span className="font-heading font-black text-gray-900">
-                          {formatFCFA(prod.basePrice)}
+                          {formatPrice(prod.basePrice)}
                         </span>
                         {prod.promoPrice && (
                           <span className="text-[11px] text-red-600 line-through block">
-                            {formatFCFA(prod.promoPrice)}
+                            {formatPrice(prod.promoPrice)}
                           </span>
                         )}
                       </td>
@@ -386,7 +386,7 @@ export default function AdminProductsPage() {
                         <div className="flex items-center justify-end gap-2">
                           <Link
                             href={`/admin/produits/${prod.id}/modifier`}
-                            className="p-2 bg-gray-100 hover:bg-[#0062BD] hover:text-white rounded-lg transition-colors text-gray-700"
+                            className="p-2 bg-gray-100 hover:bg-[#0054A4] hover:text-white rounded-lg transition-colors text-gray-700"
                             title="Modifier le produit"
                           >
                             <Icons.Edit size={16} />
