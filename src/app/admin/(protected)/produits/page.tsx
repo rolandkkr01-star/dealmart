@@ -338,13 +338,12 @@ export default function AdminProductsPage() {
                       {/* Variants & Stock */}
                       <td className="py-3.5 px-4">
                         <div className="space-y-1">
-                          <span className={`text-[10px] font-black px-2 py-0.5 rounded ${
-                            totalStock > 5
+                          <span className={`text-[10px] font-black px-2 py-0.5 rounded ${totalStock > 5
                               ? 'bg-emerald-100 text-emerald-800'
                               : totalStock > 0
-                              ? 'bg-amber-100 text-amber-800'
-                              : 'bg-red-100 text-red-800'
-                          }`}>
+                                ? 'bg-amber-100 text-amber-800'
+                                : 'bg-red-100 text-red-800'
+                            }`}>
                             {totalStock > 0 ? `${totalStock} in stock` : 'Out of stock'}
                           </span>
                           <span className="text-[11px] text-gray-400 block">
@@ -357,11 +356,10 @@ export default function AdminProductsPage() {
                       <td className="py-3.5 px-4">
                         <button
                           onClick={() => handleToggleStatus(prod.id, prod.isActive)}
-                          className={`text-[10px] font-black px-2.5 py-1 rounded-full cursor-pointer transition-colors ${
-                            prod.isActive
+                          className={`text-[10px] font-black px-2.5 py-1 rounded-full cursor-pointer transition-colors ${prod.isActive
                               ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200'
                               : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
-                          }`}
+                            }`}
                         >
                           {prod.isActive ? '● Published' : '○ Hidden'}
                         </button>
