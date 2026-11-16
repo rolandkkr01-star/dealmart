@@ -85,7 +85,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
     return (
       <div className="max-w-7xl mx-auto px-4 py-24 text-center">
         <div className="w-10 h-10 border-3 border-[#F1B20B] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-        <p className="text-xs text-gray-500 font-medium">Chargement des détails du produit...</p>
+        <p className="text-xs text-gray-500 font-medium">Loading product details...</p>
       </div>
     );
   }
@@ -101,11 +101,11 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      {/* Fil d'Ariane */}
+      {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-xs text-gray-500 mb-6 flex-wrap">
-        <Link href="/" className="hover:text-[#0054A4]">Accueil</Link>
+        <Link href="/" className="hover:text-[#0054A4]">Home</Link>
         <span>/</span>
-        <Link href="/boutique" className="hover:text-[#0054A4]">Boutique</Link>
+        <Link href="/boutique" className="hover:text-[#0054A4]">Store</Link>
         <span>/</span>
         {product.categoryName && (
           <>
@@ -118,10 +118,10 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
         <span className="text-gray-900 font-bold truncate max-w-xs">{product.name}</span>
       </nav>
 
-      {/* Fiche Produit Principale */}
+      {/* Main Product Card */}
       <div className="bg-white border border-[#E2E5E8] rounded-2xl p-6 sm:p-8 shadow-xs mb-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
-          {/* Galerie Photos Dynamique (Gauche) */}
+          {/* Dynamic Image Gallery */}
           <div className="lg:col-span-5 space-y-4">
             <div className="relative aspect-square rounded-2xl bg-gray-50 border border-gray-200 p-6 flex items-center justify-center overflow-hidden">
               <img
@@ -139,13 +139,13 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
               <button
                 onClick={() => toggleWishlist(product.id)}
                 className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white shadow-md flex items-center justify-center text-gray-400 hover:text-[#DC3545] transition-colors cursor-pointer"
-                title="Ajouter aux favoris"
+                title="Add to wishlist"
               >
                 <Icons.Heart size={18} className={isWished ? 'text-[#DC3545] fill-[#DC3545]' : ''} />
               </button>
             </div>
 
-            {/* Vignettes miniatures */}
+            {/* Thumbnails */}
             {activeImages.length > 1 && (
               <div className="flex gap-2.5 overflow-x-auto pb-1">
                 {activeImages.map((img: any, idx: number) => (
@@ -164,23 +164,23 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
               </div>
             )}
 
-            {/* Badge réassurance qualité */}
+            {/* Guarantee badge */}
             <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 flex items-start gap-3 text-xs text-emerald-900">
               <Icons.ShieldCheck size={24} className="text-emerald-700 flex-shrink-0 mt-0.5" />
               <div>
                 <strong className="block font-heading font-bold text-emerald-950">
-                  Garantie & Authenticité DealMart
+                  DealMart Genuine Quality Guarantee
                 </strong>
                 <span>
-                  Chaque article est inspecté avant expédition. Vous pouvez vérifier votre commande à la réception à {siteConfig.city} ou dans les provinces.
+                  Each item is verified prior to dispatch. You may inspect your package upon delivery in {siteConfig.city} or across provinces.
                 </span>
               </div>
             </div>
           </div>
 
-          {/* Détails & Options d'Achat (Droite) */}
+          {/* Details & Purchasing Actions */}
           <div className="lg:col-span-7 flex flex-col">
-            {/* Marque & État */}
+            {/* Brand & Condition */}
             <div className="flex flex-wrap items-center gap-2 mb-2">
               <span className="text-xs font-black text-gray-500 uppercase tracking-wider">{product.brand}</span>
               <span>•</span>
@@ -199,12 +199,12 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
               )}
             </div>
 
-            {/* Titre */}
+            {/* Title */}
             <h1 className="font-heading font-black text-2xl sm:text-3xl text-gray-900 mb-3 leading-tight">
               {product.name}
             </h1>
 
-            {/* Avis / Évaluations */}
+            {/* Reviews */}
             <div className="flex items-center gap-2 mb-6">
               <div className="flex gap-0.5">
                 {[...Array(5)].map((_, i) => (
@@ -216,10 +216,10 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                 ))}
               </div>
               <span className="text-xs font-bold text-gray-700">{(product.rating || 5).toFixed(1)}</span>
-              <span className="text-xs text-gray-400">({product.reviewsCount || 0} avis clients)</span>
+              <span className="text-xs text-gray-400">({product.reviewsCount || 0} customer reviews)</span>
             </div>
 
-            {/* Prix & Économie */}
+            {/* Price block */}
             <div className="p-4 bg-gray-50 rounded-xl border border-gray-200 mb-6">
               <div className="flex items-baseline gap-3">
                 <span className="font-heading font-black text-3xl sm:text-4xl text-[#0054A4]">
@@ -232,24 +232,24 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                 )}
               </div>
               <p className="text-[11px] text-gray-500 mt-1">
-                Toutes taxes comprises • Livraison à domicile à {siteConfig.city} & expédition inter-îles
+                All taxes included • Same-day delivery in {siteConfig.city} & inter-island shipping
               </p>
             </div>
 
-            {/* Sélection de la Variante / Couleur */}
+            {/* Variant / Color selection */}
             {product.variants.length > 1 && (
               <div className="space-y-3 mb-6">
                 <div className="flex items-center justify-between">
                   <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
-                    Option / Couleur : <span className="text-[#0054A4]">{selectedVariant?.color || 'Standard'}</span>
+                    Option / Color: <span className="text-[#0054A4]">{selectedVariant?.color || 'Standard'}</span>
                   </label>
                   {selectedVariant?.stock > 0 ? (
                     <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
-                      ✓ En stock ({selectedVariant.stock} disponible{selectedVariant.stock > 1 ? 's' : ''})
+                      ✓ In stock ({selectedVariant.stock} available)
                     </span>
                   ) : (
                     <span className="text-[11px] font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded-md border border-red-200">
-                      Rupture de stock pour cette option
+                      Out of stock for this option
                     </span>
                   )}
                 </div>
@@ -277,10 +277,10 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
               </div>
             )}
 
-            {/* Bloc Actions : Achat Direct */}
+            {/* Direct Purchase Actions */}
             <div className="space-y-3 pt-2">
               <div className="flex flex-col sm:flex-row gap-3">
-                {/* Sélecteur de quantité */}
+                {/* Quantity selector */}
                 <div className="flex items-center border border-gray-300 rounded-xl bg-white w-32 justify-between p-1">
                   <button
                     onClick={() => setQuantity((q) => Math.max(1, q - 1))}
@@ -297,44 +297,44 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                   </button>
                 </div>
 
-                {/* Bouton Ajouter au Panier */}
+                {/* Add to Cart CTA */}
                 <button
                   onClick={handleAddToCart}
                   className="flex-1 bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase tracking-wider py-4 px-6 rounded-xl shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <Icons.ShoppingBag size={18} />
-                  <span>Ajouter au Panier ({formatPrice(currentPrice * quantity)})</span>
+                  <span>Add to Cart ({formatPrice(currentPrice * quantity)})</span>
                 </button>
               </div>
             </div>
 
-            {/* Caractéristiques rapides */}
+            {/* Quick trust bullet points */}
             <div className="mt-8 pt-6 border-t border-gray-100 grid grid-cols-2 gap-4 text-xs text-gray-600">
               <div className="flex items-center gap-2">
                 <Icons.Truck size={18} className="text-[#0054A4]" />
-                <span>Livraison express à {siteConfig.city}</span>
+                <span>Express delivery in {siteConfig.city}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Icons.CreditCard size={18} className="text-[#0054A4]" />
-                <span>Paiement à la livraison / Virement BSP</span>
+                <span>Cash on Delivery / BSP Transfer</span>
               </div>
               <div className="flex items-center gap-2">
                 <Icons.ShieldCheck size={18} className="text-[#0054A4]" />
-                <span>Garantie {product.warrantyMonths || 12} mois DealMart</span>
+                <span>{product.warrantyMonths || 12} Months DealMart Warranty</span>
               </div>
               <div className="flex items-center gap-2">
                 <Icons.PhoneCall size={18} className="text-[#0054A4]" />
-                <span>Support local ({siteConfig.phone})</span>
+                <span>Local support ({siteConfig.phone})</span>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Description & Fiche Technique */}
+      {/* Description & Technical Specifications */}
       <div className="bg-white border border-[#E2E5E8] rounded-2xl p-6 sm:p-8 shadow-xs mb-10">
         <h2 className="font-heading font-black text-xl text-gray-900 mb-4">
-          Description Complète & Spécifications
+          Full Description & Specifications
         </h2>
         <p className="text-xs text-gray-600 leading-relaxed mb-6 whitespace-pre-line">
           {product.description}
@@ -343,7 +343,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
         {product.specs && Object.keys(product.specs).length > 0 && (
           <div>
             <h3 className="font-heading font-bold text-sm text-gray-900 mb-3 uppercase tracking-wider">
-              Caractéristiques Techniques
+              Technical Specifications
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
               {Object.entries(product.specs).map(([key, val]) => (

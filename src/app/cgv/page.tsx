@@ -5,37 +5,37 @@ import { siteConfig } from '@/lib/site-config';
 import { Icons } from '@/components/ui/Icons';
 
 export const metadata: Metadata = {
-  title: `Conditions Générales de Vente - ${siteConfig.name}`,
-  description: `Conditions Générales de Vente et d'utilisation de ${siteConfig.name}, applicables aux transactions commerciales aux Îles Salomon.`,
+  title: `Terms & Conditions of Service - ${siteConfig.name}`,
+  description: `Terms and Conditions of Sale and Use for ${siteConfig.name}, governing commercial transactions in the Solomon Islands.`,
 };
 
 export default function CGVPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12">
-      {/* Fil d'ariane */}
+      {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-xs text-gray-500 mb-6">
         <Link href="/" className="hover:text-[#0054A4] transition-colors">
-          Accueil
+          Home
         </Link>
         <span>/</span>
-        <span className="text-gray-900 font-semibold">Conditions Générales de Vente</span>
+        <span className="text-gray-900 font-semibold">Terms & Conditions of Service</span>
       </nav>
 
-      {/* En-tête */}
+      {/* Header */}
       <div className="border-b border-gray-200 pb-6 mb-8">
         <div className="inline-flex items-center gap-2 bg-blue-50 text-[#0054A4] px-3 py-1 rounded-full text-xs font-bold mb-3">
           <Icons.ShieldCheck size={14} />
-          <span>Cadre Commercial • Îles Salomon (Solomon Islands)</span>
+          <span>Commercial Framework • Solomon Islands</span>
         </div>
         <h1 className="font-heading font-black text-3xl sm:text-4xl text-gray-900 tracking-tight">
-          Conditions Générales de Vente (CGV)
+          Terms & Conditions of Service
         </h1>
         <p className="text-sm text-gray-500 mt-2">
-          Applicable à l'ensemble des commandes passées sur {siteConfig.name}.
+          Applicable to all orders and services on {siteConfig.name}.
         </p>
       </div>
 
-      {/* Contenu structuré */}
+      {/* Structured Content */}
       <div className="space-y-8 text-sm text-gray-700 leading-relaxed">
         {/* Article 1 */}
         <section className="bg-white p-6 rounded-2xl border border-gray-200 shadow-xs">
@@ -43,13 +43,13 @@ export default function CGVPage() {
             <span className="w-6 h-6 rounded-full bg-[#F1B20B] text-[#1D2129] text-xs font-black flex items-center justify-center">
               1
             </span>
-            Objet et Identité de l'Exploitant
+            Purpose and Operator Identity
           </h2>
           <p className="mb-2">
-            Les présentes Conditions Générales de Vente régissent l'ensemble des transactions commerciales conclues sur la marketplace en ligne <strong>{siteConfig.name}</strong>, exploitée par la société <strong>{siteConfig.legalName}</strong> à {siteConfig.city}, Îles Salomon.
+            These Terms & Conditions govern all sales and transactions executed through the online marketplace <strong>{siteConfig.name}</strong>, operated by <strong>{siteConfig.legalName}</strong> located in {siteConfig.city}, Solomon Islands.
           </p>
           <p>
-            <strong>Contact officiel :</strong> {siteConfig.email} • Téléphone : {siteConfig.phone} • Adresse : {siteConfig.address}.
+            <strong>Official Contact:</strong> {siteConfig.email} • Phone: {siteConfig.phone} • Address: {siteConfig.address}.
           </p>
         </section>
 
@@ -59,18 +59,18 @@ export default function CGVPage() {
             <span className="w-6 h-6 rounded-full bg-[#F1B20B] text-[#1D2129] text-xs font-black flex items-center justify-center">
               2
             </span>
-            Catalogue de Produits et Garantie Qualité
+            Product Catalog & Quality Guarantee
           </h2>
           <p className="mb-3">
-            {siteConfig.name} est une place de marché généraliste proposant des produits dans les rayons Électronique & Gadgets, Beauté & Soins, Mode & Accessoires, ainsi que Maison & Déco. Chaque article fait l'objet d'un contrôle de qualité rigoureux :
+            {siteConfig.name} is a premier department marketplace offering genuine products across Electronics & Tech, Beauty & Skincare, Fashion & Apparel, and Home & Living. Every item undergoes rigorous inspection:
           </p>
           <ul className="list-disc pl-5 space-y-1.5 text-xs text-gray-600 mb-3">
-            <li><strong>Neuf Scellé :</strong> Produit sous emballage d'origine scellé par le fabricant avec garantie constructeur.</li>
-            <li><strong>Neuf Déballé / Certifié :</strong> Produit d'origine en parfait état esthétique et opérationnel, testé par nos soins.</li>
-            <li><strong>Occasion Contrôlée :</strong> Article contrôlé et testé sur nos points techniques d'inspection.</li>
+            <li><strong>Brand New Factory Sealed:</strong> Original factory-sealed packaging with official manufacturer warranty.</li>
+            <li><strong>Certified Refurbished (Grade A+):</strong> Pristine cosmetic condition, certified functional, professionally tested with warranty.</li>
+            <li><strong>Certified Pre-Owned:</strong> Thoroughly inspected across our key hardware and performance check points.</li>
           </ul>
           <p className="text-xs bg-amber-50 p-3 rounded-lg border border-amber-200 text-amber-900">
-            <strong>Garantie Authenticité :</strong> Tout produit livré non conforme ou défectueux fait l'objet d'un remplacement rapide ou d'un remboursement intégral.
+            <strong>Authenticity Guarantee:</strong> Any defective or non-compliant product delivered will be promptly replaced or fully refunded.
           </p>
         </section>
 
@@ -80,18 +80,18 @@ export default function CGVPage() {
             <span className="w-6 h-6 rounded-full bg-[#F1B20B] text-[#1D2129] text-xs font-black flex items-center justify-center">
               3
             </span>
-            Devise et Modalités de Paiement
+            Currency & Payment Terms
           </h2>
           <p className="mb-2">
-            Tous les prix sont affichés en <strong>Dollars des Îles Salomon (SI$ / SBD)</strong> toutes taxes comprises.
+            All prices are stated in <strong>Solomon Islands Dollars (SI$ / SBD)</strong> inclusive of applicable local taxes.
           </p>
           <p className="mb-2">
-            Les modes de règlement acceptés sont :
+            Accepted payment methods include:
           </p>
           <ul className="list-disc pl-5 space-y-1 text-xs text-gray-600">
-            <li><strong>Paiement à la livraison (Cash on Delivery - COD) :</strong> Règlement en espèces au coursier lors de la remise physique de la commande à Honiara et environs.</li>
-            <li><strong>Virement bancaire direct :</strong> Règlement auprès des banques locales (Bank South Pacific - BSP, ANZ) avec confirmation par numéro de référence.</li>
-            <li><strong>Carte bancaire (Visa / Mastercard) :</strong> Règlement sécurisé en ligne.</li>
+            <li><strong>Cash on Delivery (COD):</strong> Pay cash in hand directly to the courier upon physical package delivery in Honiara and surrounding areas.</li>
+            <li><strong>Direct Bank Transfer:</strong> Bank transfer to local commercial accounts (Bank South Pacific - BSP, ANZ) with payment reference confirmation.</li>
+            <li><strong>Credit / Debit Card (Visa / Mastercard):</strong> Secure online checkout.</li>
           </ul>
         </section>
 
@@ -101,14 +101,14 @@ export default function CGVPage() {
             <span className="w-6 h-6 rounded-full bg-[#F1B20B] text-[#1D2129] text-xs font-black flex items-center justify-center">
               4
             </span>
-            Livraison et Expédition
+            Shipping & Nationwide Delivery
           </h2>
           <p className="mb-2">
-            Les livraisons sont opérées sur l'ensemble de l'archipel :
+            Deliveries operate across the entire Solomon Islands archipelago:
           </p>
           <ul className="list-disc pl-5 space-y-1 text-xs text-gray-600">
-            <li><strong>Honiara & Guadalcanal :</strong> Livraison standard sous 24h à 48h ouvrées (livraison gratuite dès SI$ 500 d'achats).</li>
-            <li><strong>Provinces (Western, Malaita, Isabel, etc.) :</strong> Expédition inter-îles par transport maritime ou fret aérien selon les liaisons régulières (Gizo, Noro, Auki, etc.).</li>
+            <li><strong>Honiara & Guadalcanal:</strong> Standard delivery within 24 to 48 business hours (Free delivery on orders over SI$ 500).</li>
+            <li><strong>Provinces (Western, Malaita, Isabel, etc.):</strong> Inter-island sea freight or air cargo through scheduled domestic services (Gizo, Noro, Auki, etc.).</li>
           </ul>
         </section>
 
@@ -118,13 +118,13 @@ export default function CGVPage() {
             <span className="w-6 h-6 rounded-full bg-[#F1B20B] text-[#1D2129] text-xs font-black flex items-center justify-center">
               5
             </span>
-            Droit Applicable et Résolution des Différends
+            Applicable Law & Dispute Resolution
           </h2>
           <p className="mb-2">
-            Les présentes conditions générales sont régies par les <strong>lois en vigueur aux Îles Salomon (Solomon Islands)</strong>.
+            These terms and conditions are governed by and construed under the <strong>laws of Solomon Islands</strong>.
           </p>
           <p className="text-xs text-gray-600">
-            En cas de réclamation, le client est invité à contacter en priorité notre service client au {siteConfig.phone} ou par email à {siteConfig.email}. À défaut de conciliation amiable, les tribunaux compétents de Honiara seront seuls compétents.
+            In the event of any inquiry or complaint, customers are invited to first contact our dedicated customer care team at {siteConfig.phone} or via email at {siteConfig.email}. If an amicable resolution cannot be reached, the competent courts of Honiara shall hold exclusive jurisdiction.
           </p>
         </section>
       </div>

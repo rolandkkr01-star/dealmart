@@ -7,7 +7,6 @@ import { Icons } from '@/components/ui/Icons';
 import { getAdminProductsAction, deleteProductAction, toggleProductStatusAction } from '@/actions/admin-products';
 import { DialogModal } from '@/components/ui/DialogModal';
 import { Pagination } from '@/components/ui/Pagination';
-
 import { useRouter } from 'next/navigation';
 
 export default function AdminProductsPage() {
@@ -52,7 +51,7 @@ export default function AdminProductsPage() {
         router.push('/admin/login?redirect=/admin/produits');
         return;
       }
-      setActionError(res.error || 'Erreur lors du chargement des produits.');
+      setActionError(res.error || 'Failed to load products.');
     }
     setLoading(false);
   };
@@ -64,11 +63,11 @@ export default function AdminProductsPage() {
   const handleDelete = (id: string, name: string) => {
     setDialogState({
       isOpen: true,
-      title: 'Supprimer ce produit ?',
-      message: `Êtes-vous certain de vouloir supprimer définitivement "${name}" du catalogue ? Cette action est irréversible.`,
+      title: 'Delete this product?',
+      message: `Are you sure you want to permanently delete "${name}" from the catalog? This action cannot be undone.`,
       type: 'danger',
-      confirmText: 'Supprimer',
-      cancelText: 'Conserver',
+      confirmText: 'Delete',
+      cancelText: 'Cancel',
       onConfirm: async () => {
         setDialogState((prev) => ({ ...prev, isOpen: false }));
         setDeletingId(id);
@@ -79,17 +78,17 @@ export default function AdminProductsPage() {
         setDeletingId(null);
 
         if (res.success) {
-          setActionSuccess(`Le produit "${name}" a été supprimé avec succès.`);
+          setActionSuccess(`Product "${name}" was deleted successfully.`);
           setProducts((prev) => prev.filter((p) => p.id !== id));
           setTimeout(() => setActionSuccess(null), 3500);
         } else {
           setDialogState({
             isOpen: true,
-            title: 'Échec de suppression',
-            message: res.error || 'Impossible de supprimer ce produit.',
+            title: 'Delete failed',
+            message: res.error || 'Unable to delete product.',
             type: 'warning',
             isConfirmOnly: true,
-            confirmText: 'Compris',
+            confirmText: 'Got it',
           });
         }
       },
@@ -107,11 +106,11 @@ export default function AdminProductsPage() {
     } else {
       setDialogState({
         isOpen: true,
-        title: 'Erreur',
-        message: res.error || 'Impossible de modifier le statut du produit.',
+        title: 'Error',
+        message: res.error || 'Unable to change product status.',
         type: 'warning',
         isConfirmOnly: true,
-        confirmText: 'Fermer',
+        confirmText: 'Close',
       });
     }
   };
@@ -144,22 +143,22 @@ export default function AdminProductsPage() {
         onClose={() => setDialogState((prev) => ({ ...prev, isOpen: false }))}
       />
 
-      {/* En-tête */}
+      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-gray-200 shadow-xs">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="text-[10px] font-black uppercase tracking-wider bg-[#F1B20B] text-[#1D2129] px-2 py-0.5 rounded">
-              Gestion de Stock & Catalogue
+              Inventory & Catalog
             </span>
             <span className="text-xs text-gray-500 font-bold">
-              {products.length} produit{products.length > 1 ? 's' : ''} en base
+              {products.length} product{products.length > 1 ? 's' : ''} in database
             </span>
           </div>
           <h1 className="font-heading font-black text-2xl text-gray-900">
-            Catalogue des Smartphones & Accessoires
+            Product Catalog
           </h1>
           <p className="text-xs text-gray-500 mt-1">
-            Ajoutez, modifiez ou retirez des appareils avec suivi des variantes, garanties et éligibilité au troc.
+            Manage electronics, beauty, fashion, and home products with variant tracking and image galleries.
           </p>
         </div>
 
@@ -168,7 +167,7 @@ export default function AdminProductsPage() {
           className="bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase tracking-wider px-5 py-3.5 rounded-xl shadow-xs transition-all flex items-center justify-center gap-2"
         >
           <Icons.Plus size={18} />
-          <span>Ajouter un Produit</span>
+          <span>Add New Product</span>
         </Link>
       </div>
 
@@ -197,13 +196,13 @@ export default function AdminProductsPage() {
         </div>
       )}
 
-      {/* Barre de Recherche & Filtres */}
+      {/* Search & Filter Bar */}
       <div className="bg-white p-4 rounded-2xl border border-gray-200 shadow-xs flex flex-col md:flex-row items-center gap-4 text-xs">
         <div className="relative flex-1 w-full">
           <Icons.Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
           <input
             type="text"
-            placeholder="Rechercher par nom de modèle, catégorie ou SKU..."
+            placeholder="Search by product name, category, or SKU..."
             value={searchQuery}
             onChange={(e) => {
               setSearchQuery(e.target.value);
@@ -222,10 +221,10 @@ export default function AdminProductsPage() {
             }}
             className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 font-medium text-gray-700 focus:outline-none cursor-pointer"
           >
-            <option value="ALL">Toutes les marques</option>
-            <option value="IPHONE">Apple iPhone</option>
-            <option value="SAMSUNG">Samsung Galaxy</option>
-            <option value="ACCESSOIRE">Accessoires</option>
+            <option value="ALL">All Brands</option>
+            <option value="Apple">Apple</option>
+            <option value="Samsung">Samsung</option>
+            <option value="DealMart">DealMart</option>
           </select>
 
           <select
@@ -236,20 +235,20 @@ export default function AdminProductsPage() {
             }}
             className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 font-medium text-gray-700 focus:outline-none cursor-pointer"
           >
-            <option value="ALL">Tous les états</option>
-            <option value="NEUF_SCELLE">Neuf scellé</option>
-            <option value="NEUF_NON_SCELLE">Reconditionné A+</option>
-            <option value="OCCASION">Occasion</option>
+            <option value="ALL">All Conditions</option>
+            <option value="NEUF_SCELLE">Brand New Sealed</option>
+            <option value="NEUF_NON_SCELLE">Certified Refurbished (Grade A+)</option>
+            <option value="OCCASION">Certified Pre-Owned</option>
           </select>
         </div>
       </div>
 
-      {/* Table des Produits */}
+      {/* Products Table */}
       <div className="bg-white border border-gray-200 rounded-2xl shadow-xs overflow-hidden">
         {loading ? (
           <div className="p-16 text-center text-gray-500 text-xs">
             <div className="w-8 h-8 border-3 border-[#F1B20B] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-            <p>Chargement des produits depuis la base de données...</p>
+            <p>Loading products from database...</p>
           </div>
         ) : filteredProducts.length === 0 ? (
           <div className="p-16 text-center">
@@ -257,12 +256,12 @@ export default function AdminProductsPage() {
               <Icons.Smartphone size={32} />
             </div>
             <h3 className="font-heading font-bold text-base text-gray-900 mb-1">
-              Aucun produit trouvé
+              No products found
             </h3>
             <p className="text-xs text-gray-500 mb-6 max-w-sm mx-auto">
               {products.length === 0
-                ? 'La base de données est actuellement vide. Cliquez sur "Ajouter un Produit" pour créer votre premier smartphone ou accessoire.'
-                : 'Aucun produit ne correspond à vos critères de recherche.'}
+                ? 'The product catalog is currently empty. Click "Add New Product" to create your first item.'
+                : 'No products matched your search or filter criteria.'}
             </p>
             {products.length === 0 && (
               <Link
@@ -270,7 +269,7 @@ export default function AdminProductsPage() {
                 className="bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-bold text-xs uppercase px-5 py-3 rounded-xl inline-flex items-center gap-2"
               >
                 <Icons.Plus size={16} />
-                <span>Créer le premier produit</span>
+                <span>Create First Product</span>
               </Link>
             )}
           </div>
@@ -279,24 +278,23 @@ export default function AdminProductsPage() {
             <table className="w-full text-left text-xs text-gray-600">
               <thead className="bg-gray-50 text-[11px] font-black uppercase text-gray-500 border-b border-gray-200">
                 <tr>
-                  <th className="py-3.5 px-4">Produit</th>
-                  <th className="py-3.5 px-4">État & Marque</th>
-                  <th className="py-3.5 px-4">Prix de Vente</th>
-                  <th className="py-3.5 px-4">Variantes & Stock</th>
-                  <th className="py-3.5 px-4">Troc</th>
-                  <th className="py-3.5 px-4">Statut</th>
+                  <th className="py-3.5 px-4">Product</th>
+                  <th className="py-3.5 px-4">Condition & Brand</th>
+                  <th className="py-3.5 px-4">Retail Price</th>
+                  <th className="py-3.5 px-4">Variants & Stock</th>
+                  <th className="py-3.5 px-4">Status</th>
                   <th className="py-3.5 px-4 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {paginatedProducts.map((prod) => {
                   const cond = getConditionBadgeInfo(prod.condition);
-                  const totalStock = prod.variants.reduce((acc: number, v: any) => acc + v.stock, 0);
+                  const totalStock = prod.variants?.reduce((acc: number, v: any) => acc + v.stock, 0) ?? 0;
                   const mainImage = prod.images[0]?.url || 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=200&q=80';
 
                   return (
                     <tr key={prod.id} className="hover:bg-gray-50/70 transition-colors">
-                      {/* Image & Nom */}
+                      {/* Image & Title */}
                       <td className="py-3.5 px-4">
                         <div className="flex items-center gap-3">
                           <div className="w-12 h-12 bg-white border border-gray-200 rounded-xl p-1 flex-shrink-0 flex items-center justify-center overflow-hidden">
@@ -307,13 +305,13 @@ export default function AdminProductsPage() {
                               {prod.name}
                             </Link>
                             <span className="text-[11px] text-gray-400 block">
-                              {prod.category?.name || 'Sans catégorie'}
+                              {prod.category?.name || 'Uncategorized'}
                             </span>
                           </div>
                         </div>
                       </td>
 
-                      {/* État & Marque */}
+                      {/* Condition & Brand */}
                       <td className="py-3.5 px-4">
                         <div className="space-y-1">
                           <span className={`inline-block text-[10px] font-black px-2 py-0.5 rounded ${cond.badgeClass}`}>
@@ -325,7 +323,7 @@ export default function AdminProductsPage() {
                         </div>
                       </td>
 
-                      {/* Prix */}
+                      {/* Price */}
                       <td className="py-3.5 px-4 font-medium">
                         <span className="font-heading font-black text-gray-900">
                           {formatPrice(prod.basePrice)}
@@ -337,7 +335,7 @@ export default function AdminProductsPage() {
                         )}
                       </td>
 
-                      {/* Variantes & Stock */}
+                      {/* Variants & Stock */}
                       <td className="py-3.5 px-4">
                         <div className="space-y-1">
                           <span className={`text-[10px] font-black px-2 py-0.5 rounded ${
@@ -347,27 +345,15 @@ export default function AdminProductsPage() {
                               ? 'bg-amber-100 text-amber-800'
                               : 'bg-red-100 text-red-800'
                           }`}>
-                            {totalStock > 0 ? `${totalStock} en stock` : 'Rupture de stock'}
+                            {totalStock > 0 ? `${totalStock} in stock` : 'Out of stock'}
                           </span>
                           <span className="text-[11px] text-gray-400 block">
-                            {prod.variants.length} variante{prod.variants.length > 1 ? 's' : ''}
+                            {prod.variants.length} variant{prod.variants.length > 1 ? 's' : ''}
                           </span>
                         </div>
                       </td>
 
-                      {/* Troc */}
-                      <td className="py-3.5 px-4">
-                        {prod.tradeEligible ? (
-                          <span className="text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded flex items-center gap-1 w-max">
-                            <Icons.Check size={12} />
-                            <span>Éligible</span>
-                          </span>
-                        ) : (
-                          <span className="text-[10px] text-gray-400 font-medium">Non éligible</span>
-                        )}
-                      </td>
-
-                      {/* Statut Toggle */}
+                      {/* Status Toggle */}
                       <td className="py-3.5 px-4">
                         <button
                           onClick={() => handleToggleStatus(prod.id, prod.isActive)}
@@ -377,7 +363,7 @@ export default function AdminProductsPage() {
                               : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
                           }`}
                         >
-                          {prod.isActive ? '● En Ligne' : '○ Masqué'}
+                          {prod.isActive ? '● Published' : '○ Hidden'}
                         </button>
                       </td>
 
@@ -387,7 +373,7 @@ export default function AdminProductsPage() {
                           <Link
                             href={`/admin/produits/${prod.id}/modifier`}
                             className="p-2 bg-gray-100 hover:bg-[#0054A4] hover:text-white rounded-lg transition-colors text-gray-700"
-                            title="Modifier le produit"
+                            title="Edit product"
                           >
                             <Icons.Edit size={16} />
                           </Link>
@@ -396,7 +382,7 @@ export default function AdminProductsPage() {
                             onClick={() => handleDelete(prod.id, prod.name)}
                             disabled={deletingId === prod.id}
                             className="p-2 bg-gray-100 hover:bg-red-600 hover:text-white rounded-lg transition-colors text-gray-700 cursor-pointer disabled:opacity-50"
-                            title="Supprimer le produit"
+                            title="Delete product"
                           >
                             <Icons.Trash size={16} />
                           </button>
@@ -408,7 +394,7 @@ export default function AdminProductsPage() {
               </tbody>
             </table>
 
-            {/* Pagination Admin Produits */}
+            {/* Pagination */}
             <div className="border-t border-gray-200 px-4 py-2 bg-gray-50/50">
               <Pagination
                 currentPage={currentPage}
@@ -424,7 +410,7 @@ export default function AdminProductsPage() {
                   setCurrentPage(1);
                 }}
                 pageSizeOptions={[10, 25, 50]}
-                itemLabel="produits"
+                itemLabel="products"
               />
             </div>
           </div>

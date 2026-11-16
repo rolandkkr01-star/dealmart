@@ -22,18 +22,18 @@ export const ProductShowcase: React.FC<ProductShowcaseProps> = ({ products }) =>
 
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      {/* En-tête avec onglets */}
+      {/* Section Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4 mb-6 pb-4 border-b border-[#E2E5E8]">
         <div>
           <span className="text-[11px] font-black uppercase tracking-wider text-[#0054A4] block mb-0.5 sm:mb-1">
-            Sélection DealMart
+            Curated for You
           </span>
           <h2 className="font-heading font-black text-xl sm:text-3xl text-gray-900 tracking-tight">
-            Produits Populaires & Nouveautés
+            Trending Products & New Arrivals
           </h2>
         </div>
 
-        {/* Filtres Rapides */}
+        {/* Quick Tabs */}
         <div className="w-full sm:w-auto grid grid-cols-3 sm:flex sm:items-center gap-1 sm:gap-2 bg-gray-100/90 sm:bg-transparent p-1 sm:p-0 rounded-xl sm:rounded-none border sm:border-0 border-gray-200">
           <button
             onClick={() => setActiveTab('bestsellers')}
@@ -44,10 +44,7 @@ export const ProductShowcase: React.FC<ProductShowcaseProps> = ({ products }) =>
             }`}
           >
             <Icons.Star size={13} fill="currentColor" className="flex-shrink-0" />
-            <span className="truncate">
-              <span className="sm:hidden">Populaires</span>
-              <span className="hidden sm:inline">Meilleures Ventes</span>
-            </span>
+            <span className="truncate">Best Sellers</span>
           </button>
           <button
             onClick={() => setActiveTab('new')}
@@ -58,7 +55,7 @@ export const ProductShowcase: React.FC<ProductShowcaseProps> = ({ products }) =>
             }`}
           >
             <Icons.Sparkles size={13} className="flex-shrink-0" />
-            <span className="truncate">Nouveautés</span>
+            <span className="truncate">New Arrivals</span>
           </button>
           <button
             onClick={() => setActiveTab('all')}
@@ -69,7 +66,7 @@ export const ProductShowcase: React.FC<ProductShowcaseProps> = ({ products }) =>
             }`}
           >
             <Icons.Sliders size={13} className="flex-shrink-0" />
-            <span className="truncate">Tous</span>
+            <span className="truncate">All</span>
           </button>
         </div>
       </div>
@@ -84,13 +81,13 @@ export const ProductShowcase: React.FC<ProductShowcaseProps> = ({ products }) =>
         ))}
       </div>
 
-      {/* Bouton voir tout */}
+      {/* Explore catalog button */}
       <div className="text-center mt-8">
         <Link
           href="/boutique"
           className="inline-flex items-center gap-2 bg-white hover:bg-gray-50 text-[#0054A4] border-2 border-[#0054A4] font-heading font-black text-xs uppercase tracking-wider px-8 py-3.5 rounded-xl shadow-xs transition-all hover:shadow-md"
         >
-          <span>Explorer tout le catalogue {siteConfig.name}</span>
+          <span>Explore All {siteConfig.name} Products</span>
           <Icons.ArrowRight size={16} />
         </Link>
       </div>

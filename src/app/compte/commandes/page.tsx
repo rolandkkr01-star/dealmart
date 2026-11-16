@@ -8,12 +8,12 @@ import { Icons } from '@/components/ui/Icons';
 import { DialogModal } from '@/components/ui/DialogModal';
 import { Pagination } from '@/components/ui/Pagination';
 
-export default function MesCommandesPage() {
+export default function MyOrdersPage() {
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [cancellingId, setCancellingId] = useState<string | null>(null);
 
-  // Filtres & Recherche
+  // Filters & Search
   const [statusFilter, setStatusFilter] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
@@ -21,7 +21,7 @@ export default function MesCommandesPage() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(5);
 
-  // Modal de confirmation / alerte
+  // Confirmation / alert modal
   const [dialogState, setDialogState] = useState<{
     isOpen: boolean;
     title: string;
@@ -75,11 +75,11 @@ export default function MesCommandesPage() {
   const handleCancelOrder = (orderNumber: string) => {
     setDialogState({
       isOpen: true,
-      title: 'Annuler cette commande ?',
-      message: `Êtes-vous certain de vouloir annuler la commande ${orderNumber} ? Cette action est définitive.`,
+      title: 'Cancel this order?',
+      message: `Are you sure you want to cancel order #${orderNumber}? This action cannot be undone.`,
       type: 'danger',
-      confirmText: 'Oui, annuler',
-      cancelText: 'Non, conserver',
+      confirmText: 'Yes, cancel order',
+      cancelText: 'No, keep order',
       onConfirm: async () => {
         setCancellingId(orderNumber);
         setDialogState((prev) => ({ ...prev, isOpen: false }));
@@ -89,11 +89,11 @@ export default function MesCommandesPage() {
         } else {
           setDialogState({
             isOpen: true,
-            title: 'Échec de l\'annulation',
-            message: res.error || 'Impossible d\'annuler cette commande.',
+            title: 'Cancellation failed',
+            message: res.error || 'Unable to cancel this order.',
             type: 'warning',
             isConfirmOnly: true,
-            confirmText: 'Compris',
+            confirmText: 'Got it',
           });
         }
         setCancellingId(null);
@@ -108,20 +108,20 @@ export default function MesCommandesPage() {
         onClose={() => setDialogState((prev) => ({ ...prev, isOpen: false }))}
       />
       <nav className="flex items-center gap-2 text-xs text-gray-500 mb-6">
-        <Link href="/" className="hover:text-[#0054A4]">Accueil</Link>
+        <Link href="/" className="hover:text-[#0054A4]">Home</Link>
         <span>/</span>
-        <Link href="/compte" className="hover:text-[#0054A4]">Mon Compte</Link>
+        <Link href="/compte" className="hover:text-[#0054A4]">My Account</Link>
         <span>/</span>
-        <span className="text-gray-900 font-bold">Mes Commandes</span>
+        <span className="text-gray-900 font-bold">My Orders</span>
       </nav>
 
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="font-heading font-black text-2xl sm:text-3xl text-gray-900 tracking-tight">
-            Mes Commandes ({orders.length})
+            My Orders ({orders.length})
           </h1>
           <p className="text-xs text-gray-500 mt-1">
-            Consultez vos commandes, finalisez vos règlements en attente et suivez vos livraisons en temps réel.
+            Review your purchase history, complete pending payments, and track live deliveries.
           </p>
         </div>
 
@@ -130,18 +130,18 @@ export default function MesCommandesPage() {
           className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold text-xs px-4 py-2.5 rounded-xl transition-all self-start sm:self-auto inline-flex items-center gap-2"
         >
           <Icons.ShoppingCart size={14} />
-          <span>Continuer mes achats</span>
+          <span>Continue Shopping</span>
         </Link>
       </div>
 
-      {/* Barre de Recherche & Filtres par statut */}
+      {/* Search Bar & Status Filters */}
       {orders.length > 0 && (
         <div className="bg-white border border-[#E2E5E8] rounded-2xl p-4 mb-6 shadow-xs flex flex-col md:flex-row items-center justify-between gap-4">
-          {/* Recherche */}
+          {/* Search */}
           <div className="relative w-full md:w-80">
             <input
               type="text"
-              placeholder="Rechercher par n° ou article..."
+              placeholder="Search by order # or product name..."
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
@@ -163,16 +163,16 @@ export default function MesCommandesPage() {
             )}
           </div>
 
-          {/* Filtres par Statut */}
+          {/* Status Filters */}
           <div className="flex flex-wrap items-center gap-1.5 w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
             {[
-              { label: 'Toutes', value: 'ALL' },
-              { label: 'En attente', value: 'PENDING' },
-              { label: 'Payées', value: 'PAID' },
-              { label: 'En préparation', value: 'PROCESSING' },
-              { label: 'Expédiées', value: 'SHIPPED' },
-              { label: 'Livrées', value: 'DELIVERED' },
-              { label: 'Annulées', value: 'CANCELLED' },
+              { label: 'All Orders', value: 'ALL' },
+              { label: 'Pending Payment', value: 'PENDING' },
+              { label: 'Paid', value: 'PAID' },
+              { label: 'Processing', value: 'PROCESSING' },
+              { label: 'Shipped', value: 'SHIPPED' },
+              { label: 'Delivered', value: 'DELIVERED' },
+              { label: 'Cancelled', value: 'CANCELLED' },
             ].map((tab) => (
               <button
                 key={tab.value}
@@ -196,7 +196,7 @@ export default function MesCommandesPage() {
       {loading ? (
         <div className="p-16 text-center text-xs text-gray-500">
           <div className="w-8 h-8 border-3 border-[#F1B20B] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-          <p>Chargement de vos commandes...</p>
+          <p>Loading your orders...</p>
         </div>
       ) : orders.length === 0 ? (
         <div className="bg-white border border-[#E2E5E8] rounded-3xl p-12 text-center max-w-lg mx-auto shadow-xs">
@@ -204,21 +204,21 @@ export default function MesCommandesPage() {
             <Icons.ShoppingBag size={32} />
           </div>
           <h3 className="font-heading font-black text-lg text-gray-900 mb-2">
-            Vous n'avez passé aucune commande pour le moment
+            No orders placed yet
           </h3>
           <p className="text-xs text-gray-500 mb-6 leading-relaxed">
-            Vos achats d'iPhones, smartphones Samsung et accessoires certifiés apparaîtront ici dès votre première commande.
+            Your purchases of iPhones, Samsung phones, and certified accessories will appear here once you place your first order.
           </p>
           <Link
             href="/boutique"
             className="bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase px-8 py-3.5 rounded-xl inline-block shadow-xs transition-all"
           >
-            Explorer la boutique
+            Explore the Store
           </Link>
         </div>
       ) : filteredOrders.length === 0 ? (
         <div className="bg-white border border-[#E2E5E8] rounded-2xl p-12 text-center">
-          <p className="text-xs text-gray-500 mb-4">Aucune commande ne correspond à vos critères de recherche.</p>
+          <p className="text-xs text-gray-500 mb-4">No orders match your search criteria.</p>
           <button
             onClick={() => {
               setStatusFilter('ALL');
@@ -227,7 +227,7 @@ export default function MesCommandesPage() {
             }}
             className="bg-[#F1B20B] text-[#1D2129] font-heading font-black text-xs uppercase px-6 py-2.5 rounded-xl"
           >
-            Réinitialiser les filtres
+            Reset Filters
           </button>
         </div>
       ) : (
@@ -245,7 +245,7 @@ export default function MesCommandesPage() {
                   }`}
                 >
                   <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
-                    {/* Détails Commande */}
+                    {/* Order Details */}
                     <div className="space-y-3 flex-1 min-w-0">
                       <div className="flex flex-wrap items-center gap-3">
                         <span className="font-heading font-black text-lg text-gray-900">
@@ -255,7 +255,7 @@ export default function MesCommandesPage() {
                           {statusInfo.label}
                         </span>
                         <span className="text-xs text-gray-400 font-medium">
-                          {new Date(ord.createdAt).toLocaleDateString('fr-FR', {
+                          {new Date(ord.createdAt).toLocaleDateString('en-GB', {
                             day: 'numeric',
                             month: 'short',
                             year: 'numeric',
@@ -269,12 +269,12 @@ export default function MesCommandesPage() {
                         <div className="bg-amber-100/70 border border-amber-200 text-amber-900 px-3.5 py-2 rounded-xl text-xs flex items-center gap-2">
                           <Icons.AlertCircle size={15} className="text-amber-700 flex-shrink-0" />
                           <span>
-                            <strong>Paiement non finalisé</strong> : Vous pouvez régler cette commande maintenant pour déclencher la livraison.
+                            <strong>Pending Payment</strong>: You can complete payment now to start order dispatch.
                           </span>
                         </div>
                       )}
 
-                      {/* Liste des articles */}
+                      {/* Items list */}
                       <div className="flex flex-wrap gap-2 pt-1">
                         {ord.items.map((item: any, idx: number) => (
                           <span
@@ -287,23 +287,22 @@ export default function MesCommandesPage() {
                       </div>
 
                       <div className="text-[11px] text-gray-500 flex items-center gap-4">
-                        <span>Destination : <strong>{ord.city} ({ord.district})</strong></span>
+                        <span>Destination: <strong>{ord.city} ({ord.district})</strong></span>
                         <span>•</span>
-                        <span>Passerelle : <strong>{ord.paymentProvider?.toUpperCase()}</strong></span>
+                        <span>Payment Method: <strong>{ord.paymentProvider?.toUpperCase()}</strong></span>
                       </div>
                     </div>
 
-                    {/* Actions & Montant */}
+                    {/* Actions & Amount */}
                     <div className="flex flex-col sm:flex-row lg:flex-col items-start sm:items-center lg:items-end justify-between w-full lg:w-auto gap-4 border-t lg:border-t-0 pt-4 lg:pt-0 border-gray-100">
                       <div className="text-left lg:text-right">
-                        <span className="text-[10px] text-gray-400 block uppercase font-bold tracking-wider">Montant total</span>
+                        <span className="text-[10px] text-gray-400 block uppercase font-bold tracking-wider">Total Amount</span>
                         <span className="font-heading font-black text-xl text-[#0054A4]">
                           {formatPrice(ord.totalAmount)}
                         </span>
                       </div>
 
                       <div className="flex items-center gap-2.5 w-full sm:w-auto">
-                        {/* Si la commande est en attente : Bouton Régler maintenant */}
                         {isPending ? (
                           <>
                             <Link
@@ -311,14 +310,14 @@ export default function MesCommandesPage() {
                               className="flex-1 sm:flex-initial bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase px-5 py-3 rounded-xl shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
                             >
                               <Icons.CreditCard size={15} />
-                              <span>Régler maintenant</span>
+                              <span>Pay Now</span>
                             </Link>
                             <button
                               type="button"
                               disabled={cancellingId === ord.orderNumber}
                               onClick={() => handleCancelOrder(ord.orderNumber)}
                               className="bg-red-50 hover:bg-red-100 text-red-600 font-bold text-xs px-3.5 py-3 rounded-xl transition-all disabled:opacity-50 cursor-pointer"
-                              title="Annuler cette commande"
+                              title="Cancel this order"
                             >
                               {cancellingId === ord.orderNumber ? (
                                 <div className="w-3.5 h-3.5 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
@@ -333,7 +332,7 @@ export default function MesCommandesPage() {
                             className="flex-1 sm:flex-initial bg-white border border-gray-300 hover:border-[#0054A4] hover:text-[#0054A4] text-gray-800 font-bold text-xs uppercase px-5 py-2.5 rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5"
                           >
                             <Icons.Truck size={14} />
-                            <span>Suivre le colis</span>
+                            <span>Track Package</span>
                           </Link>
                         )}
                       </div>
@@ -360,7 +359,7 @@ export default function MesCommandesPage() {
                 setCurrentPage(1);
               }}
               pageSizeOptions={[5, 10, 20]}
-              itemLabel="commandes"
+              itemLabel="orders"
             />
           </div>
         </>

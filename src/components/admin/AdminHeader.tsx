@@ -12,17 +12,17 @@ export function AdminHeader() {
   const { user, logout } = useAuth();
 
   const navItems = [
-    { label: 'Tableau de bord', href: '/admin', icon: Icons.TrendingUp, exact: true },
-    { label: 'Catalogue Produits', href: '/admin/produits', icon: Icons.Package, exact: false },
-    { label: 'Commandes', href: '/admin/commandes', icon: Icons.ShoppingBag, exact: false },
-    { label: 'Avis Clients', href: '/admin/avis', icon: Icons.Star, exact: false },
+    { label: 'Dashboard', href: '/admin', icon: Icons.TrendingUp, exact: true },
+    { label: 'Products', href: '/admin/produits', icon: Icons.Package, exact: false },
+    { label: 'Orders', href: '/admin/commandes', icon: Icons.ShoppingBag, exact: false },
+    { label: 'Customer Reviews', href: '/admin/avis', icon: Icons.Star, exact: false },
   ];
 
   return (
     <header className="bg-[#1E293B] border-b border-gray-800 text-white sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Logo DealMart */}
+          {/* DealMart Logo */}
           <Link href="/admin" className="flex items-center gap-3">
             <img
               src="/images/logo/dealmart_logo_horizontal_transparent.svg"
@@ -31,7 +31,7 @@ export function AdminHeader() {
             />
           </Link>
 
-          {/* Navigation interne Admin */}
+          {/* Admin Navigation */}
           <nav className="hidden md:flex items-center gap-1">
             {navItems.map((item) => {
               const isActive = item.exact ? pathname === item.href : pathname.startsWith(item.href);
@@ -53,20 +53,20 @@ export function AdminHeader() {
             })}
           </nav>
 
-          {/* Profil Admin & Déconnexion */}
+          {/* Admin Profile & Sign Out */}
           <div className="flex items-center gap-4">
             <div className="hidden sm:flex flex-col text-right text-xs">
               <span className="font-bold text-gray-200">{user?.firstName} {user?.lastName}</span>
-              <span className="text-[10px] text-gray-400 font-medium">Administrateur</span>
+              <span className="text-[10px] text-gray-400 font-medium">Administrator</span>
             </div>
 
             <button
               onClick={() => logout('/admin/login')}
-              title="Se déconnecter de l'administration"
+              title="Sign out of administration"
               className="bg-red-950/60 hover:bg-red-900 border border-red-800/80 text-red-300 text-xs font-bold px-3.5 py-2 rounded-xl flex items-center gap-2 transition-colors cursor-pointer"
             >
               <Icons.Lock size={13} />
-              <span>Déconnexion</span>
+              <span>Sign Out</span>
             </button>
           </div>
         </div>

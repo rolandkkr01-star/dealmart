@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Script from 'next/script';
 import { getOrderByNumberAction } from '@/actions/orders';
 import { verifyOrderPaymentAction, initPendingOrderPaymentAction } from '@/actions/payments';
-import { formatFCFA, getOrderStatusInfo } from '@/lib/utils';
+import { formatPrice, getOrderStatusInfo } from '@/lib/utils';
 import { Icons } from '@/components/ui/Icons';
 import { siteConfig } from '@/lib/site-config';
 
@@ -125,7 +125,7 @@ export default function OrderTrackingDetailPage({ params }: { params: Promise<{ 
     return (
       <div className="max-w-xl mx-auto px-4 py-20 text-center text-xs text-gray-500">
         <div className="w-8 h-8 border-3 border-[#F1B20B] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-        <p>Recherche de la commande <strong>{orderNumber}</strong> en base de données...</p>
+        <p>Locating order <strong>{orderNumber}</strong> in database...</p>
       </div>
     );
   }
@@ -136,15 +136,15 @@ export default function OrderTrackingDetailPage({ params }: { params: Promise<{ 
         <div className="w-14 h-14 rounded-full bg-red-50 text-[#DC3545] flex items-center justify-center mx-auto mb-4">
           <Icons.AlertCircle size={28} />
         </div>
-        <h2 className="font-heading font-bold text-xl text-gray-900 mb-2">Commande introuvable</h2>
+        <h2 className="font-heading font-bold text-xl text-gray-900 mb-2">Order Not Found</h2>
         <p className="text-xs text-gray-500 mb-6">
-          La référence <strong>{orderNumber}</strong> ne correspond à aucune commande enregistrée dans notre système.
+          Order number <strong>{orderNumber}</strong> does not match any record in our system.
         </p>
         <Link
           href="/suivi"
           className="bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase px-6 py-3 rounded-xl inline-block shadow-sm"
         >
-          Nouvelle recherche
+          Track Another Order
         </Link>
       </div>
     );
@@ -158,7 +158,7 @@ export default function OrderTrackingDetailPage({ params }: { params: Promise<{ 
       <Script src="https://cdn.kkiapay.me/k.js" strategy="afterInteractive" />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        {/* En-tête de la commande */}
+        {/* Order Header */}
         <div className="bg-white border border-[#E2E5E8] rounded-3xl p-6 sm:p-8 shadow-xs mb-8 text-center">
           <div
             className={`w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xs ${
@@ -169,19 +169,19 @@ export default function OrderTrackingDetailPage({ params }: { params: Promise<{ 
           </div>
 
           <span className="text-[11px] font-bold text-[#0054A4] uppercase tracking-widest block mb-1">
-            {siteConfig.name} • Suivi & Facture Sécurisée
+            {siteConfig.name} • Live Tracking & Invoice
           </span>
           <h1 className="font-heading font-black text-2xl sm:text-3xl text-gray-900 mb-2 tracking-tight">
-            Commande de {order.customerName}
+            Order for {order.customerName}
           </h1>
 
           <div className="inline-flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-xl text-xs font-mono font-bold text-gray-800 my-2">
-            <span>Référence :</span>
+            <span>Order #:</span>
             <span className="text-[#0054A4] font-black">{order.orderNumber}</span>
           </div>
         </div>
 
-        {/* BLOC DE PAIEMENT EN ATTENTE SI PENDING */}
+        {/* PENDING PAYMENT BLOCK IF APPLICABLE */}
         {isPending && (
           <div className="bg-amber-50 border-2 border-amber-300 rounded-3xl p-6 sm:p-8 mb-8 shadow-xs">
             <div className="flex items-start gap-4 mb-4">
@@ -190,10 +190,10 @@ export default function OrderTrackingDetailPage({ params }: { params: Promise<{ 
               </div>
               <div>
                 <h3 className="font-heading font-black text-lg text-gray-900">
-                  Règlement en attente ({formatFCFA(order.totalAmount)})
+                  Pending Payment ({formatPrice(order.totalAmount)})
                 </h3>
                 <p className="text-xs text-gray-600 mt-1 leading-relaxed">
-                  Votre commande est enregistrée dans notre système. Pour valider l'expédition et recevoir votre colis, veuillez procéder au règlement via l'une de nos passerelles sécurisées :
+                  Your order is recorded in our system. To confirm dispatch and schedule delivery across Honiara and provinces, please complete your payment:
                 </p>
               </div>
             </div>
@@ -211,8 +211,7 @@ export default function OrderTrackingDetailPage({ params }: { params: Promise<{ 
                 disabled={isPaying}
                 className="bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase p-4 rounded-2xl shadow-xs transition-all flex items-center justify-center gap-3 cursor-pointer disabled:opacity-50"
               >
-                <img src="/images/gateways/kkiapay.svg" alt="Kkiapay" className="h-5 w-auto object-contain" />
-                <span>Payer avec Kkiapay</span>
+                <span>Pay with Kkiapay</span>
               </button>
 
               <button
@@ -221,26 +220,25 @@ export default function OrderTrackingDetailPage({ params }: { params: Promise<{ 
                 disabled={isPaying}
                 className="bg-[#0054A4] hover:bg-[#00519E] text-white font-heading font-black text-xs uppercase p-4 rounded-2xl shadow-xs transition-all flex items-center justify-center gap-3 cursor-pointer disabled:opacity-50"
               >
-                <img src="/images/gateways/fedapay.svg" alt="FedaPay" className="h-5 w-auto object-contain brightness-0 invert" />
-                <span>Payer avec FedaPay</span>
+                <span>Pay with FedaPay</span>
               </button>
             </div>
           </div>
         )}
 
-        {/* Suivi en Direct (Timeline) */}
+        {/* Live Timeline */}
         <div className="bg-white border border-[#E2E5E8] rounded-3xl p-6 sm:p-8 shadow-xs mb-8">
           <div className="flex items-center justify-between pb-4 border-b border-gray-100 mb-6">
             <h3 className="font-heading font-black text-base text-gray-900 flex items-center gap-2">
               <Icons.Truck size={18} className="text-[#0054A4]" />
-              <span>Statut de Livraison en Direct</span>
+              <span>Live Delivery Status</span>
             </h3>
             <span className={`text-xs font-black uppercase px-3.5 py-1 rounded-full border ${statusInfo.className}`}>
               {statusInfo.label}
             </span>
           </div>
 
-          {/* Timeline des étapes */}
+          {/* Timeline steps */}
           <div className="space-y-4 relative pl-6 before:content-[''] before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-gray-200">
             {order.statusHistory.map((ev: any, idx: number) => (
               <div key={ev.id} className="relative">
@@ -253,7 +251,7 @@ export default function OrderTrackingDetailPage({ params }: { params: Promise<{ 
                   <div className="flex justify-between items-center mb-1">
                     <span className="font-bold text-xs text-gray-900">{ev.status}</span>
                     <span className="text-[10px] text-gray-500">
-                      {new Date(ev.createdAt).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' })}
+                      {new Date(ev.createdAt).toLocaleString('en-US', { dateStyle: 'short', timeStyle: 'short' })}
                     </span>
                   </div>
                   <p className="text-xs text-gray-600">{ev.note}</p>
@@ -263,53 +261,53 @@ export default function OrderTrackingDetailPage({ params }: { params: Promise<{ 
           </div>
         </div>
 
-        {/* Détails Commande & Adresse */}
+        {/* Order & Address Details */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          {/* Adresse de livraison */}
+          {/* Delivery Address */}
           <div className="bg-white border border-[#E2E5E8] rounded-3xl p-6 shadow-xs text-xs space-y-2">
             <h4 className="font-heading font-bold text-sm text-gray-900 uppercase tracking-wider mb-3">
-              Lieu de Livraison au Bénin
+              Delivery Destination (Solomon Islands)
             </h4>
-            <p><strong>Destinataire :</strong> {order.customerName}</p>
-            <p><strong>Téléphone :</strong> {order.customerPhone}</p>
-            {order.customerEmail && <p><strong>Email :</strong> {order.customerEmail}</p>}
-            <p><strong>Ville / Quartier :</strong> {order.city} {order.district ? `(${order.district})` : ''}</p>
-            <p><strong>Repère précis :</strong> {order.streetDetails}</p>
-            {order.notes && <p><strong>Instructions coursier :</strong> {order.notes}</p>}
+            <p><strong>Customer:</strong> {order.customerName}</p>
+            <p><strong>Phone:</strong> {order.customerPhone}</p>
+            {order.customerEmail && <p><strong>Email:</strong> {order.customerEmail}</p>}
+            <p><strong>Town / Area:</strong> {order.city} {order.district ? `(${order.district})` : ''}</p>
+            <p><strong>Street / Address:</strong> {order.streetDetails}</p>
+            {order.notes && <p><strong>Delivery Notes:</strong> {order.notes}</p>}
           </div>
 
-          {/* Récapitulatif Paiement */}
+          {/* Payment & Billing */}
           <div className="bg-white border border-[#E2E5E8] rounded-3xl p-6 shadow-xs text-xs space-y-2">
             <h4 className="font-heading font-bold text-sm text-gray-900 uppercase tracking-wider mb-3">
-              Paiement & Facturation
+              Payment & Billing
             </h4>
             <div className="flex justify-between">
-              <span className="text-gray-500">Passerelle choisie :</span>
+              <span className="text-gray-500">Payment Method:</span>
               <span className="font-bold uppercase">{order.paymentProvider}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-500">Référence transaction :</span>
-              <span className="font-mono text-gray-700">{order.paymentRef || 'En attente'}</span>
+              <span className="text-gray-500">Transaction ID:</span>
+              <span className="font-mono text-gray-700">{order.paymentRef || 'Pending'}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-500">Statut du paiement :</span>
+              <span className="text-gray-500">Payment Status:</span>
               <span className={`font-bold ${isPending ? 'text-amber-600' : 'text-emerald-600'}`}>
-                {isPending ? '⏳ En attente de règlement' : '✓ Réglé avec succès'}
+                {isPending ? '⏳ Pending Payment' : '✓ Confirmed & Paid'}
               </span>
             </div>
             <div className="flex justify-between pt-3 border-t border-gray-100">
-              <span className="font-bold text-gray-900">Total commande :</span>
+              <span className="font-bold text-gray-900">Total Amount:</span>
               <span className="font-price font-black text-sm text-[#0054A4]">
-                {formatFCFA(order.totalAmount)}
+                {formatPrice(order.totalAmount)}
               </span>
             </div>
           </div>
         </div>
 
-        {/* Articles de la commande */}
+        {/* Ordered items */}
         <div className="bg-white border border-[#E2E5E8] rounded-3xl p-6 shadow-xs">
           <h4 className="font-heading font-bold text-sm text-gray-900 uppercase tracking-wider mb-4">
-            Articles commandés ({order.items.length})
+            Ordered Items ({order.items.length})
           </h4>
           <div className="divide-y divide-gray-100">
             {order.items.map((item: any) => (
@@ -325,11 +323,11 @@ export default function OrderTrackingDetailPage({ params }: { params: Promise<{ 
                   <div>
                     <span className="font-bold text-xs text-gray-900 block">{item.productName}</span>
                     {item.variantInfo && <span className="text-[11px] text-gray-500">{item.variantInfo}</span>}
-                    <span className="text-[11px] text-gray-400 block">Qté : {item.quantity}</span>
+                    <span className="text-[11px] text-gray-400 block">Qty: {item.quantity}</span>
                   </div>
                 </div>
                 <span className="font-price font-bold text-xs text-gray-900">
-                  {formatFCFA(item.unitPrice * item.quantity)}
+                  {formatPrice(item.unitPrice * item.quantity)}
                 </span>
               </div>
             ))}

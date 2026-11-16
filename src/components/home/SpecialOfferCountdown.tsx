@@ -41,16 +41,16 @@ export const SpecialOfferCountdown: React.FC<SpecialOfferCountdownProps> = ({ pr
 
   return (
     <div className="border-2 border-[#F1B20B] rounded-2xl p-6 relative bg-white flex flex-col justify-between h-full">
-      {/* Badge Offre Spéciale */}
+      {/* Badge Special Deal */}
       <div className="absolute -top-3.5 left-6 bg-[#DC3545] text-white font-extrabold text-[11px] uppercase tracking-wider px-3.5 py-1 rounded-full flex items-center gap-1.5 shadow-xs">
         <Icons.Flame size={13} className="text-white fill-white" />
-        <span>Offre Spéciale du Jour</span>
+        <span>Special Deal of the Day</span>
       </div>
 
-      {/* Pastille Remise */}
+      {/* Discount badge */}
       {discount && (
         <div className="absolute top-4 right-4 bg-[#F1B20B] text-[#1D2129] font-black rounded-full w-14 h-14 flex flex-col items-center justify-center text-xs shadow-xs border border-[#D99F07]">
-          <span className="text-[10px] uppercase font-bold leading-none">Éco.</span>
+          <span className="text-[10px] uppercase font-bold leading-none">Save</span>
           <span className="text-sm font-black leading-none">{discount}%</span>
         </div>
       )}
@@ -86,17 +86,17 @@ export const SpecialOfferCountdown: React.FC<SpecialOfferCountdownProps> = ({ pr
         )}
       </div>
 
-      {/* Compte à Rebours */}
+      {/* Countdown timer */}
       <div className="text-center my-2">
         <p className="text-[11px] font-bold text-gray-600 uppercase tracking-wide mb-2">
-          Fin de l'offre flash dans :
+          Flash deal ends in:
         </p>
         <div className="flex justify-center items-center gap-2">
           <div className="bg-[#F5F7FA] border border-[#E2E5E8] px-3 py-1.5 rounded-lg min-w-[55px]">
             <span className="font-heading font-black text-base text-[#DC3545] block">
               {String(timeLeft.hours).padStart(2, '0')}
             </span>
-            <span className="text-[9px] uppercase font-bold text-gray-500">Heures</span>
+            <span className="text-[9px] uppercase font-bold text-gray-500">Hours</span>
           </div>
           <span className="font-black text-[#DC3545]">:</span>
           <div className="bg-[#F5F7FA] border border-[#E2E5E8] px-3 py-1.5 rounded-lg min-w-[55px]">
@@ -115,25 +115,25 @@ export const SpecialOfferCountdown: React.FC<SpecialOfferCountdownProps> = ({ pr
         </div>
       </div>
 
-      {/* Barre de Stock Restant */}
+      {/* Stock availability */}
       <div className="my-3">
         <div className="flex justify-between text-[11px] font-semibold text-gray-600 mb-1">
-          <span>Stock disponible :</span>
-          <span className="text-emerald-700 font-bold">Plus que quelques unités</span>
+          <span>Available Stock:</span>
+          <span className="text-emerald-700 font-bold">Limited units left</span>
         </div>
         <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
           <div className="h-full bg-[#0054A4] rounded-full w-3/4" />
         </div>
       </div>
 
-      {/* Action Panier */}
+      {/* Add to Cart CTA */}
       <div className="mt-2">
         <button
           onClick={() => addToCart(product)}
           className="w-full bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase tracking-wider py-3 rounded-xl flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-xs"
         >
           <Icons.ShoppingCart size={16} />
-          <span>Ajouter au Panier</span>
+          <span>Add to Cart</span>
         </button>
       </div>
     </div>

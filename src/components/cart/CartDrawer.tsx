@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Icons } from '@/components/ui/Icons';
 import { useCart } from '@/context/CartContext';
-import { formatFCFA } from '@/lib/utils';
+import { formatPrice } from '@/lib/utils';
 
 export const CartDrawer: React.FC = () => {
   const {
@@ -37,7 +37,7 @@ export const CartDrawer: React.FC = () => {
             <div className="flex items-center gap-2">
               <Icons.ShoppingCart size={20} />
               <h3 className="font-heading font-black text-sm uppercase tracking-wide">
-                Mon Panier ({cart.reduce((a, b) => a + b.quantity, 0)})
+                My Cart ({cart.reduce((a, b) => a + b.quantity, 0)})
               </h3>
             </div>
             <button
@@ -48,17 +48,17 @@ export const CartDrawer: React.FC = () => {
             </button>
           </div>
 
-          {/* Barre de progression livraison gratuite */}
+          {/* Free delivery progress bar */}
           <div className="bg-amber-50 p-3.5 border-b border-amber-100 text-xs">
             {subtotal >= freeShippingThreshold ? (
               <p className="font-bold text-emerald-800 flex items-center gap-1.5">
                 <Icons.Check size={16} className="text-emerald-600" />
-                Félicitations ! Vous bénéficiez de la livraison gratuite à Cotonou !
+                Congratulations! You qualify for Free Delivery in Honiara!
               </p>
             ) : (
               <div>
                 <p className="text-gray-700 mb-1.5">
-                  Ajoutez encore <strong className="text-[#0054A4]">{formatFCFA(freeShippingThreshold - subtotal)}</strong> pour la <strong>livraison gratuite</strong> !
+                  Add <strong className="text-[#0054A4]">{formatPrice(freeShippingThreshold - subtotal)}</strong> more for <strong>Free Delivery</strong>!
                 </p>
                 <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
                   <div
@@ -70,21 +70,21 @@ export const CartDrawer: React.FC = () => {
             )}
           </div>
 
-          {/* Liste des articles */}
+          {/* Items list */}
           <div className="flex-1 overflow-y-auto p-4 divide-y divide-gray-100">
             {cart.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center p-6 text-gray-500">
                 <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 mb-3">
                   <Icons.ShoppingCart size={32} />
                 </div>
-                <h4 className="font-heading font-bold text-gray-800 text-base mb-1">Votre panier est vide</h4>
-                <p className="text-xs text-gray-500 mb-6">Découvrez nos smartphones neufs et accessoires certifiés.</p>
+                <h4 className="font-heading font-bold text-gray-800 text-base mb-1">Your cart is empty</h4>
+                <p className="text-xs text-gray-500 mb-6">Discover authentic electronics, beauty, fashion, and home essentials.</p>
                 <Link
                   href="/boutique"
                   onClick={() => setIsCartDrawerOpen(false)}
                   className="bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-bold text-xs uppercase tracking-wider px-6 py-3 rounded-lg shadow-sm transition-all"
                 >
-                  Découvrir les offres
+                  Shop Now
                 </Link>
               </div>
             ) : (
@@ -112,7 +112,7 @@ export const CartDrawer: React.FC = () => {
                     )}
 
                     <div className="flex items-center justify-between">
-                      {/* Sélecteur de quantité */}
+                      {/* Quantity selector */}
                       <div className="flex items-center border border-gray-300 rounded-md overflow-hidden bg-white">
                         <button
                           onClick={() => updateQuantity(item.productId, item.variantId, item.quantity - 1)}
@@ -131,7 +131,7 @@ export const CartDrawer: React.FC = () => {
 
                       <div className="text-right">
                         <span className="text-xs font-black text-[#DC3545] font-price">
-                          {formatFCFA(item.unitPrice * item.quantity)}
+                          {formatPrice(item.unitPrice * item.quantity)}
                         </span>
                       </div>
                     </div>
@@ -140,7 +140,7 @@ export const CartDrawer: React.FC = () => {
                   <button
                     onClick={() => removeFromCart(item.productId, item.variantId)}
                     className="text-gray-400 hover:text-red-600 p-1 transition-colors"
-                    title="Supprimer"
+                    title="Remove"
                   >
                     <Icons.Trash2 size={16} />
                   </button>
@@ -149,23 +149,23 @@ export const CartDrawer: React.FC = () => {
             )}
           </div>
 
-          {/* Footer avec Sous-total et CTA */}
+          {/* Footer with Subtotal & CTA */}
           {cart.length > 0 && (
             <div className="p-4 bg-gray-50 border-t border-gray-200 space-y-3">
               <div className="space-y-1.5 text-xs">
                 <div className="flex justify-between text-gray-600">
-                  <span>Sous-total</span>
-                  <span className="font-semibold text-gray-900">{formatFCFA(subtotal)}</span>
+                  <span>Subtotal</span>
+                  <span className="font-semibold text-gray-900">{formatPrice(subtotal)}</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
-                  <span>Livraison (Cotonou & env.)</span>
+                  <span>Delivery (Honiara)</span>
                   <span className="font-semibold text-gray-900">
-                    {shippingFee === 0 ? <strong className="text-emerald-600">GRATUITE</strong> : formatFCFA(shippingFee)}
+                    {shippingFee === 0 ? <strong className="text-emerald-600">FREE</strong> : formatPrice(shippingFee)}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm font-black text-gray-900 pt-2 border-t border-gray-200">
-                  <span>Total estimé</span>
-                  <span className="text-base text-[#0054A4] font-price">{formatFCFA(total)}</span>
+                  <span>Estimated Total</span>
+                  <span className="text-base text-[#0054A4] font-price">{formatPrice(total)}</span>
                 </div>
               </div>
 
@@ -175,21 +175,21 @@ export const CartDrawer: React.FC = () => {
                   onClick={() => setIsCartDrawerOpen(false)}
                   className="w-full bg-white hover:bg-gray-100 text-gray-800 border border-gray-300 font-bold text-xs uppercase tracking-wider py-3 rounded-lg text-center transition-colors"
                 >
-                  Voir le Panier
+                  View Cart
                 </Link>
                 <Link
                   href="/checkout"
                   onClick={() => setIsCartDrawerOpen(false)}
                   className="w-full bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-black text-xs uppercase tracking-wider py-3 rounded-lg text-center shadow-md transition-all flex items-center justify-center gap-1"
                 >
-                  <span>Commander</span>
+                  <span>Checkout</span>
                   <Icons.ArrowRight size={14} />
                 </Link>
               </div>
 
               <div className="flex items-center justify-center gap-2 text-[10px] text-gray-500 pt-1">
                 <Icons.Lock size={12} className="text-emerald-600" />
-                <span>Paiement 100% sécurisé via MTN, Moov & Kkiapay</span>
+                <span>100% Secure Checkout • Cash on Delivery & Direct BSP Transfer</span>
               </div>
             </div>
           )}

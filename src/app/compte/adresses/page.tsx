@@ -23,12 +23,12 @@ export default function ClientAddressesPage() {
   const [actionSuccess, setActionSuccess] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  // Recherche & Pagination
+  // Search & Pagination
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(6);
 
-  // Modal de confirmation de suppression
+  // Delete modal state
   const [deleteConfirmState, setDeleteConfirmState] = useState<{
     isOpen: boolean;
     addressId: string | null;
@@ -39,9 +39,9 @@ export default function ClientAddressesPage() {
     label: '',
   });
 
-  // Formulaire d'ajout
+  // Add form fields
   const [label, setLabel] = useState('');
-  const [city, setCity] = useState('Cotonou');
+  const [city, setCity] = useState('Honiara');
   const [district, setDistrict] = useState('');
   const [street, setStreet] = useState('');
   const [phone, setPhone] = useState('');
@@ -62,7 +62,7 @@ export default function ClientAddressesPage() {
 
   const handleOpenAddModal = () => {
     setLabel('');
-    setCity('Cotonou');
+    setCity('Honiara');
     setDistrict('');
     setStreet('');
     setPhone(user?.phone || '');
@@ -88,12 +88,12 @@ export default function ClientAddressesPage() {
     setSubmitting(false);
 
     if (res.success) {
-      setActionSuccess('Adresse ajoutée avec succès à votre carnet.');
+      setActionSuccess('Address saved successfully to your address book.');
       setIsModalOpen(false);
       loadAddresses();
       setTimeout(() => setActionSuccess(null), 4000);
     } else {
-      setActionError(res.error || 'Erreur lors de l\'enregistrement de l\'adresse.');
+      setActionError(res.error || 'Failed to save address.');
     }
   };
 
@@ -112,18 +112,18 @@ export default function ClientAddressesPage() {
 
     const res = await deleteUserAddressAction(id);
     if (res.success) {
-      setActionSuccess('Adresse supprimée avec succès.');
+      setActionSuccess('Address deleted successfully.');
       loadAddresses();
       setTimeout(() => setActionSuccess(null), 3000);
     } else {
-      setActionError(res.error || 'Impossible de supprimer cette adresse.');
+      setActionError(res.error || 'Unable to delete address.');
     }
   };
 
   const handleSetDefault = async (id: string) => {
     const res = await setDefaultAddressAction(id);
     if (res.success) {
-      setActionSuccess('Adresse définie comme adresse par défaut.');
+      setActionSuccess('Default address updated.');
       loadAddresses();
       setTimeout(() => setActionSuccess(null), 3000);
     }
@@ -152,34 +152,35 @@ export default function ClientAddressesPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Dialog de confirmation de suppression */}
+      {/* Delete confirmation dialog */}
       <DialogModal
         isOpen={deleteConfirmState.isOpen}
         onClose={() => setDeleteConfirmState({ isOpen: false, addressId: null, label: '' })}
         onConfirm={confirmDeleteAddress}
-        title="Supprimer cette adresse ?"
-        message={`Êtes-vous certain de vouloir supprimer "${deleteConfirmState.label}" de votre carnet d'adresses ?`}
+        title="Delete this address?"
+        message={`Are you sure you want to delete "${deleteConfirmState.label}" from your address book?`}
         type="danger"
-        confirmText="Supprimer"
-        cancelText="Conserver"
+        confirmText="Delete"
+        cancelText="Cancel"
       />
-      {/* Fil d'Ariane */}
+
+      {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-xs text-gray-500 mb-6">
-        <Link href="/" className="hover:text-[#0054A4]">Accueil</Link>
+        <Link href="/" className="hover:text-[#0054A4]">Home</Link>
         <span>/</span>
-        <Link href="/compte" className="hover:text-[#0054A4]">Mon Compte</Link>
+        <Link href="/compte" className="hover:text-[#0054A4]">My Account</Link>
         <span>/</span>
-        <span className="text-gray-900 font-bold">Mes Adresses de Livraison</span>
+        <span className="text-gray-900 font-bold">Delivery Addresses</span>
       </nav>
 
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-200 pb-5 mb-6">
         <div>
           <h1 className="font-heading font-black text-2xl sm:text-3xl text-gray-900 tracking-tight flex items-center gap-3">
             <Icons.MapPin size={28} className="text-[#0054A4]" />
-            <span>Mes Adresses de Livraison</span>
+            <span>My Delivery Addresses</span>
           </h1>
           <p className="text-xs text-gray-500 mt-1">
-            Gérez vos lieux de réception habituels au Bénin pour des commandes rapides en un clic.
+            Manage your delivery locations across Honiara and the provinces for quick one-click checkouts.
           </p>
         </div>
 
@@ -188,7 +189,7 @@ export default function ClientAddressesPage() {
           className="bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase px-5 py-3 rounded-xl shadow-xs transition-colors inline-flex items-center gap-2 cursor-pointer self-start sm:self-auto"
         >
           <Icons.Plus size={16} />
-          <span>Ajouter une adresse</span>
+          <span>Add New Address</span>
         </button>
       </div>
 
@@ -206,14 +207,14 @@ export default function ClientAddressesPage() {
         </div>
       )}
 
-      {/* Barre de Recherche si plusieurs adresses */}
+      {/* Search Bar */}
       {addresses.length > 0 && (
         <div className="bg-white border border-[#E2E5E8] rounded-2xl p-4 mb-6 shadow-xs flex items-center justify-between gap-4">
           <div className="relative w-full max-w-md">
             <Icons.Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
             <input
               type="text"
-              placeholder="Rechercher par label, quartier, ville ou téléphone..."
+              placeholder="Search by label, suburb, city or phone..."
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
@@ -234,7 +235,7 @@ export default function ClientAddressesPage() {
             )}
           </div>
           <span className="text-xs text-gray-500 font-bold hidden sm:inline-block">
-            {filteredAddresses.length} adresse{filteredAddresses.length > 1 ? 's' : ''}
+            {filteredAddresses.length} address{filteredAddresses.length > 1 ? 'es' : ''}
           </span>
         </div>
       )}
@@ -242,7 +243,7 @@ export default function ClientAddressesPage() {
       {loading ? (
         <div className="p-16 text-center text-xs text-gray-500">
           <div className="w-8 h-8 border-3 border-[#F1B20B] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-          <p>Chargement de vos adresses...</p>
+          <p>Loading your addresses...</p>
         </div>
       ) : addresses.length === 0 ? (
         <div className="bg-white border border-[#E2E5E8] rounded-3xl p-12 text-center max-w-lg mx-auto shadow-xs">
@@ -250,22 +251,22 @@ export default function ClientAddressesPage() {
             <Icons.MapPin size={32} />
           </div>
           <h3 className="font-heading font-bold text-base text-gray-900 mb-2">
-            Aucune adresse enregistrée
+            No addresses saved yet
           </h3>
           <p className="text-xs text-gray-500 mb-6 leading-relaxed">
-            Vous n'avez pas encore d'adresse mémorisée. Enregistrez votre domicile ou bureau pour pré-remplir automatiquement vos prochaines commandes.
+            You don't have any saved delivery locations. Save your home or office address to autofill during checkout.
           </p>
           <button
             onClick={handleOpenAddModal}
             className="bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase px-6 py-3 rounded-xl shadow-xs transition-colors cursor-pointer inline-flex items-center gap-2"
           >
             <Icons.Plus size={16} />
-            <span>Ajouter ma première adresse</span>
+            <span>Add My First Address</span>
           </button>
         </div>
       ) : filteredAddresses.length === 0 ? (
         <div className="bg-white border border-[#E2E5E8] rounded-2xl p-12 text-center">
-          <p className="text-xs text-gray-500 mb-4">Aucune adresse ne correspond à votre recherche.</p>
+          <p className="text-xs text-gray-500 mb-4">No address matches your search.</p>
           <button
             onClick={() => {
               setSearchQuery('');
@@ -273,7 +274,7 @@ export default function ClientAddressesPage() {
             }}
             className="bg-[#F1B20B] text-[#1D2129] font-heading font-black text-xs uppercase px-5 py-2.5 rounded-xl cursor-pointer"
           >
-            Réinitialiser la recherche
+            Reset Search
           </button>
         </div>
       ) : (
@@ -294,25 +295,25 @@ export default function ClientAddressesPage() {
                     </span>
                     {addr.isDefault ? (
                       <span className="text-[10px] font-black uppercase bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full">
-                        Adresse par défaut
+                        Default Address
                       </span>
                     ) : (
                       <button
                         onClick={() => handleSetDefault(addr.id)}
                         className="text-[11px] font-bold text-[#0054A4] hover:underline cursor-pointer"
                       >
-                        Définir par défaut
+                        Set as Default
                       </button>
                     )}
                   </div>
 
                   <div className="text-xs text-gray-700 space-y-1 my-3 bg-gray-50 p-3 rounded-xl border border-gray-100">
                     <p>
-                      <span className="text-gray-500 font-medium">Ville :</span> <strong>{addr.city}</strong>
-                      {addr.district ? ` • Quartier ${addr.district}` : ''}
+                      <span className="text-gray-500 font-medium">City / Province:</span> <strong>{addr.city}</strong>
+                      {addr.district ? ` • Suburb / Area: ${addr.district}` : ''}
                     </p>
                     <p>
-                      <span className="text-gray-500 font-medium">Repère / Rue :</span> {addr.street}
+                      <span className="text-gray-500 font-medium">Street / Landmark:</span> {addr.street}
                     </p>
                     {addr.phone && (
                       <p className="flex items-center gap-1.5 pt-1 text-gray-600">
@@ -329,14 +330,14 @@ export default function ClientAddressesPage() {
                     className="text-red-600 hover:text-red-800 hover:bg-red-50 px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
                   >
                     <Icons.Trash2 size={14} />
-                    <span>Supprimer</span>
+                    <span>Delete</span>
                   </button>
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Pagination Adresses */}
+          {/* Pagination */}
           <div className="mt-8 bg-white border border-[#E2E5E8] rounded-2xl p-2 shadow-xs">
             <Pagination
               currentPage={currentPage}
@@ -352,20 +353,20 @@ export default function ClientAddressesPage() {
                 setCurrentPage(1);
               }}
               pageSizeOptions={[4, 6, 12]}
-              itemLabel="adresses"
+              itemLabel="addresses"
             />
           </div>
         </>
       )}
 
-      {/* Modal Ajout d'Adresse */}
+      {/* Add Address Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-in fade-in duration-150">
           <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl border border-gray-100">
             <div className="flex items-center justify-between pb-3 border-b border-gray-100 mb-5">
               <h3 className="font-heading font-black text-lg text-gray-900 flex items-center gap-2">
                 <Icons.MapPin size={20} className="text-[#0054A4]" />
-                <span>Nouvelle Adresse de Livraison</span>
+                <span>Add Delivery Address</span>
               </h3>
               <button
                 onClick={() => setIsModalOpen(false)}
@@ -378,12 +379,12 @@ export default function ClientAddressesPage() {
             <form onSubmit={handleSaveAddress} className="space-y-4 text-xs">
               <div>
                 <label className="block font-bold text-gray-700 mb-1">
-                  Nom de l'adresse (ex: Domicile, Bureau Cadjehoun, Maison Calavi) *
+                  Address Label (e.g. Home, Office, Kukum Branch) *
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="Ex: Domicile"
+                  placeholder="e.g. Home, Office"
                   value={label}
                   onChange={(e) => setLabel(e.target.value)}
                   className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0054A4] focus:outline-none font-bold text-gray-900"
@@ -392,27 +393,29 @@ export default function ClientAddressesPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-bold text-gray-700 mb-1">Ville *</label>
+                  <label className="block font-bold text-gray-700 mb-1">City / Region *</label>
                   <select
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
                     className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0054A4] focus:outline-none bg-white font-bold text-gray-900"
                   >
-                    <option value="Cotonou">Cotonou</option>
-                    <option value="Abomey-Calavi">Abomey-Calavi</option>
-                    <option value="Porto-Novo">Porto-Novo</option>
-                    <option value="Ouidah">Ouidah</option>
-                    <option value="Parakou">Parakou</option>
-                    <option value="Autre ville">Autre ville</option>
+                    <option value="Honiara">Honiara (Guadalcanal)</option>
+                    <option value="Auki">Auki (Malaita)</option>
+                    <option value="Gizo">Gizo (Western Province)</option>
+                    <option value="Noro">Noro (Western Province)</option>
+                    <option value="Kirakira">Kirakira (Makira-Ulawa)</option>
+                    <option value="Taro">Taro (Choiseul)</option>
+                    <option value="Lata">Lata (Temotu)</option>
+                    <option value="Other Province">Other Province</option>
                   </select>
                 </div>
 
                 <div>
-                  <label className="block font-bold text-gray-700 mb-1">Quartier / Zone *</label>
+                  <label className="block font-bold text-gray-700 mb-1">Suburb / Area *</label>
                   <input
                     type="text"
                     required
-                    placeholder="Ex: Cadjehoun, Akpakpa, Zogbo..."
+                    placeholder="e.g. Point Cruz, Kukum, Ranadi, Kola'a..."
                     value={district}
                     onChange={(e) => setDistrict(e.target.value)}
                     className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0054A4] focus:outline-none"
@@ -422,12 +425,12 @@ export default function ClientAddressesPage() {
 
               <div>
                 <label className="block font-bold text-gray-700 mb-1">
-                  Repère précis de Livraison (Rue, Immeuble, Carrefour) *
+                  Street / Precise Delivery Landmark *
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="Ex: En face de la Pharmacie, Immeuble vitré au 1er étage"
+                  placeholder="e.g. Near Transol Building, Hibiscus Avenue, 1st Floor"
                   value={street}
                   onChange={(e) => setStreet(e.target.value)}
                   className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0054A4] focus:outline-none"
@@ -436,12 +439,12 @@ export default function ClientAddressesPage() {
 
               <div>
                 <label className="block font-bold text-gray-700 mb-1">
-                  Téléphone de contact pour la livraison *
+                  Contact Phone for Delivery *
                 </label>
                 <input
                   type="tel"
                   required
-                  placeholder="Ex: +229 97 00 00 00"
+                  placeholder="e.g. +677 7465588"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0054A4] focus:outline-none"
@@ -456,7 +459,7 @@ export default function ClientAddressesPage() {
                     onChange={(e) => setIsDefault(e.target.checked)}
                     className="w-4 h-4 rounded text-[#0054A4] focus:ring-[#0054A4] border-gray-300 cursor-pointer"
                   />
-                  <span className="font-bold text-gray-900">Définir comme adresse de livraison par défaut</span>
+                  <span className="font-bold text-gray-900">Set as default delivery address</span>
                 </label>
               </div>
 
@@ -466,14 +469,14 @@ export default function ClientAddressesPage() {
                   onClick={() => setIsModalOpen(false)}
                   className="px-4 py-2.5 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-50 font-bold cursor-pointer"
                 >
-                  Annuler
+                  Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
                   className="bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black px-6 py-2.5 rounded-xl shadow-xs transition-colors cursor-pointer disabled:opacity-50"
                 >
-                  {submitting ? 'Enregistrement...' : 'Enregistrer l\'adresse'}
+                  {submitting ? 'Saving...' : 'Save Address'}
                 </button>
               </div>
             </form>

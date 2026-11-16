@@ -61,17 +61,17 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       } else {
         const savedCart = localStorage.getItem('dealmart_cart');
         if (savedCart && savedCart !== 'undefined' && savedCart !== 'null') {
-          try { setCart(JSON.parse(savedCart)); } catch (_) {}
+          try { setCart(JSON.parse(savedCart)); } catch (_) { }
         }
 
         const savedWishlist = localStorage.getItem('dealmart_wishlist');
         if (savedWishlist && savedWishlist !== 'undefined' && savedWishlist !== 'null') {
-          try { setWishlist(JSON.parse(savedWishlist)); } catch (_) {}
+          try { setWishlist(JSON.parse(savedWishlist)); } catch (_) { }
         }
 
         const savedPromo = localStorage.getItem('dealmart_promo');
         if (savedPromo && savedPromo !== 'undefined' && savedPromo !== 'null') {
-          try { setAppliedPromo(JSON.parse(savedPromo)); } catch (_) {}
+          try { setAppliedPromo(JSON.parse(savedPromo)); } catch (_) { }
         }
       }
     } catch (e) {
@@ -140,7 +140,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const removeFromCart = (productId: string, variantId?: string) => {
     setCart((prev) => prev.filter((item) => !(item.productId === productId && item.variantId === variantId)));
-    showToast('Article retiré du panier.');
+    showToast('Item removed from cart.');
   };
 
   const updateQuantity = (productId: string, variantId: string | undefined, quantity: number) => {
@@ -174,7 +174,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const found = PROMO_CODES.find((p) => p.code.toUpperCase() === cleanCode && p.isActive);
 
     if (!found) {
-      setPromoError('Code promo invalide ou expiré.');
+      setPromoError('Invalid or expired promo code.');
       return false;
     }
 
@@ -187,7 +187,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (typeof window !== 'undefined') {
       localStorage.setItem('dealmart_promo', JSON.stringify(found));
     }
-    showToast(`🎉 Code promo ${found.code} appliqué !`);
+    showToast(`🎉 Promo code ${found.code} applied!`);
     return true;
   };
 
@@ -203,10 +203,10 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setWishlist((prev) => {
       const exists = prev.includes(productId);
       if (exists) {
-        showToast('Article retiré de vos favoris.');
+        showToast('Item removed from your wishlist.');
         return prev.filter((id) => id !== productId);
       } else {
-        showToast('❤️ Article ajouté à vos favoris !');
+        showToast('❤️ Item added to your wishlist!');
         return [...prev, productId];
       }
     });

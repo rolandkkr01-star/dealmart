@@ -13,15 +13,15 @@ export function AdminSidebar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navItems = [
-    { label: 'Tableau de bord', href: '/admin', icon: Icons.TrendingUp, exact: true },
-    { label: 'Catalogue Produits', href: '/admin/produits', icon: Icons.Package, exact: false },
-    { label: 'Commandes', href: '/admin/commandes', icon: Icons.ShoppingBag, exact: false },
-    { label: 'Avis Clients', href: '/admin/avis', icon: Icons.Star, exact: false },
+    { label: 'Dashboard', href: '/admin', icon: Icons.TrendingUp, exact: true },
+    { label: 'Products', href: '/admin/produits', icon: Icons.Package, exact: false },
+    { label: 'Orders', href: '/admin/commandes', icon: Icons.ShoppingBag, exact: false },
+    { label: 'Customer Reviews', href: '/admin/avis', icon: Icons.Star, exact: false },
   ];
 
   return (
     <>
-      {/* Top Header pour Mobile */}
+      {/* Mobile Top Header */}
       <header className="md:hidden h-16 fixed top-0 left-0 w-full z-40 bg-[#1D2129] border-b border-gray-800 flex justify-between items-center px-4 shadow-sm text-white">
         <div className="flex items-center gap-2.5">
           <img
@@ -82,7 +82,7 @@ export function AdminSidebar() {
               })}
             </nav>
 
-            {/* Profil Mobile */}
+            {/* Mobile Profile */}
             <div className="pt-4 border-t border-gray-800 mt-auto space-y-3">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-gray-800 text-[#F1B20B] flex items-center justify-center font-black">
@@ -90,7 +90,7 @@ export function AdminSidebar() {
                 </div>
                 <div className="truncate">
                   <p className="font-bold text-xs text-white truncate">{user?.firstName} {user?.lastName}</p>
-                  <p className="text-[10px] text-gray-400">Administrateur</p>
+                  <p className="text-[10px] text-gray-400">Administrator</p>
                 </div>
               </div>
               <button
@@ -98,7 +98,7 @@ export function AdminSidebar() {
                 className="w-full bg-red-950/50 hover:bg-red-900 border border-red-800 text-red-300 text-xs font-bold py-2 rounded-xl flex items-center justify-center gap-2 transition-colors cursor-pointer"
               >
                 <Icons.Lock size={13} />
-                <span>Déconnexion</span>
+                <span>Sign Out</span>
               </button>
             </div>
           </div>
@@ -150,7 +150,7 @@ export function AdminSidebar() {
           >
             <span className="flex items-center gap-2">
               <Icons.ExternalLink size={14} className="text-[#F1B20B]" />
-              <span>Voir la Boutique</span>
+              <span>View Storefront</span>
             </span>
             <Icons.ChevronRight size={14} className="text-gray-500 group-hover:text-white transition-colors" />
           </Link>
@@ -164,13 +164,13 @@ export function AdminSidebar() {
             </div>
             <div className="truncate">
               <p className="font-bold text-xs text-white truncate">{user?.firstName || 'Admin'} {user?.lastName || ''}</p>
-              <p className="text-[10px] text-gray-400 font-medium truncate">{user?.email || 'Administrateur'}</p>
+              <p className="text-[10px] text-gray-400 font-medium truncate">{user?.email || 'Administrator'}</p>
             </div>
           </div>
 
           <button
             onClick={() => logout('/admin/login')}
-            title="Se déconnecter"
+            title="Sign out"
             className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-950/40 rounded-xl transition-colors cursor-pointer flex-shrink-0"
           >
             <Icons.Lock size={16} />

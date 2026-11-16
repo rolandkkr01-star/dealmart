@@ -6,23 +6,23 @@ export const TrustBadges: React.FC = () => {
   const badges = [
     {
       icon: <Icons.ShieldCheck size={32} className="text-[#0054A4]" />,
-      title: '100% Qualité Authentique',
-      description: 'Articles vérifiés et conformes aux normes',
+      title: '100% Genuine Quality',
+      description: 'Verified products & authentic warranty',
     },
     {
       icon: <Icons.Wallet size={32} className="text-[#0054A4]" />,
-      title: 'Paiement Sécurisé & Facile',
-      description: 'Cash à la livraison & virement bancaire BSP',
+      title: 'Secure & Flexible Payment',
+      description: 'Cash on Delivery & BSP Bank Transfer',
     },
     {
       icon: <Icons.Truck size={32} className="text-[#0054A4]" />,
-      title: 'Livraison Rapide',
-      description: 'Honiara, Guadalcanal et îles provinciales',
+      title: 'Fast Local Delivery',
+      description: 'Honiara, Guadalcanal & Provinces',
     },
     {
       icon: <Icons.Headset size={32} className="text-[#0054A4]" />,
-      title: 'Support Client Dédié',
-      description: `${siteConfig.phone} • Assistance locale 6j/7`,
+      title: 'Dedicated Customer Care',
+      description: `${siteConfig.phone} • Local support 6 days a week`,
     },
   ];
 

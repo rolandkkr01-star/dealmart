@@ -36,19 +36,19 @@ export const HomePageClient: React.FC<HomePageClientProps> = ({ initialProducts 
             <div className="space-y-2 text-center md:text-left">
               <span className="inline-flex items-center gap-1.5 bg-[#F1B20B] text-[#1D2129] font-black text-[11px] uppercase tracking-wider px-3 py-1 rounded-full shadow-xs">
                 <Icons.Flame size={14} className="text-red-600 fill-red-600" />
-                <span>Offre Vedette Limitée</span>
+                <span>Limited Featured Deal</span>
               </span>
               <h2 className="font-heading font-black text-2xl sm:text-3xl tracking-tight">
                 {featuredDeal.name}
               </h2>
               <p className="text-xs sm:text-sm text-red-100 max-w-lg">
-                Produit authentique garanti avec certificat de conformité et livraison rapide à {siteConfig.city}.
+                100% genuine product guaranteed with fast local delivery in {siteConfig.city} and provinces.
               </p>
             </div>
 
             <div className="flex items-center gap-6 bg-black/20 p-4 rounded-xl border border-white/10">
               <div>
-                <span className="text-[10px] uppercase text-red-200 block">Prix Promotionnel</span>
+                <span className="text-[10px] uppercase text-red-200 block">Deal Price</span>
                 <span className="font-price font-black text-2xl text-[#F1B20B]">
                   {formatPrice(featuredDeal.promoPrice || featuredDeal.basePrice)}
                 </span>
@@ -63,36 +63,36 @@ export const HomePageClient: React.FC<HomePageClientProps> = ({ initialProducts 
                 href={`/produit/${featuredDeal.slug}`}
                 className="bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase tracking-wider px-5 py-3 rounded-xl transition-all shadow-xs"
               >
-                Commander
+                Buy Now
               </Link>
             </div>
           </div>
         </div>
       ) : products.length === 0 ? (
-        /* Message élégant si catalogue vide */
+        /* Empty catalog state */
         <div className="bg-gray-50 border border-gray-200 rounded-2xl p-10 text-center my-8 shadow-xs">
           <div className="w-14 h-14 rounded-2xl bg-amber-100/80 text-amber-700 flex items-center justify-center mx-auto mb-3">
             <Icons.ShoppingBag size={28} />
           </div>
           <h3 className="font-heading font-black text-lg text-gray-900 mb-2">
-            Nouveaux arrivages en préparation
+            New Arrivals Coming Soon
           </h3>
           <p className="text-xs text-gray-600 max-w-md mx-auto mb-5 leading-relaxed">
-            Notre catalogue multi-rayons est en cours d'actualisation. Parcourez notre boutique ou contactez notre équipe pour toute commande spécifique.
+            Our multi-department catalog is being updated with fresh stocks. Browse available products or call our team.
           </p>
           <div className="flex flex-wrap justify-center gap-3">
             <Link
               href="/boutique"
               className="bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase px-5 py-3 rounded-xl inline-block shadow-xs transition-colors"
             >
-              Consulter la boutique
+              Browse Store
             </Link>
             <a
               href={`tel:${siteConfig.phone.replace(/\s+/g, '')}`}
               className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-heading font-bold text-xs uppercase px-5 py-3 rounded-xl inline-flex items-center gap-2 transition-colors"
             >
               <Icons.Phone size={14} />
-              <span>Nous joindre ({siteConfig.phone})</span>
+              <span>Call Us ({siteConfig.phone})</span>
             </a>
           </div>
         </div>

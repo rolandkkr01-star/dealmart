@@ -24,12 +24,12 @@ export function MasterAdminSetupForm() {
     setError(null);
 
     if (password.length < 8) {
-      setError('Le mot de passe doit comporter au moins 8 caractères.');
+      setError('Password must contain at least 8 characters.');
       return;
     }
 
     if (password !== confirmPassword) {
-      setError('Les deux mots de passe ne correspondent pas.');
+      setError('Passwords do not match.');
       return;
     }
 
@@ -48,14 +48,14 @@ export function MasterAdminSetupForm() {
       window.location.href = '/admin';
     } else {
       setLoading(false);
-      setError(result.error || 'Erreur lors de la configuration du compte Master Admin.');
+      setError(result.error || 'Failed to setup Master Admin account.');
     }
   };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12 bg-[#0F172A]">
       <div className="max-w-lg w-full">
-        {/* En-tête / Badge Première Initialisation */}
+        {/* System Initialization Header */}
         <div className="text-center mb-8">
           <img
             src="/images/logo/dealmart_logo_horizontal_transparent.svg"
@@ -63,18 +63,18 @@ export function MasterAdminSetupForm() {
             className="h-12 w-auto mx-auto mb-5 brightness-0 invert"
           />
           <span className="text-[11px] font-black tracking-widest text-[#F1B20B] uppercase block mb-1">
-            INITIALISATION SYSTÈME • PREMIÈRE UTILISATION
+            SYSTEM INITIALIZATION • FIRST-TIME SETUP
           </span>
           <h1 className="font-heading font-black text-2xl sm:text-3xl text-white tracking-tight">
-            Création du Compte Master Admin
+            Create Master Admin Account
           </h1>
           <p className="text-xs text-gray-400 mt-2 max-w-md mx-auto leading-relaxed">
-            Aucun compte administrateur n'est encore configuré sur <strong className="text-white">{siteConfig.name}</strong>. 
-            Définissez vos identifiants pour initialiser la gestion complète de la boutique.
+            No administrator account currently exists on <strong className="text-white">{siteConfig.name}</strong>. 
+            Configure your root credentials to initialize store administration.
           </p>
         </div>
 
-        {/* Boîte de Configuration */}
+        {/* Configuration Card */}
         <div className="bg-[#1E293B] border border-gray-700/80 rounded-3xl p-8 sm:p-10 shadow-2xl">
           {error && (
             <div className="bg-red-950/80 border border-red-500/50 text-red-200 p-4 rounded-xl text-xs mb-6 flex items-center gap-2.5">
@@ -87,27 +87,27 @@ export function MasterAdminSetupForm() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="block text-gray-300 font-bold mb-1.5 uppercase tracking-wider text-[10px]">
-                  Prénom *
+                  First Name *
                 </label>
                 <input
                   type="text"
                   required
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
-                  placeholder="Votre prénom"
+                  placeholder="First name"
                   className="w-full bg-[#0F172A] border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#F1B20B] transition-colors text-xs"
                 />
               </div>
               <div>
                 <label className="block text-gray-300 font-bold mb-1.5 uppercase tracking-wider text-[10px]">
-                  Nom *
+                  Last Name *
                 </label>
                 <input
                   type="text"
                   required
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
-                  placeholder="Votre nom"
+                  placeholder="Last name"
                   className="w-full bg-[#0F172A] border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#F1B20B] transition-colors text-xs"
                 />
               </div>
@@ -115,7 +115,7 @@ export function MasterAdminSetupForm() {
 
             <div>
               <label className="block text-gray-300 font-bold mb-1.5 uppercase tracking-wider text-[10px]">
-                Email Professionnel Administrateur *
+                Work Admin Email *
               </label>
               <div className="relative">
                 <input
@@ -123,7 +123,7 @@ export function MasterAdminSetupForm() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Votre adresse email administrateur"
+                  placeholder="admin@dealmart.com"
                   className="w-full bg-[#0F172A] border border-gray-700 rounded-xl px-4 py-3 pl-10 text-white placeholder-gray-500 focus:outline-none focus:border-[#F1B20B] transition-colors text-xs"
                 />
                 <Icons.Mail size={16} className="absolute left-3.5 top-3.5 text-gray-500" />
@@ -132,14 +132,14 @@ export function MasterAdminSetupForm() {
 
             <div>
               <label className="block text-gray-300 font-bold mb-1.5 uppercase tracking-wider text-[10px]">
-                Numéro de Téléphone (WhatsApp)
+                Phone Number (WhatsApp)
               </label>
               <div className="relative">
                 <input
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  placeholder="Votre numéro de téléphone (ex: +229 97 00 00 00)"
+                  placeholder="e.g. +677 7465588"
                   className="w-full bg-[#0F172A] border border-gray-700 rounded-xl px-4 py-3 pl-10 text-white placeholder-gray-500 focus:outline-none focus:border-[#F1B20B] transition-colors text-xs"
                 />
                 <Icons.PhoneCall size={16} className="absolute left-3.5 top-3.5 text-gray-500" />
@@ -149,7 +149,7 @@ export function MasterAdminSetupForm() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
               <div>
                 <label className="block text-gray-300 font-bold mb-1.5 uppercase tracking-wider text-[10px]">
-                  Mot de Passe Principal (10 caractères min.) *
+                  Master Password (min. 8 characters) *
                 </label>
                 <div className="relative">
                   <input
@@ -157,7 +157,7 @@ export function MasterAdminSetupForm() {
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Votre mot de passe sécurisé (ex: MasterTech229!)"
+                    placeholder="Enter secure password"
                     className="w-full bg-[#0F172A] border border-gray-700 rounded-xl px-4 py-3 pl-10 pr-10 text-white placeholder-gray-500 focus:outline-none focus:border-[#F1B20B] transition-colors text-xs"
                   />
                   <Icons.Lock size={16} className="absolute left-3.5 top-3.5 text-gray-500" />
@@ -173,7 +173,7 @@ export function MasterAdminSetupForm() {
 
               <div>
                 <label className="block text-gray-300 font-bold mb-1.5 uppercase tracking-wider text-[10px]">
-                  Confirmer mot de passe *
+                  Confirm Password *
                 </label>
                 <div className="relative">
                   <input
@@ -194,13 +194,13 @@ export function MasterAdminSetupForm() {
               disabled={loading}
               className="w-full bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase tracking-wider py-4 rounded-xl shadow-xl transition-all cursor-pointer disabled:opacity-50 mt-4"
             >
-              {loading ? 'Création et initialisation du Master Admin...' : 'Initialiser et Accéder à la console'}
+              {loading ? 'Initializing Master Admin...' : 'Initialize & Access Console'}
             </button>
           </form>
         </div>
 
         <p className="text-center text-[11px] text-gray-500 mt-6">
-          Une fois le Master Admin créé, ce formulaire se verrouillera définitivement pour la sécurité du site.
+          Once the Master Admin is created, this onboarding portal will be permanently locked for security.
         </p>
       </div>
     </div>

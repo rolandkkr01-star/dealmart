@@ -51,7 +51,7 @@ export function InscriptionForm({ redirectTarget }: { redirectTarget: string }) 
       !/[^A-Za-z0-9]/.test(password)
     ) {
       setError(
-        'Le mot de passe doit contenir au moins 10 caractères, avec au moins 1 majuscule, 1 minuscule, 1 chiffre et 1 caractère spécial (ex: @, #, $, !).'
+        'Password must be at least 10 characters long, containing at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special symbol (e.g. @, #, $, !).'
       );
       return;
     }
@@ -75,7 +75,7 @@ export function InscriptionForm({ redirectTarget }: { redirectTarget: string }) 
         setError(result.warning);
       }
     } else {
-      setError(result.error || 'Erreur lors de la création du compte');
+      setError(result.error || 'Failed to create account.');
     }
   };
 
@@ -85,7 +85,7 @@ export function InscriptionForm({ redirectTarget }: { redirectTarget: string }) 
     setSuccessMessage(null);
 
     if (otpCode.trim().length !== 6) {
-      setError('Veuillez saisir le code complet à 6 chiffres.');
+      setError('Please enter the full 6-digit code.');
       return;
     }
 
@@ -100,7 +100,7 @@ export function InscriptionForm({ redirectTarget }: { redirectTarget: string }) 
       window.location.href = redirectTarget;
     } else {
       setLoading(false);
-      setError(result.error || 'Code de confirmation invalide ou expiré.');
+      setError(result.error || 'Invalid or expired confirmation code.');
     }
   };
 
@@ -114,11 +114,11 @@ export function InscriptionForm({ redirectTarget }: { redirectTarget: string }) 
     setLoading(false);
 
     if (result.success) {
-      setSuccessMessage(result.message || 'Un nouveau code vous a été envoyé.');
+      setSuccessMessage(result.message || 'A new code has been sent to your email.');
       setCountdown(60);
       setCanResend(false);
     } else {
-      setError(result.error || 'Impossible de renvoyer le code.');
+      setError(result.error || 'Failed to resend code.');
     }
   };
 
@@ -128,12 +128,12 @@ export function InscriptionForm({ redirectTarget }: { redirectTarget: string }) 
         <div className="text-center mb-6">
           <Icons.BrandCart size={44} className="text-[#1D2129] mx-auto mb-2" />
           <h1 className="font-heading font-black text-2xl text-gray-900">
-            {step === 'form' ? 'Créer un Compte Client' : 'Vérification de votre Email'}
+            {step === 'form' ? 'Create Customer Account' : 'Verify Your Email'}
           </h1>
           <p className="text-xs text-gray-500 mt-1">
             {step === 'form'
-              ? `Rejoignez ${siteConfig.name} pour bénéficier d'offres exclusives et du suivi en temps réel.`
-              : `Nous avons envoyé un code de confirmation à 6 chiffres à l'adresse ${email}.`}
+              ? `Join ${siteConfig.name} to enjoy exclusive member deals and live tracking.`
+              : `We sent a 6-digit confirmation code to ${email}.`}
           </p>
         </div>
 
@@ -153,13 +153,13 @@ export function InscriptionForm({ redirectTarget }: { redirectTarget: string }) 
 
         {step === 'form' ? (
           <>
-            {/* Bouton Google OAuth */}
+            {/* Google OAuth Button */}
             <a
               href={`/api/auth/google?redirect=${encodeURIComponent(redirectTarget)}`}
               className="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-bold text-xs py-3 rounded-xl shadow-xs transition-all mb-4 cursor-pointer"
             >
               <Icons.Google size={18} />
-              <span>S'inscrire en 1 clic avec Google</span>
+              <span>Sign up with Google</span>
             </a>
 
             <div className="relative my-5">
@@ -167,29 +167,29 @@ export function InscriptionForm({ redirectTarget }: { redirectTarget: string }) 
                 <div className="w-full border-t border-gray-200"></div>
               </div>
               <div className="relative flex justify-center text-xs">
-                <span className="bg-white px-3 text-gray-400 font-medium">ou créer un compte par email</span>
+                <span className="bg-white px-3 text-gray-400 font-medium">or create an account with email</span>
               </div>
             </div>
 
             <form onSubmit={handleSubmitForm} className="space-y-4 text-xs">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-bold text-gray-700 mb-1">Prénom *</label>
+                  <label className="block font-bold text-gray-700 mb-1">First Name *</label>
                   <input
                     type="text"
                     required
-                    placeholder="Votre prénom"
+                    placeholder="Your first name"
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                     className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0054A4] focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block font-bold text-gray-700 mb-1">Nom *</label>
+                  <label className="block font-bold text-gray-700 mb-1">Last Name *</label>
                   <input
                     type="text"
                     required
-                    placeholder="Votre nom"
+                    placeholder="Your last name"
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
                     className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0054A4] focus:outline-none"
@@ -198,11 +198,11 @@ export function InscriptionForm({ redirectTarget }: { redirectTarget: string }) 
               </div>
 
               <div>
-                <label className="block font-bold text-gray-700 mb-1">Adresse Email *</label>
+                <label className="block font-bold text-gray-700 mb-1">Email Address *</label>
                 <input
                   type="email"
                   required
-                  placeholder="Votre adresse email (ex: nom@domaine.com)"
+                  placeholder="name@dealmart.sb"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0054A4] focus:outline-none"
@@ -210,11 +210,11 @@ export function InscriptionForm({ redirectTarget }: { redirectTarget: string }) 
               </div>
 
               <div>
-                <label className="block font-bold text-gray-700 mb-1">Téléphone Mobile (MoMo / WhatsApp) *</label>
+                <label className="block font-bold text-gray-700 mb-1">Phone Number (WhatsApp / Mobile) *</label>
                 <input
                   type="tel"
                   required
-                  placeholder="Votre numéro de téléphone (ex: +229 97 00 00 00)"
+                  placeholder="e.g. +677 7465588"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0054A4] focus:outline-none"
@@ -222,11 +222,11 @@ export function InscriptionForm({ redirectTarget }: { redirectTarget: string }) 
               </div>
 
               <div>
-                <label className="block font-bold text-gray-700 mb-1">Mot de passe (10 car. min., majuscule, chiffre, symbole) *</label>
+                <label className="block font-bold text-gray-700 mb-1">Password (min. 10 chars, uppercase, number, symbol) *</label>
                 <input
                   type="password"
                   required
-                  placeholder="Votre mot de passe secret"
+                  placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0054A4] focus:outline-none"
@@ -238,16 +238,16 @@ export function InscriptionForm({ redirectTarget }: { redirectTarget: string }) 
                 disabled={loading}
                 className="w-full bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase tracking-wider py-3.5 rounded-xl shadow-xs transition-all cursor-pointer disabled:opacity-50 mt-2"
               >
-                {loading ? 'Création en cours...' : 'Continuer vers la vérification'}
+                {loading ? 'Creating account...' : 'Continue to Verification'}
               </button>
             </form>
           </>
         ) : (
-          /* Étape 2 : Écran Saisie OTP */
+          /* Step 2 : OTP Entry */
           <form onSubmit={handleVerifyOtp} className="space-y-4 text-xs">
             <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 text-center">
               <label className="block font-bold text-gray-800 text-sm mb-2">
-                Saisissez votre code à 6 chiffres
+                Enter your 6-digit verification code
               </label>
               <input
                 type="text"
@@ -260,7 +260,7 @@ export function InscriptionForm({ redirectTarget }: { redirectTarget: string }) 
                 className="w-full max-w-[200px] text-center font-mono font-black text-2xl tracking-[0.4em] bg-white border-2 border-[#F1B20B] rounded-xl py-3 focus:outline-none focus:ring-2 focus:ring-[#0054A4]"
               />
               <p className="text-[11px] text-gray-500 mt-2">
-                Code envoyé à <span className="font-semibold text-gray-700">{email}</span>
+                Code sent to <span className="font-semibold text-gray-700">{email}</span>
               </p>
             </div>
 
@@ -269,7 +269,7 @@ export function InscriptionForm({ redirectTarget }: { redirectTarget: string }) 
               disabled={loading || otpCode.length !== 6}
               className="w-full bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase tracking-wider py-3.5 rounded-xl shadow-xs transition-all cursor-pointer disabled:opacity-50"
             >
-              {loading ? 'Vérification en cours...' : 'Confirmer et Accéder à mon compte'}
+              {loading ? 'Verifying...' : 'Verify & Access My Account'}
             </button>
 
             <div className="flex items-center justify-between pt-3 border-t border-gray-100 text-xs">
@@ -278,20 +278,19 @@ export function InscriptionForm({ redirectTarget }: { redirectTarget: string }) 
                 onClick={() => setStep('form')}
                 className="text-gray-500 hover:text-gray-700 font-medium cursor-pointer"
               >
-                ← Modifier mes informations
+                ← Edit information
               </button>
 
               <button
                 type="button"
                 disabled={!canResend || loading}
                 onClick={handleResendOtp}
-                className={`font-bold ${
-                  canResend
+                className={`font-bold ${canResend
                     ? 'text-[#0054A4] hover:underline cursor-pointer'
                     : 'text-gray-400 cursor-not-allowed'
-                }`}
+                  }`}
               >
-                {canResend ? 'Renvoyer le code' : `Renvoyer (${countdown}s)`}
+                {canResend ? 'Resend code' : `Resend (${countdown}s)`}
               </button>
             </div>
           </form>
@@ -299,9 +298,9 @@ export function InscriptionForm({ redirectTarget }: { redirectTarget: string }) 
 
         <div className="mt-6 pt-6 border-t border-gray-100 text-center text-xs text-gray-600">
           <p>
-            Vous avez déjà un compte ?{' '}
+            Already have an account?{' '}
             <Link href="/connexion" className="text-[#0054A4] font-bold hover:underline">
-              Se connecter
+              Sign In
             </Link>
           </p>
         </div>

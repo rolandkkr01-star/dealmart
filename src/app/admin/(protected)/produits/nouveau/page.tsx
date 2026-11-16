@@ -86,28 +86,25 @@ export default function NewProductPage() {
     return `DM-${brandCode}-${nameClean}-${colorClean}-${rand}`;
   };
 
-  // Variantes axées sur les Couleurs (1 fiche produit = 1 modèle et 1 capacité)
   const [variants, setVariants] = useState<VariantForm[]>([
     {
-      color: 'Noir Sidéral',
+      color: 'Space Black',
       colorCode: '#1A1E24',
       storage: '',
       priceOverride: '',
       promoPrice: '',
       stock: 5,
-      sku: 'TP229-APL-PROD-NOI-1001',
+      sku: 'DM-APL-PROD-BLK-1001',
       images: [],
     },
   ]);
 
-  // Images globales du produit
   const [images, setImages] = useState<ImageForm[]>([]);
 
-  // Tech Specs
   const [specs, setSpecs] = useState<SpecForm[]>([
-    { key: 'Écran', value: 'Super Retina XDR OLED' },
-    { key: 'Processeur', value: 'Puce haute performance' },
-    { key: 'Batterie', value: 'Autonomie toute la journée' },
+    { key: 'Display', value: 'Super Retina XDR OLED' },
+    { key: 'Processor', value: 'High Performance Bionic / Snapdragon' },
+    { key: 'Battery', value: 'All-day battery life' },
   ]);
 
   useEffect(() => {
@@ -122,7 +119,6 @@ export default function NewProductPage() {
     loadCategories();
   }, []);
 
-  // Synchronisation dynamique du SKU lors du changement de marque
   const handleBrandChange = (newBrand: string) => {
     setBrand(newBrand);
     setVariants((prev) =>
@@ -133,18 +129,17 @@ export default function NewProductPage() {
     );
   };
 
-  // Synchronisation dynamique du nom
   const handleNameChange = (newName: string) => {
     setName(newName);
     setSlug(newName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, ''));
   };
 
   const addVariant = () => {
-    const autoSku = generateSku(brand, name, 'Titane Naturel');
+    const autoSku = generateSku(brand, name, 'Natural Titanium');
     setVariants((prev) => [
       ...prev,
       {
-        color: 'Titane Naturel',
+        color: 'Natural Titanium',
         colorCode: '#9C968E',
         storage: '',
         priceOverride: '',
@@ -160,18 +155,17 @@ export default function NewProductPage() {
     if (variants.length <= 1) {
       setDialogState({
         isOpen: true,
-        title: 'Action impossible',
-        message: 'Vous devez conserver au moins une couleur pour ce produit.',
+        title: 'Cannot delete',
+        message: 'You must maintain at least one color variant for this product.',
         type: 'warning',
         isConfirmOnly: true,
-        confirmText: 'Compris',
+        confirmText: 'Understood',
       });
       return;
     }
     setVariants((prev) => prev.filter((_, i) => i !== index));
   };
 
-  // Téléversement d'images pour une variante (couleur) spécifique
   const handleVariantImageUpload = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
@@ -180,7 +174,7 @@ export default function NewProductPage() {
     setError(null);
 
     const uploadedVariantImages: VariantImage[] = [];
-    const colorName = variants[index].color || 'Couleur';
+    const colorName = variants[index].color || 'Color';
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
@@ -191,16 +185,15 @@ export default function NewProductPage() {
       if (res.success && res.url) {
         uploadedVariantImages.push({
           url: res.url,
-          altText: name ? `${name} - Coloris ${colorName}` : `Photo du smartphone - ${colorName}`,
+          altText: name ? `${name} - ${colorName}` : `Product photo - ${colorName}`,
           position: variants[index].images.length + uploadedVariantImages.length,
         });
       } else {
-        setError(res.error || `Échec du téléversement pour ${file.name}`);
+        setError(res.error || `Upload failed for ${file.name}`);
       }
     }
 
     if (uploadedVariantImages.length > 0) {
-      // 1. Ajouter aux images de cette variante
       setVariants((prev) =>
         prev.map((v, i) =>
           i === index
@@ -209,7 +202,6 @@ export default function NewProductPage() {
         )
       );
 
-      // 2. Ajouter automatiquement à la galerie générale du produit
       setImages((prev) => [
         ...prev,
         ...uploadedVariantImages.map((vImg, vPos) => ({
@@ -241,7 +233,6 @@ export default function NewProductPage() {
     }
   };
 
-  // Téléversement global d'images
   const handleImageFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
@@ -260,11 +251,11 @@ export default function NewProductPage() {
       if (res.success && res.url) {
         uploadedList.push({
           url: res.url,
-          altText: name ? `Photo de ${name} - Vue ${images.length + uploadedList.length + 1}` : `Photo du smartphone - Vue ${images.length + uploadedList.length + 1}`,
+          altText: name ? `${name} - View ${images.length + uploadedList.length + 1}` : `Product photo - View ${images.length + uploadedList.length + 1}`,
           position: images.length + uploadedList.length,
         });
       } else {
-        setError(res.error || `Échec du téléversement pour ${file.name}`);
+        setError(res.error || `Upload failed for ${file.name}`);
       }
     }
 
@@ -292,15 +283,14 @@ export default function NewProductPage() {
     setError(null);
 
     if (!name || !categoryId || !basePrice || !description) {
-      setError('Veuillez remplir tous les champs obligatoires.');
+      setError('Please fill out all required fields.');
       return;
     }
 
-    // Récupérer toutes les images (globales ou issues des variantes)
     let allImages = [...images];
     if (allImages.length === 0) {
       variants.forEach((v) => {
-        v.images.forEach((vImg, idx) => {
+        v.images.forEach((vImg) => {
           allImages.push({
             url: vImg.url,
             altText: vImg.altText || `${name} - ${v.color}`,
@@ -312,14 +302,13 @@ export default function NewProductPage() {
     }
 
     if (allImages.length === 0) {
-      setError('Veuillez ajouter au moins une image (dans les couleurs ou dans la galerie générale).');
+      setError('Please add at least one product image.');
       return;
     }
 
-    // Validation des variantes
     for (const v of variants) {
       if (v.stock < 0) {
-        setError('Le stock de chaque variante ne peut pas être négatif.');
+        setError('Stock quantity cannot be negative.');
         return;
       }
     }
@@ -375,7 +364,7 @@ export default function NewProductPage() {
         router.push('/admin/login?redirect=/admin/produits/nouveau');
         return;
       }
-      setError(res.error || 'Erreur lors de la création du produit.');
+      setError(res.error || 'Failed to create product.');
     }
   };
 
@@ -386,26 +375,26 @@ export default function NewProductPage() {
         onClose={() => setDialogState((prev) => ({ ...prev, isOpen: false }))}
       />
 
-      {/* En-tête de navigation */}
+      {/* Navigation Header */}
       <div className="flex items-center justify-between">
         <Link
           href="/admin/produits"
           className="text-xs font-bold text-gray-500 hover:text-[#0054A4] flex items-center gap-1.5"
         >
           <Icons.ArrowLeft size={16} />
-          <span>Retour aux produits</span>
+          <span>Back to Products</span>
         </Link>
         <span className="text-[10px] font-black uppercase tracking-wider bg-amber-100 text-amber-900 px-2.5 py-1 rounded-full">
-          Nouveau Produit
+          New Product
         </span>
       </div>
 
       <div className="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-xs">
         <h1 className="font-heading font-black text-2xl text-gray-900 mb-1">
-          Ajouter un Produit au Catalogue
+          Add Product to Catalog
         </h1>
         <p className="text-xs text-gray-500 mb-6">
-          Chaque fiche produit correspond à un modèle et une capacité précise (ex: <em>iPhone 15 Pro 128 Go</em>). Les variations représentent les couleurs disponibles avec leurs photos dédiées.
+          Define model, brand, condition, and variants with dedicated color-matched photo galleries.
         </p>
 
         {error && (
@@ -416,37 +405,37 @@ export default function NewProductPage() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-8 text-xs">
-          {/* Section 1 : Informations Générales */}
+          {/* Section 1 : General Information */}
           <div className="space-y-4">
             <h2 className="font-heading font-bold text-sm text-gray-900 border-b pb-2 flex items-center gap-2">
               <Icons.Smartphone size={16} className="text-[#0054A4]" />
-              <span>1. Modèle & Caractéristiques Principales</span>
+              <span>1. Model & Core Specifications</span>
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="sm:col-span-2">
                 <label className="block font-bold text-gray-700 mb-1">
-                  Nom Complet du Produit (avec capacité) *
+                  Full Product Name *
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="Ex: iPhone 15 Pro 128 Go"
+                  placeholder="e.g. iPhone 15 Pro 128GB"
                   value={name}
                   onChange={(e) => handleNameChange(e.target.value)}
                   className="w-full p-3 border border-gray-300 rounded-xl font-bold text-gray-900 focus:ring-1 focus:ring-[#0054A4] focus:outline-none"
                 />
                 <span className="text-[11px] text-gray-400 mt-1 block">
-                  Indiquez le modèle et le stockage exact dans le titre pour une parfaite clarté client.
+                  Include model and key specification for clarity in search results and customer orders.
                 </span>
               </div>
 
               <div>
-                <label className="block font-bold text-gray-700 mb-1">Marque / Fabricant *</label>
+                <label className="block font-bold text-gray-700 mb-1">Brand / Manufacturer *</label>
                 <input
                   type="text"
                   required
-                  placeholder="Ex: Apple, Samsung, Sony, Anker, CeraVe, Seiko..."
+                  placeholder="e.g. Apple, Samsung, Sony, Anker, DealMart..."
                   value={brand}
                   onChange={(e) => handleBrandChange(e.target.value)}
                   className="w-full p-3 border border-gray-300 rounded-xl font-bold text-gray-900 focus:outline-none"
@@ -454,7 +443,7 @@ export default function NewProductPage() {
               </div>
 
               <div>
-                <label className="block font-bold text-gray-700 mb-1">Catégorie *</label>
+                <label className="block font-bold text-gray-700 mb-1">Category *</label>
                 <select
                   value={categoryId}
                   onChange={(e) => setCategoryId(e.target.value)}
@@ -469,20 +458,20 @@ export default function NewProductPage() {
               </div>
 
               <div>
-                <label className="block font-bold text-gray-700 mb-1">État de l'Appareil (Obligatoire) *</label>
+                <label className="block font-bold text-gray-700 mb-1">Item Condition *</label>
                 <select
                   value={condition}
                   onChange={(e) => setCondition(e.target.value as any)}
                   className="w-full p-3 border border-gray-300 rounded-xl bg-white font-bold text-gray-900 focus:outline-none"
                 >
-                  <option value="NEUF_SCELLE">Neuf sous scellé d'origine (Garantie 12 Mois)</option>
-                  <option value="NEUF_NON_SCELLE">Neuf non scellé / Reconditionné A+</option>
-                  <option value="OCCASION">Occasion certifiée & testée</option>
+                  <option value="NEUF_SCELLE">Brand New Factory Sealed (12 Month Warranty)</option>
+                  <option value="NEUF_NON_SCELLE">Certified Refurbished (Grade A+)</option>
+                  <option value="OCCASION">Certified Pre-Owned & Guaranteed</option>
                 </select>
               </div>
 
               <div>
-                <label className="block font-bold text-gray-700 mb-1">Garantie constructeur (en mois)</label>
+                <label className="block font-bold text-gray-700 mb-1">Warranty Period (in months)</label>
                 <input
                   type="number"
                   min="0"
@@ -494,10 +483,10 @@ export default function NewProductPage() {
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block font-bold text-gray-700 mb-1">Slug URL (Auto-généré)</label>
+                <label className="block font-bold text-gray-700 mb-1">URL Slug (Auto-generated)</label>
                 <input
                   type="text"
-                  placeholder="iphone-15-pro-128-go"
+                  placeholder="iphone-15-pro-128gb"
                   value={slug}
                   onChange={(e) => setSlug(e.target.value)}
                   className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none text-gray-500 font-mono text-xs"
@@ -505,11 +494,11 @@ export default function NewProductPage() {
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block font-bold text-gray-700 mb-1">Description détaillée *</label>
+                <label className="block font-bold text-gray-700 mb-1">Detailed Description *</label>
                 <textarea
                   rows={4}
                   required
-                  placeholder="Décrivez précisément l'appareil, son authenticité, ses points forts et accessoires inclus dans le coffret..."
+                  placeholder="Describe key features, hardware specs, authenticity guarantees, and inbox accessories..."
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none"
@@ -518,22 +507,22 @@ export default function NewProductPage() {
             </div>
           </div>
 
-          {/* Section 2 : Tarification */}
+          {/* Section 2 : Pricing */}
           <div className="space-y-4">
             <h2 className="font-heading font-bold text-sm text-gray-900 border-b pb-2 flex items-center gap-2">
               <Icons.CreditCard size={16} className="text-[#0054A4]" />
-              <span>2. Tarification en SI$ (Dollars des Îles Salomon)</span>
+              <span>2. Pricing in SI$ (Solomon Islands Dollars)</span>
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block font-bold text-gray-700 mb-1">Prix du Produit (SI$) *</label>
+                <label className="block font-bold text-gray-700 mb-1">Regular Retail Price (SI$) *</label>
                 <input
                   type="number"
                   required
                   min="0"
                   step="1"
-                  placeholder="Ex: 850"
+                  placeholder="e.g. 850"
                   value={basePrice}
                   onChange={(e) => setBasePrice(e.target.value)}
                   className="w-full p-3 border border-gray-300 rounded-xl font-bold text-gray-900 text-sm focus:outline-none"
@@ -541,12 +530,12 @@ export default function NewProductPage() {
               </div>
 
               <div>
-                <label className="block font-bold text-gray-700 mb-1">Prix Promotionnel (SI$ - Optionnel)</label>
+                <label className="block font-bold text-gray-700 mb-1">Discounted Promo Price (SI$ - Optional)</label>
                 <input
                   type="number"
                   min="0"
                   step="1"
-                  placeholder="Ex: 750"
+                  placeholder="e.g. 750"
                   value={promoPrice}
                   onChange={(e) => setPromoPrice(e.target.value)}
                   className="w-full p-3 border border-gray-300 rounded-xl font-bold text-red-600 focus:outline-none"
@@ -554,7 +543,7 @@ export default function NewProductPage() {
               </div>
             </div>
 
-            {/* Mise en avant */}
+            {/* Visibility Options */}
             <div className="p-4 bg-gray-50 border border-gray-200 rounded-2xl space-y-3 mt-4">
               <label className="flex items-center gap-3 cursor-pointer">
                 <input
@@ -565,7 +554,7 @@ export default function NewProductPage() {
                 />
                 <div>
                   <span className="font-bold text-gray-900 text-xs block">
-                    Mettre en avant sur la page d'accueil (Top Ventes / Sélection)
+                    Feature on Homepage (Top Picks / Best Sellers)
                   </span>
                 </div>
               </label>
@@ -579,23 +568,23 @@ export default function NewProductPage() {
                 />
                 <div>
                   <span className="font-bold text-gray-900 text-xs block">
-                    Produit Actif (Visible immédiatement par les clients)
+                    Active Product (Visible to storefront customers immediately)
                   </span>
                 </div>
               </label>
             </div>
           </div>
 
-          {/* Section 3 : Variantes de Couleurs avec Photos Liées */}
+          {/* Section 3 : Color Variants & Photos */}
           <div className="space-y-4">
             <div className="flex items-center justify-between border-b pb-2">
               <div>
                 <h2 className="font-heading font-bold text-sm text-gray-900 flex items-center gap-2">
                   <Icons.Layers size={16} className="text-[#0054A4]" />
-                  <span>3. Couleurs Disponibles & Photos Associées ({variants.length})</span>
+                  <span>3. Color Variants & Linked Photos ({variants.length})</span>
                 </h2>
                 <p className="text-[11px] text-gray-500">
-                  Ajoutez chaque couleur disponible pour ce modèle et téléversez ses photos dédiées.
+                  Add color options with inventory quantities and upload color-matched photos.
                 </p>
               </div>
               <button
@@ -604,7 +593,7 @@ export default function NewProductPage() {
                 className="bg-[#0054A4] hover:bg-[#00519E] text-white px-3.5 py-2 rounded-xl font-bold flex items-center gap-1.5 cursor-pointer shadow-xs"
               >
                 <Icons.Plus size={14} />
-                <span>Ajouter une couleur</span>
+                <span>Add Color</span>
               </button>
             </div>
 
@@ -614,16 +603,15 @@ export default function NewProductPage() {
                   key={index}
                   className="p-5 bg-gray-50 border-2 border-gray-200 rounded-3xl space-y-4 hover:border-gray-300 transition-colors"
                 >
-                  {/* Ligne principale de la variante */}
                   <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
                     <div className="sm:col-span-4">
                       <label className="block font-bold text-gray-700 mb-1">
-                        Nom de la Couleur *
+                        Color Name *
                       </label>
                       <input
                         type="text"
                         required
-                        placeholder="Ex: Titane Naturel, Noir Sidéral..."
+                        placeholder="e.g. Space Black, Titanium Gray..."
                         value={variant.color}
                         onChange={(e) => {
                           const val = e.target.value;
@@ -636,7 +624,7 @@ export default function NewProductPage() {
                     </div>
 
                     <div className="sm:col-span-3">
-                      <label className="block font-bold text-gray-700 mb-1">Pastille de Couleur</label>
+                      <label className="block font-bold text-gray-700 mb-1">Color Swatch</label>
                       <div className="flex items-center gap-2">
                         <input
                           type="color"
@@ -683,7 +671,7 @@ export default function NewProductPage() {
 
                     <div className="sm:col-span-2">
                       <label className="block font-medium text-gray-600 mb-1 text-[10px]">
-                        SKU ({brand})
+                        SKU
                       </label>
                       <input
                         type="text"
@@ -703,22 +691,21 @@ export default function NewProductPage() {
                         type="button"
                         onClick={() => removeVariant(index)}
                         className="p-2.5 bg-red-100 hover:bg-red-200 text-red-700 rounded-xl font-bold flex items-center justify-center cursor-pointer"
-                        title="Supprimer cette couleur"
+                        title="Delete color"
                       >
                         <Icons.Trash size={16} />
                       </button>
                     </div>
                   </div>
 
-                  {/* Zone d'Upload Photos Spécifiques à cette Couleur */}
+                  {/* Color-specific Image Upload */}
                   <div className="bg-white p-3.5 rounded-2xl border border-gray-200 space-y-2.5">
                     <div className="flex items-center justify-between">
                       <span className="font-bold text-gray-800 text-[11px] flex items-center gap-1.5">
                         <Icons.Image size={14} className="text-[#0054A4]" />
-                        <span>Photos pour la couleur <strong>« {variant.color || 'Sans titre'} »</strong> ({variant.images.length})</span>
+                        <span>Photos for <strong>"{variant.color || 'Untitled'}"</strong> ({variant.images.length})</span>
                       </span>
 
-                      {/* Bouton d'upload pour cette variante */}
                       <div>
                         <input
                           type="file"
@@ -737,12 +724,11 @@ export default function NewProductPage() {
                           className="bg-blue-50 hover:bg-blue-100 text-[#0054A4] px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
                         >
                           <Icons.Upload size={13} className={variantUploadingIdx === index ? 'animate-bounce' : ''} />
-                          <span>{variantUploadingIdx === index ? 'Téléversement...' : '+ Ajouter des photos'}</span>
+                          <span>{variantUploadingIdx === index ? 'Uploading...' : '+ Add Photos'}</span>
                         </button>
                       </div>
                     </div>
 
-                    {/* Vignettes miniatures des images de cette couleur */}
                     {variant.images.length > 0 ? (
                       <div className="flex flex-wrap gap-2 pt-1">
                         {variant.images.map((vImg, imgIdx) => (
@@ -752,14 +738,14 @@ export default function NewProductPage() {
                           >
                             <img
                               src={vImg.url}
-                              alt={vImg.altText || 'Aperçu'}
+                              alt={vImg.altText || 'Preview'}
                               className="w-full h-full object-contain"
                             />
                             <button
                               type="button"
                               onClick={() => removeVariantImage(index, imgIdx)}
                               className="absolute top-0.5 right-0.5 bg-red-600 text-white rounded-full w-4 h-4 flex items-center justify-center text-[10px] opacity-90 group-hover:opacity-100 hover:scale-110 transition-all cursor-pointer shadow-xs"
-                              title="Retirer cette photo"
+                              title="Remove photo"
                             >
                               ×
                             </button>
@@ -768,7 +754,7 @@ export default function NewProductPage() {
                       </div>
                     ) : (
                       <p className="text-[11px] text-gray-400 italic">
-                        Aucune photo spécifique ajoutée pour cette couleur. Cliquez sur « + Ajouter des photos » ci-dessus.
+                        No photos added for this color yet. Click "+ Add Photos" above.
                       </p>
                     )}
                   </div>
@@ -777,21 +763,20 @@ export default function NewProductPage() {
             </div>
           </div>
 
-          {/* Section 4 : Galerie Globale Complète */}
+          {/* Section 4 : Complete Global Gallery */}
           <div className="space-y-4">
             <div className="flex items-center justify-between border-b pb-2">
               <div>
                 <h2 className="font-heading font-bold text-sm text-gray-900 flex items-center gap-2">
                   <Icons.Image size={16} className="text-[#0054A4]" />
-                  <span>4. Galerie Globale du Produit ({images.length})</span>
+                  <span>4. Global Product Gallery ({images.length})</span>
                 </h2>
                 <p className="text-[11px] text-gray-500">
-                  Toutes les photos téléversées dans les couleurs s'ajoutent automatiquement ici. Vous pouvez également ajouter des photos d'ensemble ou du coffret.
+                  Photos uploaded to colors appear here automatically. You can also upload general product or packaging shots.
                 </p>
               </div>
             </div>
 
-            {/* Zone Drag & Drop Globale */}
             <input
               type="file"
               ref={fileInputRef}
@@ -813,11 +798,10 @@ export default function NewProductPage() {
                 <Icons.Upload size={20} className={uploading ? 'animate-bounce' : ''} />
               </div>
               <p className="font-heading font-bold text-xs text-gray-900">
-                {uploading ? 'Téléversement en cours...' : 'Ajouter d\'autres photos d\'ensemble (JPG, PNG, WEBP)'}
+                {uploading ? 'Uploading...' : 'Upload general product photos (JPG, PNG, WEBP)'}
               </p>
             </div>
 
-            {/* Grille des photos globales */}
             {images.length > 0 && (
               <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3 pt-2">
                 {images.map((img, index) => (
@@ -837,7 +821,7 @@ export default function NewProductPage() {
                       type="button"
                       onClick={() => removeImage(index)}
                       className="absolute top-1 right-1 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer shadow-xs"
-                      title="Supprimer de la galerie"
+                      title="Remove from gallery"
                     >
                       ×
                     </button>
@@ -847,12 +831,12 @@ export default function NewProductPage() {
             )}
           </div>
 
-          {/* Section 5 : Spécifications Techniques */}
+          {/* Section 5 : Technical Specifications */}
           <div className="space-y-4">
             <div className="flex items-center justify-between border-b pb-2">
               <h2 className="font-heading font-bold text-sm text-gray-900 flex items-center gap-2">
                 <Icons.Sliders size={16} className="text-[#0054A4]" />
-                <span>5. Spécifications Techniques ({specs.length})</span>
+                <span>5. Technical Specifications ({specs.length})</span>
               </h2>
               <button
                 type="button"
@@ -860,7 +844,7 @@ export default function NewProductPage() {
                 className="bg-gray-100 hover:bg-gray-200 text-gray-800 px-3 py-1.5 rounded-lg font-bold flex items-center gap-1 cursor-pointer"
               >
                 <Icons.Plus size={14} />
-                <span>Ajouter une ligne</span>
+                <span>Add Specification</span>
               </button>
             </div>
 
@@ -869,7 +853,7 @@ export default function NewProductPage() {
                 <div key={index} className="flex gap-2 items-center">
                   <input
                     type="text"
-                    placeholder="Caractéristique (ex: Écran)"
+                    placeholder="Feature (e.g. Display)"
                     value={spec.key}
                     onChange={(e) => {
                       const val = e.target.value;
@@ -879,7 +863,7 @@ export default function NewProductPage() {
                   />
                   <input
                     type="text"
-                    placeholder="Valeur (ex: 6.1 pouces Super Retina XDR)"
+                    placeholder="Value (e.g. 6.1 inch Super Retina XDR OLED)"
                     value={spec.value}
                     onChange={(e) => {
                       const val = e.target.value;
@@ -899,13 +883,13 @@ export default function NewProductPage() {
             </div>
           </div>
 
-          {/* Boutons d'Action */}
+          {/* Action Buttons */}
           <div className="pt-6 border-t flex flex-col sm:flex-row items-center justify-end gap-3">
             <Link
               href="/admin/produits"
               className="w-full sm:w-auto px-6 py-3 border border-gray-300 rounded-xl text-gray-700 font-bold hover:bg-gray-50 text-center"
             >
-              Annuler
+              Cancel
             </Link>
             <button
               type="submit"
@@ -915,12 +899,12 @@ export default function NewProductPage() {
               {submitting ? (
                 <>
                   <div className="w-4 h-4 border-2 border-[#1D2129] border-t-transparent rounded-full animate-spin" />
-                  <span>Enregistrement en cours...</span>
+                  <span>Saving Product...</span>
                 </>
               ) : (
                 <>
                   <Icons.Check size={16} />
-                  <span>Créer et Publier le Produit</span>
+                  <span>Publish Product</span>
                 </>
               )}
             </button>

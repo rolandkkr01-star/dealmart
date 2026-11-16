@@ -6,7 +6,7 @@ import Link from 'next/link';
 import Script from 'next/script';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
-import { formatFCFA } from '@/lib/utils';
+import { formatPrice } from '@/lib/utils';
 import { Icons } from '@/components/ui/Icons';
 import { siteConfig } from '@/lib/site-config';
 import { initCheckoutPaymentAction, verifyOrderPaymentAction } from '@/actions/payments';
@@ -107,46 +107,46 @@ export default function CheckoutPage() {
 
   const handleSelectNewAddress = () => {
     setSelectedAddressMode('new');
-    setCity('Cotonou');
+    setCity('Honiara');
     setDistrict('');
     setStreetDetails('');
     setAddressLabel('');
     setSaveAddress(true);
   };
 
-  // Si le panier est vide
+  // If cart is empty
   if (cart.length === 0) {
     return (
       <div className="max-w-xl mx-auto px-4 py-20 text-center">
         <div className="w-16 h-16 bg-amber-50 rounded-2xl flex items-center justify-center mx-auto mb-4 text-[#1D2129]">
           <Icons.BrandCart size={36} />
         </div>
-        <h2 className="font-heading font-black text-2xl text-gray-900 mb-2">Votre panier est vide</h2>
+        <h2 className="font-heading font-black text-2xl text-gray-900 mb-2">Your cart is empty</h2>
         <p className="text-xs text-gray-500 mb-6 max-w-sm mx-auto">
-          Veuillez sélectionner au moins un article pour finaliser votre commande.
+          Please add at least one product before proceeding to checkout.
         </p>
         <Link
           href="/boutique"
           className="bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase px-8 py-3.5 rounded-xl inline-flex items-center gap-2 shadow-xs transition-all"
         >
           <Icons.ShoppingCart size={16} />
-          <span>Explorer la boutique</span>
+          <span>Explore Store</span>
         </Link>
       </div>
     );
   }
 
-  // Chargement de l'état d'authentification
+  // Auth loading state
   if (authLoading) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-24 text-center">
         <div className="w-10 h-10 border-3 border-[#F1B20B] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-        <p className="text-xs text-gray-500 font-medium">Chargement de votre session sécurisée...</p>
+        <p className="text-xs text-gray-500 font-medium">Loading secure checkout session...</p>
       </div>
     );
   }
 
-  // Si l'utilisateur n'est PAS connecté : invitation obligatoire à s'identifier
+  // If user is NOT signed in: prompt sign in
   if (!user) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-12">
@@ -156,20 +156,20 @@ export default function CheckoutPage() {
           </div>
 
           <h1 className="font-heading font-black text-2xl sm:text-3xl text-gray-900 mb-2">
-            Connexion Requise pour Commander
+            Sign In to Complete Your Order
           </h1>
           <p className="text-xs text-gray-600 max-w-lg mx-auto mb-8">
-            Pour garantir l'authenticité de vos commandes, enregistrer votre facture certifiée et assurer le suivi en temps réel de votre livraison, veuillez vous connecter à votre compte {siteConfig.name}.
+            To ensure accurate delivery across Honiara and the provinces, generate your invoice, and enable live tracking, please sign in to your {siteConfig.name} account.
           </p>
 
           <div className="space-y-3.5 max-w-md mx-auto">
-            {/* 1. Bouton Google OAuth */}
+            {/* 1. Google OAuth */}
             <a
               href={`/api/auth/google?redirect=${encodeURIComponent('/checkout')}`}
               className="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-bold text-xs py-3.5 rounded-2xl shadow-xs transition-all cursor-pointer"
             >
               <Icons.Google size={20} />
-              <span>Continuer avec Google (1 Clic)</span>
+              <span>Continue with Google</span>
             </a>
 
             <div className="relative my-4">
@@ -177,40 +177,40 @@ export default function CheckoutPage() {
                 <div className="w-full border-t border-gray-200"></div>
               </div>
               <div className="relative flex justify-center text-xs">
-                <span className="bg-white px-3 text-gray-400 font-medium">ou avec votre compte email</span>
+                <span className="bg-white px-3 text-gray-400 font-medium">or with your email address</span>
               </div>
             </div>
 
-            {/* 2. Bouton Connexion Email */}
+            {/* 2. Email Login */}
             <Link
               href={`/connexion?redirect=${encodeURIComponent('/checkout')}`}
               className="w-full block bg-[#0054A4] hover:bg-[#00519E] text-white font-bold text-xs py-3.5 rounded-2xl shadow-xs transition-all text-center"
             >
-              Se connecter avec mon Email
+              Sign In with Email
             </Link>
 
-            {/* 3. Bouton Création de Compte */}
+            {/* 3. Register */}
             <Link
               href={`/inscription?redirect=${encodeURIComponent('/checkout')}`}
               className="w-full block bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold text-xs py-3.5 rounded-2xl transition-all text-center"
             >
-              Créer un nouveau compte client
+              Create a DealMart Account
             </Link>
           </div>
 
-          {/* Réassurance */}
+          {/* Reassurance */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-10 pt-8 border-t border-gray-100 text-left">
             <div className="flex items-start gap-2.5 text-xs text-gray-600">
               <Icons.ShieldCheck size={18} className="text-emerald-600 flex-shrink-0 mt-0.5" />
-              <span>Garantie constructeur certifiée 12 mois</span>
+              <span>100% Genuine Quality Guaranteed</span>
             </div>
             <div className="flex items-start gap-2.5 text-xs text-gray-600">
               <Icons.Truck size={18} className="text-[#0054A4] flex-shrink-0 mt-0.5" />
-              <span>Livraison rapide à Cotonou et environs</span>
+              <span>Fast Delivery in Honiara & Provinces</span>
             </div>
             <div className="flex items-start gap-2.5 text-xs text-gray-600">
               <Icons.CreditCard size={18} className="text-amber-600 flex-shrink-0 mt-0.5" />
-              <span>Paiement sécurisé Kkiapay & FedaPay</span>
+              <span>Cash on Delivery & BSP Bank Transfer</span>
             </div>
           </div>
         </div>
@@ -224,7 +224,7 @@ export default function CheckoutPage() {
     setError(null);
 
     if (!customerName || !customerPhone || !streetDetails) {
-      setError('Veuillez renseigner toutes vos informations de livraison.');
+      setError('Please fill in all required delivery and contact details.');
       return;
     }
 
@@ -399,32 +399,32 @@ export default function CheckoutPage() {
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Fil d'Ariane */}
+        {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-xs text-gray-500 mb-6">
-          <Link href="/" className="hover:text-[#0054A4]">Accueil</Link>
+          <Link href="/" className="hover:text-[#0054A4]">Home</Link>
           <span>/</span>
-          <Link href="/panier" className="hover:text-[#0054A4]">Panier</Link>
+          <Link href="/panier" className="hover:text-[#0054A4]">Cart</Link>
           <span>/</span>
-          <span className="text-gray-900 font-bold">Paiement Mobile Money Sécurisé</span>
+          <span className="text-gray-900 font-bold">Secure Checkout</span>
         </nav>
 
-        {/* Titre & Statut Compte Connecté */}
+        {/* Title & Signed-In Status */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
           <div>
             <h1 className="font-heading font-black text-2xl sm:text-3xl text-gray-900 tracking-tight">
-              Finaliser ma Commande
+              Complete Your Order
             </h1>
             <p className="text-xs text-gray-500 mt-1">
-              Renseignez votre lieu de livraison et réglez via Mobile Money ou Carte Bancaire.
+              Provide your delivery location and choose your payment method.
             </p>
           </div>
 
-          {/* Badge Utilisateur Connecté */}
+          {/* User Badge */}
           <div className="bg-emerald-50 border border-emerald-200 rounded-2xl px-4 py-2.5 flex items-center justify-between sm:justify-start gap-3">
             <div className="flex items-center gap-2">
               <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
               <div className="text-xs">
-                <span className="text-gray-500 block text-[10px] uppercase font-bold tracking-wider">Acheteur authentifié</span>
+                <span className="text-gray-500 block text-[10px] uppercase font-bold tracking-wider">Signed in as</span>
                 <strong className="text-emerald-950 font-heading font-bold">{user.firstName} {user.lastName}</strong>
               </div>
             </div>
@@ -432,9 +432,9 @@ export default function CheckoutPage() {
               type="button"
               onClick={() => logout('/checkout')}
               className="text-[11px] text-gray-500 hover:text-red-600 underline font-medium cursor-pointer ml-2"
-              title="Se déconnecter"
+              title="Sign out"
             >
-              Changer
+              Switch
             </button>
           </div>
         </div>
@@ -449,20 +449,20 @@ export default function CheckoutPage() {
         <form onSubmit={handlePlaceOrder} className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Formulaire Informations Client & Livraison (Gauche) */}
           <div className="lg:col-span-7 space-y-6">
-            {/* Étape 1 : Coordonnées (Pré-remplies) */}
+            {/* Step 1 : Customer contact */}
             <div className="bg-white border border-[#E2E5E8] rounded-3xl p-6 shadow-xs">
               <h3 className="font-heading font-black text-sm uppercase text-gray-900 mb-4 pb-2 border-b border-gray-100 flex items-center gap-2">
                 <span className="w-6 h-6 rounded-full bg-[#F1B20B] text-[#1D2129] flex items-center justify-center font-bold text-xs">1</span>
-                <span>Coordonnées de l'Acheteur</span>
+                <span>Contact Information</span>
               </h3>
 
               <div className="space-y-4 text-xs">
                 <div>
-                  <label className="block font-bold text-gray-700 mb-1">Nom & Prénom *</label>
+                  <label className="block font-bold text-gray-700 mb-1">Full Name *</label>
                   <input
                     type="text"
                     required
-                    placeholder="Votre nom complet"
+                    placeholder="Your full name"
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
                     className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0054A4] focus:outline-none font-bold text-gray-900"
@@ -475,18 +475,18 @@ export default function CheckoutPage() {
                     <input
                       type="tel"
                       required
-                      placeholder="Ex: +677 7465588"
+                      placeholder="e.g. +677 7465588"
                       value={customerPhone}
                       onChange={(e) => setCustomerPhone(e.target.value)}
                       className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0054A4] focus:outline-none font-bold text-gray-900"
                     />
                   </div>
                   <div>
-                    <label className="block font-bold text-gray-700 mb-1">Email pour la Facture & Reçu *</label>
+                    <label className="block font-bold text-gray-700 mb-1">Email for Receipt & Updates *</label>
                     <input
                       type="email"
                       required
-                      placeholder="nom@domaine.com"
+                      placeholder="name@dealmart.sb"
                       value={customerEmail}
                       onChange={(e) => setCustomerEmail(e.target.value)}
                       className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0054A4] focus:outline-none"
@@ -496,7 +496,7 @@ export default function CheckoutPage() {
               </div>
             </div>
 
-            {/* Étape 2 : Adresse de Livraison au Bénin */}
+            {/* Step 2 : Delivery Location */}
             <div className="bg-white border border-[#E2E5E8] rounded-3xl p-6 shadow-xs">
               <div className="flex items-center justify-between pb-3 mb-4 border-b border-gray-100">
                 <h3 className="font-heading font-black text-sm uppercase text-gray-900 flex items-center gap-2">
@@ -510,16 +510,16 @@ export default function CheckoutPage() {
                     className="text-[11px] font-bold text-[#0054A4] hover:underline flex items-center gap-1"
                   >
                     <Icons.Settings size={13} />
-                    <span>Gérer mes adresses</span>
+                    <span>Manage addresses</span>
                   </Link>
                 )}
               </div>
 
-              {/* Sélection parmi les adresses enregistrées */}
+              {/* Saved addresses selector */}
               {savedAddresses.length > 0 && (
                 <div className="mb-5 space-y-2">
                   <label className="block text-xs font-bold text-gray-700 mb-2">
-                    Sélectionnez une adresse enregistrée :
+                    Select a saved address:
                   </label>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {savedAddresses.map((addr) => {
@@ -541,7 +541,7 @@ export default function CheckoutPage() {
                             </span>
                             {addr.isDefault && (
                               <span className="text-[9px] font-black uppercase bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">
-                                Par défaut
+                                Default
                               </span>
                             )}
                           </div>
@@ -558,7 +558,7 @@ export default function CheckoutPage() {
                       );
                     })}
 
-                    {/* Option nouvelle adresse */}
+                    {/* New address button */}
                     <div
                       onClick={handleSelectNewAddress}
                       className={`p-3.5 rounded-2xl border-2 border-dashed cursor-pointer transition-all flex flex-col items-center justify-center text-center ${
@@ -570,14 +570,14 @@ export default function CheckoutPage() {
                       <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-gray-800 shadow-2xs mb-1">
                         <Icons.Plus size={15} />
                       </div>
-                      <span className="font-bold text-xs text-gray-900">Utiliser une autre adresse</span>
-                      <span className="text-[10px] text-gray-500">Saisir un nouveau lieu de livraison</span>
+                      <span className="font-bold text-xs text-gray-900">Use a different address</span>
+                      <span className="text-[10px] text-gray-500">Enter a new delivery destination</span>
                     </div>
                   </div>
                 </div>
               )}
 
-              {/* Formulaire de saisie d'adresse (si nouveau ou si aucune adresse enregistrée) */}
+              {/* Address input form */}
               {(selectedAddressMode === 'new' || savedAddresses.length === 0) && (
                 <div className="space-y-4 text-xs bg-gray-50/70 p-4 rounded-2xl border border-gray-200">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -607,7 +607,7 @@ export default function CheckoutPage() {
                       <input
                         type="text"
                         required
-                        placeholder="Ex: Kukum, Point Cruz, Panatina, Henderson, White River..."
+                        placeholder="e.g. Kukum, Point Cruz, Panatina, Henderson, White River..."
                         value={district}
                         onChange={(e) => setDistrict(e.target.value)}
                         className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0054A4] focus:outline-none bg-white font-medium"
@@ -620,14 +620,14 @@ export default function CheckoutPage() {
                     <input
                       type="text"
                       required
-                      placeholder="Ex: Kukum Highway, Transol Building, Office / Floor details"
+                      placeholder="e.g. Kukum Highway, Transol Building, Office / Floor details"
                       value={streetDetails}
                       onChange={(e) => setStreetDetails(e.target.value)}
                       className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0054A4] focus:outline-none bg-white font-medium"
                     />
                   </div>
 
-                  {/* Checkbox d'enregistrement de l'adresse */}
+                  {/* Save address checkbox */}
                   <div className="pt-3 border-t border-gray-200">
                     <label className="flex items-start gap-3 cursor-pointer select-none">
                       <input
@@ -637,8 +637,8 @@ export default function CheckoutPage() {
                         className="mt-0.5 w-4 h-4 rounded text-[#0054A4] focus:ring-[#0054A4] border-gray-300 cursor-pointer"
                       />
                       <div className="text-xs">
-                        <span className="font-bold text-gray-900 block">Enregistrer cette adresse dans mon carnet d'adresses</span>
-                        <span className="text-[11px] text-gray-500">Permet de la mémoriser pour vos prochains achats</span>
+                        <span className="font-bold text-gray-900 block">Save this address to my address book</span>
+                        <span className="text-[11px] text-gray-500">Makes your future checkouts even faster</span>
                       </div>
                     </label>
 
@@ -646,7 +646,7 @@ export default function CheckoutPage() {
                       <div className="mt-2.5 pl-7">
                         <input
                           type="text"
-                          placeholder="Nom de cette adresse (ex: Domicile, Bureau, Famille)"
+                          placeholder="Address label (e.g. Home, Office, Family)"
                           value={addressLabel}
                           onChange={(e) => setAddressLabel(e.target.value)}
                           className="w-full sm:w-80 border border-gray-300 rounded-xl p-2.5 text-xs focus:ring-1 focus:ring-[#0054A4] focus:outline-none bg-white font-medium"
@@ -657,12 +657,12 @@ export default function CheckoutPage() {
                 </div>
               )}
 
-              {/* Instructions pour le coursier */}
+              {/* Delivery courier instructions */}
               <div className="mt-4 text-xs">
-                <label className="block font-bold text-gray-700 mb-1">Instructions complémentaires pour le coursier (Optionnel)</label>
+                <label className="block font-bold text-gray-700 mb-1">Delivery Notes / Landmark (Optional)</label>
                 <input
                   type="text"
-                  placeholder="Ex: M'appeler 15 minutes avant l'arrivée"
+                  placeholder="e.g. Call 15 minutes before arrival, opposite Kwamaini building"
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   className="w-full border border-gray-300 rounded-xl p-3 text-xs focus:ring-1 focus:ring-[#0054A4] focus:outline-none bg-white"
@@ -775,11 +775,11 @@ export default function CheckoutPage() {
           <div className="lg:col-span-5 space-y-6">
             <div className="bg-white border border-[#E2E5E8] rounded-3xl p-6 shadow-xs sticky top-24">
               <h3 className="font-heading font-black text-sm uppercase text-gray-900 mb-4 pb-2 border-b border-gray-100 flex items-center justify-between">
-                <span>Articles Commandés</span>
+                <span>Order Summary</span>
                 <span className="text-xs text-gray-500 font-bold">({cart.length})</span>
               </h3>
 
-              {/* Liste des articles avec photos & variantes */}
+              {/* Items List */}
               <div className="space-y-3 max-h-72 overflow-y-auto pr-1 mb-6">
                 {cart.map((item, idx) => (
                   <div key={`${item.productId}-${item.variantId || idx}`} className="flex items-center gap-3 pb-3 border-b border-gray-100 last:border-0 last:pb-0">
@@ -806,43 +806,43 @@ export default function CheckoutPage() {
                           </span>
                         </div>
                       )}
-                      <span className="text-[11px] text-gray-500 block">Qté : {item.quantity} × {formatFCFA(item.unitPrice)}</span>
+                      <span className="text-[11px] text-gray-500 block">Qty: {item.quantity} × {formatPrice(item.unitPrice)}</span>
                     </div>
                     <div className="font-heading font-bold text-xs text-gray-900 flex-shrink-0">
-                      {formatFCFA(item.unitPrice * item.quantity)}
+                      {formatPrice(item.unitPrice * item.quantity)}
                     </div>
                   </div>
                 ))}
               </div>
 
-              {/* Calcul des Totaux */}
+              {/* Calculations */}
               <div className="space-y-2.5 text-xs text-gray-600 border-t border-gray-100 pt-4 mb-6">
                 <div className="flex justify-between">
-                  <span>Sous-total articles</span>
-                  <span className="font-bold text-gray-900">{formatFCFA(subtotal)}</span>
+                  <span>Subtotal</span>
+                  <span className="font-bold text-gray-900">{formatPrice(subtotal)}</span>
                 </div>
 
                 {discountAmount > 0 && (
                   <div className="flex justify-between text-[#DC3545]">
-                    <span>Réduction Code Promo ({appliedPromo?.code})</span>
-                    <span className="font-bold">-{formatFCFA(discountAmount)}</span>
+                    <span>Promo Discount ({appliedPromo?.code})</span>
+                    <span className="font-bold">-{formatPrice(discountAmount)}</span>
                   </div>
                 )}
 
                 <div className="flex justify-between">
-                  <span>Frais de livraison</span>
+                  <span>Delivery Fee</span>
                   <span className="font-bold text-gray-900">
-                    {shippingFee === 0 ? <strong className="text-emerald-600">Gratuite</strong> : formatFCFA(shippingFee)}
+                    {shippingFee === 0 ? <strong className="text-emerald-600">FREE</strong> : formatPrice(shippingFee)}
                   </span>
                 </div>
 
                 <div className="flex justify-between items-baseline pt-3 border-t border-gray-100 font-heading">
-                  <span className="font-black text-sm text-gray-900">Total à payer</span>
-                  <span className="font-black text-2xl text-[#DC3545]">{formatFCFA(total)}</span>
+                  <span className="font-black text-sm text-gray-900">Total Amount</span>
+                  <span className="font-black text-2xl text-[#DC3545]">{formatPrice(total)}</span>
                 </div>
               </div>
 
-              {/* Bouton de confirmation de commande */}
+              {/* Submit CTA */}
               <button
                 type="submit"
                 disabled={isProcessing}
@@ -851,18 +851,24 @@ export default function CheckoutPage() {
                 {isProcessing ? (
                   <>
                     <div className="w-4 h-4 border-2 border-[#1D2129] border-t-transparent rounded-full animate-spin" />
-                    <span>Traitement sécurisé en cours...</span>
+                    <span>Processing order securely...</span>
                   </>
                 ) : (
                   <>
                     <Icons.ShieldCheck size={18} />
-                    <span>Payer avec {paymentProvider === 'kkiapay' ? 'Kkiapay' : 'FedaPay'}</span>
+                    <span>
+                      {paymentProvider === 'cod'
+                        ? 'Place Order (Cash on Delivery)'
+                        : paymentProvider === 'bank_transfer'
+                        ? 'Place Order (Direct Bank Transfer)'
+                        : 'Pay with Card'}
+                    </span>
                   </>
                 )}
               </button>
 
               <p className="text-[10px] text-gray-400 text-center mt-3">
-                En confirmant votre commande, vous acceptez les CGV et bénéficiez de la garantie constructeur {siteConfig.name}.
+                By confirming your order, you agree to {siteConfig.name}&apos;s Terms of Service and Privacy Policy.
               </p>
             </div>
           </div>

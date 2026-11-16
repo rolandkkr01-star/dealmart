@@ -64,13 +64,13 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         {
           id: `ev-${Date.now()}-1`,
           status: 'PENDING',
-          note: 'Commande enregistrée',
+          note: 'Order placed successfully',
           createdAt: new Date().toISOString()
         },
         {
           id: `ev-${Date.now()}-2`,
           status: 'PAID',
-          note: `Paiement validé avec succès (${orderData.paymentProvider.toUpperCase()})`,
+          note: `Payment confirmed (${orderData.paymentProvider.toUpperCase()})`,
           createdAt: new Date().toISOString()
         }
       ]
@@ -92,7 +92,7 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           const newEvent: OrderStatusEvent = {
             id: `ev-${Date.now()}`,
             status,
-            note: note || `Statut mis à jour: ${status}`,
+            note: note || `Status updated: ${status}`,
             createdAt: new Date().toISOString()
           };
           return {

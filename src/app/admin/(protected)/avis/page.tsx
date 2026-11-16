@@ -14,7 +14,7 @@ export default function AdminReviewsPage() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  // Filtres & Recherche
+  // Filters & Search
   const [searchQuery, setSearchQuery] = useState('');
   const [ratingFilter, setRatingFilter] = useState('ALL');
   const [featuredFilter, setFeaturedFilter] = useState('ALL');
@@ -56,7 +56,7 @@ export default function AdminReviewsPage() {
         prev.map((r) => (r.id === reviewId ? { ...r, isFeaturedHome: res.isFeaturedHome } : r))
       );
     } else {
-      setErrorMessage(res.error || 'Erreur lors de la mise à jour.');
+      setErrorMessage(res.error || 'Failed to update review spotlight status.');
     }
   };
 
@@ -79,10 +79,10 @@ export default function AdminReviewsPage() {
 
     if (res.success) {
       setReviews((prev) => prev.filter((r) => r.id !== reviewId));
-      setSuccessMessage('Avis supprimé avec succès.');
+      setSuccessMessage('Review deleted successfully.');
       setTimeout(() => setSuccessMessage(null), 3000);
     } else {
-      setErrorMessage(res.error || 'Erreur lors de la suppression.');
+      setErrorMessage(res.error || 'Failed to delete review.');
     }
   };
 
@@ -93,17 +93,17 @@ export default function AdminReviewsPage() {
 
   const filteredReviews = useMemo(() => {
     return reviews.filter((rev) => {
-      // Filtre note
+      // Rating filter
       if (ratingFilter !== 'ALL') {
         const targetRating = parseInt(ratingFilter, 10);
         if (rev.rating !== targetRating) return false;
       }
 
-      // Filtre épinglé
+      // Featured filter
       if (featuredFilter === 'FEATURED' && !rev.isFeaturedHome) return false;
       if (featuredFilter === 'NOT_FEATURED' && rev.isFeaturedHome) return false;
 
-      // Recherche
+      // Search query
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
         const matchAuthor = rev.authorName?.toLowerCase().includes(q);
@@ -129,28 +129,28 @@ export default function AdminReviewsPage() {
         isOpen={deleteConfirmState.isOpen}
         onClose={() => setDeleteConfirmState({ isOpen: false, reviewId: null, userName: '' })}
         onConfirm={confirmDeleteReview}
-        title="Supprimer cet avis ?"
-        message={`Êtes-vous certain de vouloir supprimer définitivement l'avis de ${deleteConfirmState.userName} ?`}
+        title="Delete this review?"
+        message={`Are you sure you want to permanently delete the review from ${deleteConfirmState.userName}?`}
         type="danger"
-        confirmText="Supprimer"
-        cancelText="Conserver"
+        confirmText="Delete"
+        cancelText="Cancel"
       />
 
-      {/* Fil d'ariane */}
+      {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-xs text-gray-500">
         <Link href="/admin" className="hover:text-[#0054A4]">Administration</Link>
         <span>/</span>
-        <span className="text-gray-900 font-bold">Modération des Avis</span>
+        <span className="text-gray-900 font-bold">Review Moderation</span>
       </nav>
 
-      {/* En-tête de la page */}
+      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-gray-200">
         <div>
           <h1 className="font-heading font-black text-2xl text-gray-900 tracking-tight">
-            Modération des Avis Clients & Témoignages
+            Customer Reviews & Testimonials Moderation
           </h1>
           <p className="text-xs text-gray-500 mt-1">
-            Gérez les avis déposés sur les fiches produits et choisissez les <strong>3 avis phares</strong> à afficher sur la page d'accueil.
+            Manage reviews submitted on product pages and choose the <strong>3 spotlight reviews</strong> to showcase on the home page.
           </p>
         </div>
 
@@ -160,12 +160,12 @@ export default function AdminReviewsPage() {
             className="inline-flex items-center gap-1.5 bg-white hover:bg-gray-50 border border-gray-300 text-gray-700 px-4 py-2.5 rounded-xl text-xs font-bold transition-colors cursor-pointer shadow-xs"
           >
             <Icons.RotateCcw size={14} />
-            <span>Actualiser</span>
+            <span>Refresh</span>
           </button>
         </div>
       </div>
 
-      {/* Message d'erreur éventuel */}
+      {/* Error Message */}
       {errorMessage && (
         <div className="p-4 bg-red-50 border border-red-200 text-red-700 text-xs rounded-xl flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -173,12 +173,12 @@ export default function AdminReviewsPage() {
             <span>{errorMessage}</span>
           </div>
           <button onClick={() => setErrorMessage(null)} className="text-red-900 font-bold hover:underline cursor-pointer">
-            Fermer
+            Close
           </button>
         </div>
       )}
 
-      {/* Message de succès */}
+      {/* Success Message */}
       {successMessage && (
         <div className="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs rounded-xl flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -186,19 +186,19 @@ export default function AdminReviewsPage() {
             <span>{successMessage}</span>
           </div>
           <button onClick={() => setSuccessMessage(null)} className="text-emerald-900 font-bold hover:underline cursor-pointer">
-            Fermer
+            Close
           </button>
         </div>
       )}
 
-      {/* Cartes d'indicateurs / Métriques */}
+      {/* Metrics Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         <div className="bg-white border border-[#E2E5E8] rounded-2xl p-5 shadow-xs flex items-center gap-4">
           <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
             <Icons.Star size={24} className="text-[#F1B20B] fill-[#F1B20B]" />
           </div>
           <div>
-            <span className="text-xs text-gray-500 font-medium block">Note Moyenne Globale</span>
+            <span className="text-xs text-gray-500 font-medium block">Average Rating</span>
             <span className="font-price font-black text-2xl text-gray-900">{avgRating} / 5</span>
           </div>
         </div>
@@ -208,8 +208,8 @@ export default function AdminReviewsPage() {
             <Icons.MessageSquare size={24} />
           </div>
           <div>
-            <span className="text-xs text-gray-500 font-medium block">Total des Avis Enregistrés</span>
-            <span className="font-price font-black text-2xl text-gray-900">{reviews.length} avis</span>
+            <span className="text-xs text-gray-500 font-medium block">Total Recorded Reviews</span>
+            <span className="font-price font-black text-2xl text-gray-900">{reviews.length} reviews</span>
           </div>
         </div>
 
@@ -218,21 +218,21 @@ export default function AdminReviewsPage() {
             <Icons.Sparkles size={24} />
           </div>
           <div>
-            <span className="text-xs text-gray-500 font-medium block">Épinglés sur l'accueil</span>
+            <span className="text-xs text-gray-500 font-medium block">Homepage Spotlight</span>
             <span className="font-price font-black text-2xl text-emerald-700">
-              {featuredCount} / 3 sélectionnés
+              {featuredCount} / 3 selected
             </span>
           </div>
         </div>
       </div>
 
-      {/* Barre de Recherche & Filtres */}
+      {/* Search & Filter Bar */}
       <div className="bg-white p-4 rounded-2xl border border-gray-200 shadow-xs flex flex-col md:flex-row items-center gap-4 text-xs">
         <div className="relative flex-1 w-full">
           <Icons.Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
           <input
             type="text"
-            placeholder="Rechercher par auteur, ville, commentaire ou produit..."
+            placeholder="Search by author, city, comment or product..."
             value={searchQuery}
             onChange={(e) => {
               setSearchQuery(e.target.value);
@@ -262,12 +262,12 @@ export default function AdminReviewsPage() {
             }}
             className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 font-bold text-gray-700 focus:outline-none cursor-pointer"
           >
-            <option value="ALL">Toutes les notes</option>
-            <option value="5">⭐⭐⭐⭐⭐ (5 étoiles)</option>
-            <option value="4">⭐⭐⭐⭐ (4 étoiles)</option>
-            <option value="3">⭐⭐⭐ (3 étoiles)</option>
-            <option value="2">⭐⭐ (2 étoiles)</option>
-            <option value="1">⭐ (1 étoile)</option>
+            <option value="ALL">All Ratings</option>
+            <option value="5">⭐⭐⭐⭐⭐ (5 stars)</option>
+            <option value="4">⭐⭐⭐⭐ (4 stars)</option>
+            <option value="3">⭐⭐⭐ (3 stars)</option>
+            <option value="2">⭐⭐ (2 stars)</option>
+            <option value="1">⭐ (1 star)</option>
           </select>
 
           <select
@@ -278,24 +278,24 @@ export default function AdminReviewsPage() {
             }}
             className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 font-bold text-gray-700 focus:outline-none cursor-pointer"
           >
-            <option value="ALL">Tous les avis</option>
-            <option value="FEATURED">Épinglés Accueil uniquement</option>
-            <option value="NOT_FEATURED">Non épinglés</option>
+            <option value="ALL">All Reviews</option>
+            <option value="FEATURED">Homepage Spotlight Only</option>
+            <option value="NOT_FEATURED">Standard Reviews Only</option>
           </select>
         </div>
       </div>
 
-      {/* Tableau / Liste des avis */}
+      {/* Reviews List */}
       <div className="bg-white border border-[#E2E5E8] rounded-2xl shadow-xs overflow-hidden">
         <div className="p-5 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
           <h2 className="font-heading font-black text-sm text-gray-900 uppercase tracking-wider">
-            Avis clients ({filteredReviews.length})
+            Customer Reviews ({filteredReviews.length})
           </h2>
           <span className="text-[11px] text-gray-500">
             {featuredCount === 3 ? (
-              <strong className="text-emerald-600 font-bold">✓ 3 avis sélectionnés pour la page d'accueil</strong>
+              <strong className="text-emerald-600 font-bold">✓ 3 reviews selected for homepage</strong>
             ) : (
-              <span>Sélectionnez encore {3 - featuredCount} avis pour la page d'accueil</span>
+              <span>Select {3 - featuredCount} more review(s) for homepage</span>
             )}
           </span>
         </div>
@@ -303,17 +303,17 @@ export default function AdminReviewsPage() {
         {loading ? (
           <div className="p-12 text-center">
             <div className="w-8 h-8 border-3 border-[#F1B20B] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-            <p className="text-xs text-gray-500">Chargement des avis clients...</p>
+            <p className="text-xs text-gray-500">Loading reviews...</p>
           </div>
         ) : reviews.length === 0 ? (
           <div className="p-12 text-center">
             <Icons.MessageSquare size={36} className="text-gray-300 mx-auto mb-3" />
-            <h3 className="font-heading font-bold text-sm text-gray-900 mb-1">Aucun avis pour le moment</h3>
-            <p className="text-xs text-gray-500">Les avis soumis par les clients sur les fiches produits s'afficheront ici.</p>
+            <h3 className="font-heading font-bold text-sm text-gray-900 mb-1">No reviews yet</h3>
+            <p className="text-xs text-gray-500">Reviews submitted by customers will appear here.</p>
           </div>
         ) : filteredReviews.length === 0 ? (
           <div className="p-12 text-center">
-            <p className="text-xs text-gray-500 mb-4">Aucun avis ne correspond à vos critères de recherche.</p>
+            <p className="text-xs text-gray-500 mb-4">No reviews match your search or filter criteria.</p>
             <button
               onClick={() => {
                 setRatingFilter('ALL');
@@ -323,7 +323,7 @@ export default function AdminReviewsPage() {
               }}
               className="bg-[#F1B20B] text-[#1D2129] font-heading font-black text-xs uppercase px-5 py-2.5 rounded-xl cursor-pointer"
             >
-              Réinitialiser les filtres
+              Reset Filters
             </button>
           </div>
         ) : (
@@ -334,7 +334,7 @@ export default function AdminReviewsPage() {
                   <div className="space-y-2 flex-1">
                     <div className="flex flex-wrap items-center gap-2.5">
                       <span className="font-bold text-xs text-gray-900">{rev.authorName}</span>
-                      <span className="text-[11px] text-gray-400">• {rev.city || 'Cotonou, Bénin'}</span>
+                      <span className="text-[11px] text-gray-400">• {rev.city || 'Honiara, Solomon Islands'}</span>
                       <div className="flex gap-0.5 ml-1">
                         {[...Array(5)].map((_, i) => (
                           <Icons.Star
@@ -347,15 +347,15 @@ export default function AdminReviewsPage() {
                       {rev.isFeaturedHome && (
                         <span className="bg-[#F1B20B] text-[#1D2129] font-black text-[10px] uppercase px-2 py-0.5 rounded-full flex items-center gap-1 shadow-2xs">
                           <Icons.Sparkles size={10} />
-                          Épinglé Accueil
+                          Homepage Spotlight
                         </span>
                       )}
                     </div>
 
-                    {/* Produit concerné */}
+                    {/* Associated Product */}
                     {rev.product && (
                       <div className="text-[11px] text-gray-500 flex items-center gap-1.5">
-                        <span>Produit :</span>
+                        <span>Product:</span>
                         <Link
                           href={`/produit/${rev.product.slug}`}
                           className="font-bold text-[#0054A4] hover:underline"
@@ -366,17 +366,17 @@ export default function AdminReviewsPage() {
                       </div>
                     )}
 
-                    {/* Commentaire */}
+                    {/* Comment */}
                     <p className="text-xs text-gray-700 bg-gray-50 p-3 rounded-xl border border-gray-100 italic leading-relaxed">
                       "{rev.comment}"
                     </p>
 
                     <span className="text-[10px] text-gray-400 block">
-                      Déposé le {new Date(rev.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                      Submitted on {new Date(rev.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                     </span>
                   </div>
 
-                  {/* Actions Modérateur */}
+                  {/* Moderator Actions */}
                   <div className="flex items-center gap-2 self-start lg:self-center flex-shrink-0">
                     <button
                       onClick={() => handleToggleFeature(rev.id)}
@@ -388,14 +388,14 @@ export default function AdminReviewsPage() {
                       }`}
                     >
                       <Icons.Star size={13} className={rev.isFeaturedHome ? 'text-amber-700 fill-amber-700' : ''} />
-                      <span>{rev.isFeaturedHome ? 'Retirer de l\'accueil' : 'Épingler sur l\'accueil'}</span>
+                      <span>{rev.isFeaturedHome ? 'Remove Spotlight' : 'Spotlight on Homepage'}</span>
                     </button>
 
                     <button
-                      onClick={() => handleDelete(rev.id, rev.authorName || 'ce client')}
+                      onClick={() => handleDelete(rev.id, rev.authorName || 'this customer')}
                       disabled={actionLoadingId === rev.id}
                       className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors cursor-pointer"
-                      title="Supprimer cet avis"
+                      title="Delete review"
                     >
                       <Icons.Trash2 size={16} />
                     </button>
@@ -404,7 +404,7 @@ export default function AdminReviewsPage() {
               ))}
             </div>
 
-            {/* Pagination Admin Avis */}
+            {/* Pagination */}
             <div className="border-t border-gray-200 px-4 py-2 bg-gray-50/50">
               <Pagination
                 currentPage={currentPage}
@@ -420,7 +420,7 @@ export default function AdminReviewsPage() {
                   setCurrentPage(1);
                 }}
                 pageSizeOptions={[6, 12, 24]}
-                itemLabel="avis"
+                itemLabel="reviews"
               />
             </div>
           </div>

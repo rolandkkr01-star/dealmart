@@ -40,14 +40,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           </span>
         </div>
 
-        {/* Bouton Favoris */}
+        {/* Wishlist button */}
         <button
           onClick={(e) => {
             e.preventDefault();
             toggleWishlist(product.id);
           }}
           className="w-8 h-8 rounded-full bg-gray-50 hover:bg-red-50 flex items-center justify-center text-gray-400 hover:text-[#DC3545] transition-colors cursor-pointer"
-          title="Ajouter aux favoris"
+          title="Add to wishlist"
         >
           <Icons.Heart size={16} className={isWished ? 'text-[#DC3545] fill-[#DC3545]' : ''} />
         </button>
@@ -114,14 +114,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         </div>
       </div>
 
-      {/* Bouton d'ajout rapide */}
+      {/* Quick Add CTA */}
       <div className="mt-3.5 pt-1">
         <button
           onClick={() => addToCart(product)}
           className="w-full bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase py-2.5 px-3 rounded-xl flex items-center justify-center gap-2 shadow-xs transition-colors cursor-pointer"
         >
           <Icons.ShoppingCart size={15} />
-          <span>Ajouter au Panier</span>
+          <span>Add to Cart</span>
         </button>
       </div>
     </div>

@@ -2,7 +2,7 @@ import { ProductCondition, OrderStatus } from '@/types';
 import { siteConfig } from '@/lib/site-config';
 
 /**
- * Formate un montant dans la devise officielle (SI$ pour les Îles Salomon).
+ * Formats an amount in the official currency (SI$ for Solomon Islands).
  */
 export function formatPrice(amount: number): string {
   if (typeof amount !== 'number' || isNaN(amount)) return `${siteConfig.currency} 0`;
@@ -11,14 +11,14 @@ export function formatPrice(amount: number): string {
 }
 
 /**
- * Alias de compatibilité pour le code existant
+ * Compatibility alias for legacy code
  */
 export function formatFCFA(amount: number): string {
   return formatPrice(amount);
 }
 
 /**
- * Calcule le pourcentage de réduction entre l'ancien prix et le prix promo.
+ * Calculates discount percentage between base price and promo price.
  */
 export function getDiscountPercentage(basePrice: number, promoPrice?: number): number | null {
   if (!promoPrice || promoPrice >= basePrice) return null;
@@ -26,7 +26,7 @@ export function getDiscountPercentage(basePrice: number, promoPrice?: number): n
 }
 
 /**
- * Détails et styles pour l'état d'un produit (Obligatoire selon les règles de confiance)
+ * Details and badge styles for product condition
  */
 export function getConditionBadgeInfo(condition: ProductCondition): {
   label: string;
@@ -41,42 +41,42 @@ export function getConditionBadgeInfo(condition: ProductCondition): {
   switch (condition) {
     case 'NEUF_SCELLE':
       return {
-        label: 'Neuf Scellé Constructeur',
-        badgeShort: 'Neuf Scellé',
+        label: 'Brand New Factory Sealed',
+        badgeShort: 'Brand New',
         badgeClass: 'bg-emerald-50 text-emerald-700 border-emerald-300 font-semibold',
         badgeBg: '#ECFDF5',
         badgeBorder: '#6EE7B7',
         badgeText: '#047857',
         iconName: 'ShieldCheck',
-        description: 'Produit 100% neuf, boîte d\'origine scellée sous blister d\'usine.'
+        description: '100% genuine product, unopened in original factory sealed box.'
       };
     case 'NEUF_NON_SCELLE':
       return {
-        label: 'Neuf Reconditionné Certifié',
-        badgeShort: 'Reconditionné A+',
+        label: 'Certified Refurbished (Grade A+)',
+        badgeShort: 'Refurbished A+',
         badgeClass: 'bg-blue-50 text-blue-700 border-blue-300 font-semibold',
         badgeBg: '#EFF6FF',
         badgeBorder: '#93C5FD',
         badgeText: '#1D4ED8',
         iconName: 'Sparkles',
-        description: 'Appareil testé sur 45 points de contrôle, état neuf irréprochable avec garantie.'
+        description: 'Tested across 45 inspection points, flawless condition with warranty.'
       };
     case 'OCCASION':
       return {
-        label: 'Occasion Certifiée & Garantie',
-        badgeShort: 'Occasion Vérifiée',
+        label: 'Certified Pre-Owned & Guaranteed',
+        badgeShort: 'Verified Pre-Owned',
         badgeClass: 'bg-amber-50 text-amber-800 border-amber-300 font-semibold',
         badgeBg: '#FFFBEB',
         badgeBorder: '#FCD34D',
         badgeText: '#92400E',
         iconName: 'CheckCircle2',
-        description: 'Appareil d\'occasion authentifié, batterie saine certifiée (>85%), révisé et garanti.'
+        description: 'Authenticated pre-owned device, certified battery health (>85%), inspected and guaranteed.'
       };
   }
 }
 
 /**
- * Couleurs et libellés pour les statuts de commande
+ * Colors and English labels for order statuses
  */
 export function getOrderStatusInfo(status: OrderStatus): {
   label: string;
@@ -84,19 +84,19 @@ export function getOrderStatusInfo(status: OrderStatus): {
 } {
   switch (status) {
     case 'PENDING':
-      return { label: 'En attente de paiement', className: 'bg-amber-100 text-amber-800 border-amber-200' };
+      return { label: 'Pending Payment', className: 'bg-amber-100 text-amber-800 border-amber-200' };
     case 'PAID':
-      return { label: 'Payée (En préparation)', className: 'bg-blue-100 text-blue-800 border-blue-200' };
+      return { label: 'Paid (Processing)', className: 'bg-blue-100 text-blue-800 border-blue-200' };
     case 'PROCESSING':
-      return { label: 'En cours de préparation', className: 'bg-indigo-100 text-indigo-800 border-indigo-200' };
+      return { label: 'In Preparation', className: 'bg-indigo-100 text-indigo-800 border-indigo-200' };
     case 'SHIPPED':
-      return { label: 'Expédiée (En livraison)', className: 'bg-purple-100 text-purple-800 border-purple-200' };
+      return { label: 'Out for Delivery', className: 'bg-purple-100 text-purple-800 border-purple-200' };
     case 'DELIVERED':
-      return { label: 'Livrée avec succès', className: 'bg-emerald-100 text-emerald-800 border-emerald-200' };
+      return { label: 'Delivered', className: 'bg-emerald-100 text-emerald-800 border-emerald-200' };
     case 'CANCELLED':
-      return { label: 'Annulée', className: 'bg-red-100 text-red-800 border-red-200' };
+      return { label: 'Cancelled', className: 'bg-red-100 text-red-800 border-red-200' };
     case 'REFUNDED':
-      return { label: 'Remboursée', className: 'bg-gray-100 text-gray-800 border-gray-200' };
+      return { label: 'Refunded', className: 'bg-gray-100 text-gray-800 border-gray-200' };
   }
 }
 

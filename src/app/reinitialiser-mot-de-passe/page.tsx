@@ -39,12 +39,12 @@ function ResetPasswordContent() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!token) {
-      setError('Jeton de réinitialisation manquant dans le lien.');
+      setError('Password reset token is missing from the link.');
       return;
     }
 
     if (!isFormValid) {
-      setError('Veuillez respecter tous les critères de sécurité pour votre mot de passe.');
+      setError('Please satisfy all password security requirements.');
       return;
     }
 
@@ -59,15 +59,15 @@ function ResetPasswordContent() {
       });
 
       if (res.success) {
-        setSuccess(res.message || 'Mot de passe réinitialisé avec succès !');
+        setSuccess(res.message || 'Password reset successfully!');
         setTimeout(() => {
           router.push('/connexion');
         }, 3000);
       } else {
-        setError(res.error || 'Erreur lors de la réinitialisation.');
+        setError(res.error || 'Failed to reset password.');
       }
     } catch (_) {
-      setError('Une erreur est survenue. Veuillez vérifier votre connexion.');
+      setError('An error occurred. Please verify your connection.');
     } finally {
       setLoading(false);
     }
@@ -79,15 +79,15 @@ function ResetPasswordContent() {
         <div className="w-12 h-12 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center mx-auto">
           <Icons.AlertCircle size={24} />
         </div>
-        <h2 className="font-heading font-black text-lg text-gray-900">Lien invalide ou incomplet</h2>
+        <h2 className="font-heading font-black text-lg text-gray-900">Invalid or Expired Link</h2>
         <p className="text-xs text-gray-500 max-w-sm mx-auto">
-          Le lien de réinitialisation utilisé ne contient aucun jeton de sécurité valide.
+          This password reset link does not contain a valid security token.
         </p>
         <Link
           href="/mot-de-passe-oublie"
           className="inline-flex items-center gap-2 bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-bold text-xs uppercase px-5 py-2.5 rounded-xl transition-all"
         >
-          <span>Faire une nouvelle demande</span>
+          <span>Request a New Reset Link</span>
         </Link>
       </div>
     );
@@ -100,19 +100,19 @@ function ResetPasswordContent() {
           <Icons.CheckCircle size={32} />
         </div>
         <div>
-          <h2 className="font-heading font-black text-xl text-gray-900">Mot de passe mis à jour !</h2>
+          <h2 className="font-heading font-black text-xl text-gray-900">Password Updated!</h2>
           <p className="text-xs text-emerald-800 mt-2 leading-relaxed max-w-sm mx-auto">
             {success}
           </p>
           <p className="text-[11px] text-gray-400 mt-2">
-            Redirection automatique vers la page de connexion dans quelques instants...
+            Redirecting automatically to the sign-in page in a few seconds...
           </p>
         </div>
         <Link
           href="/connexion"
           className="inline-flex items-center justify-center gap-2 bg-[#1D2129] hover:bg-[#0054A4] text-white font-heading font-black text-xs uppercase px-6 py-3 rounded-xl transition-all shadow-xs w-full"
         >
-          <span>Se connecter immédiatement</span>
+          <span>Sign In Now</span>
           <Icons.ArrowRight size={14} />
         </Link>
       </div>
@@ -126,10 +126,10 @@ function ResetPasswordContent() {
           <Icons.Lock size={24} className="text-[#0054A4]" />
         </div>
         <h1 className="font-heading font-black text-xl text-gray-900 tracking-tight">
-          Nouveau mot de passe
+          Set New Password
         </h1>
         <p className="text-xs text-gray-500 mt-1">
-          Choisissez un mot de passe robuste pour protéger votre compte {siteConfig.name}.
+          Choose a strong password to protect your {siteConfig.name} account.
         </p>
       </div>
 
@@ -140,16 +140,16 @@ function ResetPasswordContent() {
         </div>
       )}
 
-      {/* Nouveau mot de passe */}
+      {/* New password input */}
       <div>
-        <label className="block text-gray-700 font-bold mb-1">Nouveau mot de passe</label>
+        <label className="block text-gray-700 font-bold mb-1">New Password</label>
         <div className="relative">
           <input
             type={showPassword ? 'text' : 'password'}
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Minimum 10 caractères avec majuscule, chiffre..."
+            placeholder="Min. 10 chars with uppercase, number..."
             className="w-full border border-gray-300 rounded-xl px-3.5 py-2.5 pr-10 text-xs focus:ring-1 focus:ring-[#0054A4] focus:outline-none"
           />
           <button
@@ -162,15 +162,15 @@ function ResetPasswordContent() {
         </div>
       </div>
 
-      {/* Confirmation mot de passe */}
+      {/* Confirm password */}
       <div>
-        <label className="block text-gray-700 font-bold mb-1">Confirmer le nouveau mot de passe</label>
+        <label className="block text-gray-700 font-bold mb-1">Confirm New Password</label>
         <input
           type={showPassword ? 'text' : 'password'}
           required
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
-          placeholder="Retapez exactement le même mot de passe"
+          placeholder="Re-enter the exact same password"
           className={`w-full border rounded-xl px-3.5 py-2.5 text-xs focus:outline-none ${
             confirmPassword && !isMatch
               ? 'border-red-300 focus:ring-1 focus:ring-red-500'
@@ -178,33 +178,33 @@ function ResetPasswordContent() {
           }`}
         />
         {confirmPassword && !isMatch && (
-          <p className="text-[10px] text-red-600 font-bold mt-1">Les deux mots de passe ne correspondent pas.</p>
+          <p className="text-[10px] text-red-600 font-bold mt-1">Passwords do not match.</p>
         )}
       </div>
 
-      {/* Indicateurs de sécurité du mot de passe */}
+      {/* Security requirements */}
       <div className="bg-gray-50 border border-gray-200/70 rounded-xl p-3 text-[11px] space-y-1.5">
-        <span className="font-bold text-gray-700 block mb-1">Exigences de sécurité :</span>
+        <span className="font-bold text-gray-700 block mb-1">Security Requirements:</span>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 text-[10px]">
           <span className={`flex items-center gap-1.5 ${hasMinLength ? 'text-emerald-700 font-bold' : 'text-gray-400'}`}>
             <Icons.Check size={12} className={hasMinLength ? 'text-emerald-600' : 'text-gray-300'} />
-            10 caractères min.
+            Min. 10 characters
           </span>
           <span className={`flex items-center gap-1.5 ${hasUppercase ? 'text-emerald-700 font-bold' : 'text-gray-400'}`}>
             <Icons.Check size={12} className={hasUppercase ? 'text-emerald-600' : 'text-gray-300'} />
-            1 Majuscule (A-Z)
+            1 Uppercase (A-Z)
           </span>
           <span className={`flex items-center gap-1.5 ${hasLowercase ? 'text-emerald-700 font-bold' : 'text-gray-400'}`}>
             <Icons.Check size={12} className={hasLowercase ? 'text-emerald-600' : 'text-gray-300'} />
-            1 Minuscule (a-z)
+            1 Lowercase (a-z)
           </span>
           <span className={`flex items-center gap-1.5 ${hasNumber ? 'text-emerald-700 font-bold' : 'text-gray-400'}`}>
             <Icons.Check size={12} className={hasNumber ? 'text-emerald-600' : 'text-gray-300'} />
-            1 Chiffre (0-9)
+            1 Number (0-9)
           </span>
           <span className={`flex items-center gap-1.5 col-span-2 ${hasSpecial ? 'text-emerald-700 font-bold' : 'text-gray-400'}`}>
             <Icons.Check size={12} className={hasSpecial ? 'text-emerald-600' : 'text-gray-300'} />
-            1 Caractère spécial (@, #, $, !, %, *, ?)
+            1 Special symbol (@, #, $, !, %, *, ?)
           </span>
         </div>
       </div>
@@ -217,10 +217,10 @@ function ResetPasswordContent() {
         {loading ? (
           <>
             <div className="w-3.5 h-3.5 border-2 border-[#1D2129] border-t-transparent rounded-full animate-spin" />
-            <span>Mise à jour en cours...</span>
+            <span>Updating password...</span>
           </>
         ) : (
-          <span>Enregistrer le nouveau mot de passe</span>
+          <span>Save New Password</span>
         )}
       </button>
     </form>
@@ -235,7 +235,7 @@ export default function ResetPasswordPage() {
           fallback={
             <div className="p-8 text-center text-xs text-gray-500">
               <div className="w-6 h-6 border-2 border-[#F1B20B] border-t-transparent rounded-full animate-spin mx-auto mb-2" />
-              <p>Chargement du formulaire sécurisé...</p>
+              <p>Loading secure form...</p>
             </div>
           }
         >

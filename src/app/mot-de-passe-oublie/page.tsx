@@ -20,12 +20,12 @@ export default function MotDePasseOubliePage() {
     try {
       const res = await requestPasswordResetAction({ email });
       if (res.success) {
-        setSuccessMessage(res.message || 'Lien de réinitialisation envoyé avec succès.');
+        setSuccessMessage(res.message || 'Password reset link sent successfully.');
       } else {
-        setError(res.error || 'Une erreur est survenue.');
+        setError(res.error || 'An error occurred.');
       }
     } catch (_) {
-      setError('Impossible de traiter votre demande. Veuillez vérifier votre connexion.');
+      setError('Unable to process your request. Please check your network connection.');
     } finally {
       setLoading(false);
     }
@@ -40,10 +40,10 @@ export default function MotDePasseOubliePage() {
             <Icons.Lock size={24} className="text-[#0054A4]" />
           </div>
           <h1 className="font-heading font-black text-xl text-gray-900 tracking-tight">
-            Mot de passe oublié ?
+            Forgot Password?
           </h1>
           <p className="text-xs text-gray-500 mt-1 max-w-xs mx-auto">
-            Saisissez votre adresse email pour recevoir un lien sécurisé de réinitialisation.
+            Enter your email address to receive a secure password reset link.
           </p>
         </div>
 
@@ -59,13 +59,13 @@ export default function MotDePasseOubliePage() {
             <div className="bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs p-4 rounded-2xl space-y-2">
               <div className="flex items-center gap-2 font-bold text-emerald-800">
                 <Icons.CheckCircle size={18} className="text-emerald-600" />
-                <span>Email de réinitialisation envoyé</span>
+                <span>Reset link sent</span>
               </div>
               <p className="leading-relaxed text-[11px] text-emerald-800">
                 {successMessage}
               </p>
               <div className="pt-2 border-t border-emerald-200/60 text-[10px] text-emerald-700">
-                ⏱️ <strong>Validité : 15 minutes</strong>. Pensez à vérifier vos courriers indésirables (spams).
+                ⏱️ <strong>Valid for 15 minutes</strong>. Remember to check your spam/junk folder.
               </div>
             </div>
 
@@ -75,7 +75,7 @@ export default function MotDePasseOubliePage() {
                 className="inline-flex items-center justify-center gap-2 bg-[#1D2129] hover:bg-[#0054A4] text-white font-heading font-black text-xs uppercase px-6 py-3 rounded-xl transition-all shadow-xs w-full"
               >
                 <Icons.ArrowLeft size={14} />
-                <span>Retour à la connexion</span>
+                <span>Back to Sign In</span>
               </Link>
             </div>
           </div>
@@ -83,7 +83,7 @@ export default function MotDePasseOubliePage() {
           <form onSubmit={handleSubmit} className="space-y-4 text-xs">
             <div>
               <label htmlFor="email" className="block text-gray-700 font-bold mb-1">
-                Adresse Email associée à votre compte
+                Account Email Address
               </label>
               <input
                 id="email"
@@ -91,7 +91,7 @@ export default function MotDePasseOubliePage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="ex: nom@domaine.com"
+                placeholder="e.g. name@dealmart.sb"
                 className="w-full border border-gray-300 rounded-xl px-3.5 py-2.5 text-xs focus:ring-1 focus:ring-[#0054A4] focus:outline-none"
               />
             </div>
@@ -99,10 +99,10 @@ export default function MotDePasseOubliePage() {
             <div className="bg-gray-50 border border-gray-200/70 rounded-xl p-3 text-[11px] text-gray-500 space-y-1">
               <div className="font-bold text-gray-700 flex items-center gap-1.5">
                 <Icons.ShieldCheck size={14} className="text-emerald-600" />
-                <span>Protection & Confidentialité</span>
+                <span>Security & Privacy</span>
               </div>
               <p className="text-[10px] leading-relaxed">
-                Le lien envoyé est à usage unique et expire automatiquement après 15 minutes pour votre sécurité.
+                The reset link is single-use and expires in 15 minutes for your protection.
               </p>
             </div>
 
@@ -114,12 +114,12 @@ export default function MotDePasseOubliePage() {
               {loading ? (
                 <>
                   <div className="w-3.5 h-3.5 border-2 border-[#1D2129] border-t-transparent rounded-full animate-spin" />
-                  <span>Envoi du lien en cours...</span>
+                  <span>Sending link...</span>
                 </>
               ) : (
                 <>
                   <Icons.Send size={14} />
-                  <span>Envoyer le lien de réinitialisation</span>
+                  <span>Send Password Reset Link</span>
                 </>
               )}
             </button>
@@ -130,7 +130,7 @@ export default function MotDePasseOubliePage() {
                 className="text-xs font-bold text-[#0054A4] hover:underline inline-flex items-center gap-1.5"
               >
                 <Icons.ArrowLeft size={13} />
-                <span>Retour à la page de connexion</span>
+                <span>Back to Sign In</span>
               </Link>
             </div>
           </form>

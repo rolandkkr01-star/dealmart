@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
 import { Icons } from '@/components/ui/Icons';
+import { formatPrice } from '@/lib/utils';
 import { siteConfig } from '@/lib/site-config';
 
 export const Header: React.FC = () => {
@@ -72,7 +73,7 @@ export const Header: React.FC = () => {
               <button
                 type="submit"
                 className="bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] px-6 font-bold flex items-center justify-center transition-colors cursor-pointer"
-                title="Lancer la recherche"
+                title="Search"
               >
                 <Icons.Search size={18} />
               </button>
@@ -80,9 +81,9 @@ export const Header: React.FC = () => {
           </form>
         </div>
 
-        {/* 3. Actions utilisateur (Compte, Favoris, Panier) */}
+        {/* 3. User actions (Account, Wishlist, Cart) */}
         <div className="flex items-center gap-3 sm:gap-6">
-          {/* Espace Compte / Connexion */}
+          {/* Account / Sign in */}
           <div className="relative">
             {user ? (
               <div>
@@ -95,7 +96,7 @@ export const Header: React.FC = () => {
                   </div>
                   <div className="hidden lg:flex flex-col text-left">
                     <span className="text-[10px] text-gray-500 leading-tight">
-                      Bonjour
+                      Hello,
                     </span>
                     <span className="text-xs font-bold text-gray-900 leading-tight truncate max-w-[100px]">
                       {user.firstName}
@@ -129,7 +130,7 @@ export const Header: React.FC = () => {
                               className="flex items-center gap-2.5 px-4 py-2 text-gray-700 hover:bg-amber-50 hover:text-[#0054A4] font-medium"
                             >
                               <Icons.User size={14} />
-                              <span>Mon Espace Client</span>
+                              <span>My Account</span>
                             </Link>
                             <Link
                               href="/compte/commandes"
@@ -137,7 +138,7 @@ export const Header: React.FC = () => {
                               className="flex items-center gap-2.5 px-4 py-2 text-gray-700 hover:bg-amber-50 hover:text-[#0054A4] font-medium"
                             >
                               <Icons.ShoppingBag size={14} />
-                              <span>Mes Commandes</span>
+                              <span>My Orders</span>
                             </Link>
                           </>
                         ) : (
@@ -147,7 +148,7 @@ export const Header: React.FC = () => {
                             className="flex items-center gap-2.5 px-4 py-2 text-amber-900 bg-amber-50/60 hover:bg-amber-100 font-bold"
                           >
                             <Icons.TrendingUp size={14} className="text-amber-700" />
-                            <span>Console d'Administration</span>
+                            <span>Admin Console</span>
                           </Link>
                         )}
                       </div>
@@ -161,7 +162,7 @@ export const Header: React.FC = () => {
                           className="w-full flex items-center gap-2.5 px-4 py-2 text-red-600 hover:bg-red-50 font-bold text-left cursor-pointer"
                         >
                           <Icons.X size={14} />
-                          <span>Se Déconnecter</span>
+                          <span>Sign Out</span>
                         </button>
                       </div>
                     </div>
@@ -172,14 +173,14 @@ export const Header: React.FC = () => {
               <Link
                 href="/connexion"
                 className="flex items-center gap-2 text-gray-700 hover:text-[#0054A4] transition-colors p-1.5 rounded-lg hover:bg-gray-50"
-                title="Se connecter"
+                title="Sign in"
               >
                 <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-700">
                   <Icons.User size={20} />
                 </div>
                 <div className="hidden lg:flex flex-col text-left">
-                  <span className="text-[10px] text-gray-500 leading-tight">Mon Compte</span>
-                  <span className="text-xs font-bold text-gray-900 leading-tight">Connexion</span>
+                  <span className="text-[10px] text-gray-500 leading-tight">My Account</span>
+                  <span className="text-xs font-bold text-gray-900 leading-tight">Sign In</span>
                 </div>
               </Link>
             )}
@@ -189,7 +190,7 @@ export const Header: React.FC = () => {
           <Link
             href="/favoris"
             className="relative p-2 text-gray-700 hover:text-[#DC3545] transition-colors rounded-lg hover:bg-gray-50 flex items-center justify-center"
-            title="Mes Favoris"
+            title="Wishlist"
           >
             <Icons.Heart size={24} className={wishlist.length > 0 ? "text-[#DC3545] fill-[#DC3545]" : ""} />
             {wishlist.length > 0 && (
@@ -199,11 +200,11 @@ export const Header: React.FC = () => {
             )}
           </Link>
 
-          {/* Panier Interactif */}
+          {/* Interactive Cart */}
           <button
             onClick={() => setIsCartDrawerOpen(true)}
             className="flex items-center gap-3 bg-gray-50 hover:bg-amber-50/80 p-2 sm:px-3 sm:py-2 rounded-xl border border-gray-200 hover:border-[#F1B20B] transition-all cursor-pointer group"
-            title="Ouvrir mon Panier"
+            title="Open Cart"
           >
             <div className="relative">
               <Icons.ShoppingCart size={24} className="text-gray-800 group-hover:text-[#0054A4] transition-colors" />
@@ -214,9 +215,9 @@ export const Header: React.FC = () => {
               )}
             </div>
             <div className="hidden sm:flex flex-col text-left">
-              <span className="text-[10px] text-gray-500 leading-tight">Mon Panier</span>
+              <span className="text-[10px] text-gray-500 leading-tight">Cart</span>
               <span className="text-xs font-price font-extrabold text-gray-900 leading-tight">
-                {(total || 0).toLocaleString('fr-FR')} F
+                {formatPrice(total || 0)}
               </span>
             </div>
           </button>

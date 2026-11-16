@@ -10,11 +10,11 @@ export const MainNav: React.FC = () => {
   const [isDepartmentMenuOpen, setIsDepartmentMenuOpen] = useState(false);
 
   const departments = [
-    { name: 'Électronique & High-Tech', href: '/boutique?category=electronics-gadgets', icon: Icons.Smartphone },
-    { name: 'Beauté, Cosmétiques & Soins', href: '/boutique?category=beauty-cosmetics-skincare', icon: Icons.Sparkles },
-    { name: 'Mode & Habillement', href: '/boutique?category=fashion-accessories', icon: Icons.Tag },
-    { name: 'Maison, Déco & Cuisine', href: '/boutique?category=home-kitchen-living', icon: Icons.Package },
-    { name: 'Audio & Accessoires Multimédia', href: '/boutique?search=audio', icon: Icons.Headset },
+    { name: 'Electronics & Tech', href: '/boutique?category=electronics-gadgets', icon: Icons.Smartphone },
+    { name: 'Beauty & Skincare', href: '/boutique?category=beauty-cosmetics-skincare', icon: Icons.Sparkles },
+    { name: 'Fashion & Apparel', href: '/boutique?category=fashion-accessories', icon: Icons.Tag },
+    { name: 'Home, Living & Kitchen', href: '/boutique?category=home-kitchen-living', icon: Icons.Package },
+    { name: 'Audio & Accessories', href: '/boutique?search=audio', icon: Icons.Headset },
   ];
 
   return (

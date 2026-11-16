@@ -2,7 +2,7 @@ import { Resend } from 'resend';
 import { siteConfig } from '@/lib/site-config';
 
 /**
- * Service d'envoi d'emails transactionnels (Resend + Fallback Démo)
+ * Transactional email service (Resend)
  */
 
 interface SendOtpParams {
@@ -21,10 +21,10 @@ export async function sendOtpVerificationEmail({
 
   const htmlContent = `
     <!DOCTYPE html>
-    <html lang="fr">
+    <html lang="en">
     <head>
       <meta charset="utf-8">
-      <title>Code de confirmation ${siteConfig.name}</title>
+      <title>${siteConfig.name} Verification Code</title>
       <style>
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f4f5f7; margin: 0; padding: 20px; color: #1D2129; }
         .container { max-width: 540px; margin: 0 auto; background: #ffffff; border-radius: 16px; overflow: hidden; border: 1px solid #e2e8f0; }
@@ -45,16 +45,16 @@ export async function sendOtpVerificationEmail({
           <h1>${siteConfig.name}</h1>
         </div>
         <div class="content">
-          <div class="greeting">Bonjour ${userName},</div>
+          <div class="greeting">Hello ${userName},</div>
           <p class="message">
-            Merci de créer votre compte chez <strong>${siteConfig.name}</strong>. Pour valider votre adresse email et sécuriser votre compte, veuillez saisir le code de confirmation suivant :
+            Thank you for creating an account with <strong>${siteConfig.name}</strong>. To verify your email address and secure your account, please enter the following verification code:
           </p>
           <div class="otp-box">
             <div class="otp-code">${otpCode}</div>
-            <div class="expiry">Valable pendant 24 heures</div>
+            <div class="expiry">Valid for 24 hours</div>
           </div>
           <p class="message" style="font-size: 12px; color: #94a3b8;">
-            Si vous n'avez pas créé de compte chez ${siteConfig.name}, vous pouvez ignorer cet email en toute sécurité.
+            If you did not request this account, you can safely disregard this email.
           </p>
         </div>
         <div class="footer">
@@ -66,8 +66,8 @@ export async function sendOtpVerificationEmail({
   `;
 
   if (!apiKey) {
-    console.error('❌ RESEND_API_KEY absente dans les variables d\'environnement.');
-    return { success: false, error: 'Service d\'envoi d\'email non configuré sur le serveur.' };
+    console.error('❌ RESEND_API_KEY missing in environment variables.');
+    return { success: false, error: 'Email service not configured on server.' };
   }
 
   try {
@@ -75,20 +75,20 @@ export async function sendOtpVerificationEmail({
     const { data, error } = await resend.emails.send({
       from: fromEmail,
       to: [to],
-      subject: `${otpCode} est votre code de confirmation ${siteConfig.name}`,
+      subject: `${otpCode} is your ${siteConfig.name} verification code`,
       html: htmlContent,
     });
 
     if (error) {
-      console.error('❌ Erreur API Resend:', error);
+      console.error('❌ Resend API error:', error);
       return { success: false, error: error.message };
     }
 
-    console.log(`✅ Email OTP envoyé avec succès via Resend à ${to} (ID: ${data?.id})`);
+    console.log(`✅ Verification email successfully sent via Resend to ${to} (ID: ${data?.id})`);
     return { success: true, messageId: data?.id };
   } catch (err: any) {
-    console.error('❌ Exception envoi Resend:', err);
-    return { success: false, error: err.message || 'Erreur lors de l\'envoi de l\'email.' };
+    console.error('❌ Resend exception:', err);
+    return { success: false, error: err.message || 'Error sending email.' };
   }
 }
 
@@ -108,10 +108,10 @@ export async function sendPasswordResetEmail({
 
   const htmlContent = `
     <!DOCTYPE html>
-    <html lang="fr">
+    <html lang="en">
     <head>
       <meta charset="utf-8">
-      <title>Réinitialisation de votre mot de passe ${siteConfig.name}</title>
+      <title>Reset your password • ${siteConfig.name}</title>
       <style>
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f4f5f7; margin: 0; padding: 20px; color: #1D2129; }
         .container { max-width: 540px; margin: 0 auto; background: #ffffff; border-radius: 16px; overflow: hidden; border: 1px solid #e2e8f0; }
@@ -134,24 +134,24 @@ export async function sendPasswordResetEmail({
           <h1>${siteConfig.name}</h1>
         </div>
         <div class="content">
-          <div class="greeting">Bonjour ${userName},</div>
+          <div class="greeting">Hello ${userName},</div>
           <p class="message">
-            Nous avons reçu une demande de réinitialisation de mot de passe pour votre compte <strong>${siteConfig.name}</strong>.
+            We received a request to reset your password for your <strong>${siteConfig.name}</strong> account.
           </p>
           <p class="message">
-            Pour choisir un nouveau mot de passe en toute sécurité, cliquez sur le bouton ci-dessous :
+            To choose a new password, click the button below:
           </p>
           <div class="btn-container">
-            <a href="${resetUrl}" class="btn" target="_blank">Réinitialiser mon mot de passe</a>
+            <a href="${resetUrl}" class="btn" target="_blank">Reset Password</a>
           </div>
           <p class="link-alt">
-            Si le bouton ne fonctionne pas, copiez et collez ce lien dans votre navigateur :<br/>
+            If the button doesn't work, copy and paste this link into your browser:<br/>
             <a href="${resetUrl}" style="color: #0054A4;">${resetUrl}</a>
           </p>
           <div class="security-box">
             <p>
-              ⏱️ <strong>Ce lien expire dans 15 minutes</strong> et ne peut être utilisé qu'une seule fois.<br/>
-              Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer cet email en toute sécurité : votre compte reste protégé et votre mot de passe actuel inchangé.
+              ⏱️ <strong>This link expires in 15 minutes</strong> and can only be used once.<br/>
+              If you didn't make this request, you can safely ignore this email: your account remains secure and your password unchanged.
             </p>
           </div>
         </div>
@@ -164,8 +164,8 @@ export async function sendPasswordResetEmail({
   `;
 
   if (!apiKey) {
-    console.error('❌ RESEND_API_KEY absente dans les variables d\'environnement.');
-    return { success: false, error: 'Service d\'envoi d\'email non configuré sur le serveur.' };
+    console.error('❌ RESEND_API_KEY missing in environment variables.');
+    return { success: false, error: 'Email service not configured on server.' };
   }
 
   try {
@@ -173,20 +173,19 @@ export async function sendPasswordResetEmail({
     const { data, error } = await resend.emails.send({
       from: fromEmail,
       to: [to],
-      subject: `Réinitialisation de votre mot de passe • ${siteConfig.name}`,
+      subject: `Reset your password • ${siteConfig.name}`,
       html: htmlContent,
     });
 
     if (error) {
-      console.error('❌ Erreur API Resend:', error);
+      console.error('❌ Resend API error:', error);
       return { success: false, error: error.message };
     }
 
-    console.log(`✅ Email réinitialisation envoyé avec succès via Resend à ${to} (ID: ${data?.id})`);
+    console.log(`✅ Password reset email sent via Resend to ${to} (ID: ${data?.id})`);
     return { success: true, messageId: data?.id };
   } catch (err: any) {
-    console.error('❌ Exception envoi Resend:', err);
-    return { success: false, error: err.message || 'Erreur lors de l\'envoi de l\'email.' };
+    console.error('❌ Resend exception:', err);
+    return { success: false, error: err.message || 'Error sending email.' };
   }
 }
-

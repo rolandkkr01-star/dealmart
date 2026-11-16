@@ -13,11 +13,11 @@ interface BoutiqueClientProps {
 }
 
 const DEPARTMENTS = [
-  { label: 'Tous les rayons', value: 'ALL' },
-  { label: 'Électronique & Gadgets', value: 'electronics-gadgets' },
-  { label: 'Beauté, Cosmétiques & Soins', value: 'beauty-cosmetics-skincare' },
-  { label: 'Mode & Accessoires', value: 'fashion-accessories' },
-  { label: 'Maison, Cuisine & Déco', value: 'home-kitchen-living' },
+  { label: 'All Departments', value: 'ALL' },
+  { label: 'Electronics & Tech', value: 'electronics-gadgets' },
+  { label: 'Beauty, Cosmetics & Skincare', value: 'beauty-cosmetics-skincare' },
+  { label: 'Fashion & Accessories', value: 'fashion-accessories' },
+  { label: 'Home, Living & Kitchen', value: 'home-kitchen-living' },
 ];
 
 function BoutiqueContent({ initialProducts }: BoutiqueClientProps) {
@@ -134,51 +134,51 @@ function BoutiqueContent({ initialProducts }: BoutiqueClientProps) {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      {/* Fil d'Ariane & Titre */}
+      {/* Breadcrumb & Title */}
       <div className="mb-6">
         <nav className="flex items-center gap-2 text-xs text-gray-500 mb-2">
           <Link href="/" className="hover:text-[#0054A4]">
-            Accueil
+            Home
           </Link>
           <span>/</span>
-          <span className="text-gray-900 font-bold">Boutique</span>
+          <span className="text-gray-900 font-bold">Store</span>
         </nav>
         <h1 className="font-heading font-black text-2xl sm:text-3xl text-[#1D2129] tracking-tight">
-          Catalogue DealMart aux Îles Salomon
+          DealMart Store • Solomon Islands
         </h1>
         <p className="text-xs text-gray-500 mt-1">
-          Électronique, Beauté & Cosmétiques, Mode et Maison. Produits authentiques livrés à Honiara et dans les provinces.
+          Electronics, Beauty & Cosmetics, Fashion, and Home essentials. Genuine products delivered in Honiara and across the provinces.
         </p>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-8">
-        {/* Sidebar Filtres (Desktop) */}
+        {/* Filters Sidebar */}
         <aside className="w-full lg:w-64 flex-shrink-0 space-y-6">
           <div className="bg-white border border-[#E2E5E8] rounded-xl p-5 shadow-xs">
             <div className="flex items-center justify-between border-b border-gray-100 pb-3 mb-4">
               <h2 className="font-heading font-black text-sm text-gray-900 flex items-center gap-2">
                 <Icons.Sliders size={16} className="text-[#0054A4]" />
-                <span>Filtres</span>
+                <span>Filters</span>
               </h2>
               {(selectedDept !== 'ALL' || selectedBrand !== 'ALL' || selectedCondition !== 'ALL' || searchQuery) && (
                 <button
                   onClick={resetFilters}
                   className="text-[11px] font-bold text-[#DC3545] hover:underline cursor-pointer"
                 >
-                  Effacer
+                  Clear All
                 </button>
               )}
             </div>
 
-            {/* Recherche textuelle directe */}
+            {/* Keyword search */}
             <div className="mb-5">
               <label className="block text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-2">
-                Recherche
+                Search
               </label>
               <div className="relative">
                 <input
                   type="text"
-                  placeholder="Ex: Écouteurs, Sérum, Montre..."
+                  placeholder="e.g. Earbuds, Serum, Watch..."
                   value={searchQuery}
                   onChange={(e) => handleSearchChange(e.target.value)}
                   className="w-full pl-8 pr-3 py-2 bg-[#F8F9FA] border border-[#E2E5E8] rounded-lg text-xs font-semibold focus:outline-none focus:border-[#0054A4]"
@@ -187,10 +187,10 @@ function BoutiqueContent({ initialProducts }: BoutiqueClientProps) {
               </div>
             </div>
 
-            {/* Filtre Rayon / Département */}
+            {/* Departments Filter */}
             <div className="mb-5">
               <label className="block text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-2">
-                Rayons & Départements
+                Departments
               </label>
               <div className="space-y-1">
                 {DEPARTMENTS.map((d) => (
@@ -210,11 +210,11 @@ function BoutiqueContent({ initialProducts }: BoutiqueClientProps) {
               </div>
             </div>
 
-            {/* Filtre Marque */}
+            {/* Brands Filter */}
             {availableBrands.length > 0 && (
               <div className="mb-5 border-t border-gray-100 pt-4">
                 <label className="block text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-2">
-                  Marques
+                  Brands
                 </label>
                 <div className="space-y-1 max-h-48 overflow-y-auto">
                   <button
@@ -225,7 +225,7 @@ function BoutiqueContent({ initialProducts }: BoutiqueClientProps) {
                         : 'text-gray-600 hover:bg-gray-50'
                     }`}
                   >
-                    <span>Toutes les marques</span>
+                    <span>All Brands</span>
                     {selectedBrand === 'ALL' && <Icons.Check size={14} className="text-white" />}
                   </button>
                   {availableBrands.map((b) => (
@@ -246,17 +246,17 @@ function BoutiqueContent({ initialProducts }: BoutiqueClientProps) {
               </div>
             )}
 
-            {/* Filtre État */}
+            {/* Condition Filter */}
             <div className="border-t border-gray-100 pt-4">
               <label className="block text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-2">
-                État du Produit
+                Product Condition
               </label>
               <div className="space-y-1.5">
                 {[
-                  { label: 'Tous les états', value: 'ALL' },
-                  { label: 'Neuf Scellé', value: 'NEUF_SCELLE' },
-                  { label: 'Neuf Déballé / Certifié', value: 'NEUF_NON_SCELLE' },
-                  { label: 'Occasion Vérifiée', value: 'OCCASION' },
+                  { label: 'All Conditions', value: 'ALL' },
+                  { label: 'Brand New Sealed', value: 'NEUF_SCELLE' },
+                  { label: 'Refurbished / Grade A+', value: 'NEUF_NON_SCELLE' },
+                  { label: 'Certified Pre-Owned', value: 'OCCASION' },
                 ].map((c) => (
                   <button
                     key={c.value}
@@ -276,30 +276,30 @@ function BoutiqueContent({ initialProducts }: BoutiqueClientProps) {
           </div>
         </aside>
 
-        {/* Liste des produits & Barre de tri */}
+        {/* Product list & sorting */}
         <div className="flex-1">
-          {/* Entête catalogue */}
+          {/* Catalog header */}
           <div className="bg-white border border-[#E2E5E8] rounded-xl p-4 mb-6 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="text-xs text-gray-600">
-              Affichage de <strong className="text-gray-900">{filteredProducts.length}</strong> produit(s)
+              Showing <strong className="text-gray-900">{filteredProducts.length}</strong> product(s)
             </div>
 
             <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
-              <label className="text-xs text-gray-600 whitespace-nowrap font-medium">Trier par :</label>
+              <label className="text-xs text-gray-600 whitespace-nowrap font-medium">Sort by:</label>
               <select
                 value={sortBy}
                 onChange={(e) => handleSortChange(e.target.value as any)}
                 className="bg-[#F8F9FA] border border-[#E2E5E8] rounded-lg px-3 py-1.5 text-xs font-bold text-gray-800 focus:outline-none cursor-pointer"
               >
-                <option value="featured">Populaires & Recommandés</option>
-                <option value="price-asc">Prix : Moins cher au plus cher</option>
-                <option value="price-desc">Prix : Plus cher au moins cher</option>
-                <option value="rating">Mieux notés</option>
+                <option value="featured">Featured & Recommended</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+                <option value="rating">Highest Rated</option>
               </select>
             </div>
           </div>
 
-          {/* Grille de résultats */}
+          {/* Product grid */}
           {filteredProducts.length === 0 ? (
             <div className="bg-white border border-[#E2E5E8] rounded-xl p-12 text-center">
               <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto text-gray-400 mb-4">
@@ -307,19 +307,19 @@ function BoutiqueContent({ initialProducts }: BoutiqueClientProps) {
               </div>
               <h3 className="font-heading font-bold text-base text-gray-900 mb-2">
                 {products.length === 0
-                  ? 'Aucun produit disponible pour le moment'
-                  : 'Aucun produit ne correspond à ces critères'}
+                  ? 'No products currently available'
+                  : 'No products match your criteria'}
               </h3>
               <p className="text-xs text-gray-500 mb-6">
                 {products.length === 0
-                  ? 'Nos stocks sont en cours d\'actualisation sur ce rayon.'
-                  : 'Essayez de réinitialiser vos filtres ou de sélectionner un autre rayon.'}
+                  ? 'New stocks are arriving soon.'
+                  : 'Try adjusting or clearing your filters.'}
               </p>
               <button
                 onClick={resetFilters}
                 className="bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase px-6 py-2.5 rounded-xl transition-colors cursor-pointer"
               >
-                Réinitialiser les filtres
+                Reset Filters
               </button>
             </div>
           ) : (
@@ -330,7 +330,7 @@ function BoutiqueContent({ initialProducts }: BoutiqueClientProps) {
                 ))}
               </div>
 
-              {/* Contrôle de Pagination */}
+              {/* Pagination */}
               {totalPages > 1 && (
                 <div className="mt-8 bg-white border border-[#E2E5E8] rounded-xl p-2 shadow-xs">
                   <Pagination
@@ -347,7 +347,7 @@ function BoutiqueContent({ initialProducts }: BoutiqueClientProps) {
                       setCurrentPage(1);
                     }}
                     pageSizeOptions={[6, 12, 24, 48]}
-                    itemLabel="produits"
+                    itemLabel="products"
                   />
                 </div>
               )}
@@ -361,7 +361,7 @@ function BoutiqueContent({ initialProducts }: BoutiqueClientProps) {
 
 export function BoutiqueClient({ initialProducts }: BoutiqueClientProps) {
   return (
-    <Suspense fallback={<div className="p-12 text-center text-xs text-gray-500">Chargement de la boutique...</div>}>
+    <Suspense fallback={<div className="p-12 text-center text-xs text-gray-500">Loading DealMart store...</div>}>
       <BoutiqueContent initialProducts={initialProducts} />
     </Suspense>
   );

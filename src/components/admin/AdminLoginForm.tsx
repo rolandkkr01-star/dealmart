@@ -30,14 +30,14 @@ export function AdminLoginForm({ redirectTarget }: { redirectTarget: string }) {
       window.location.href = redirectTarget;
     } else {
       setLoading(false);
-      setError(result.error || 'Identifiants invalides ou droits d\'accès insuffisants.');
+      setError(result.error || 'Invalid credentials or insufficient administrative permissions.');
     }
   };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12 bg-[#0F172A]">
       <div className="max-w-md w-full">
-        {/* En-tête / Logo DealMart */}
+        {/* DealMart Logo & Title */}
         <div className="text-center mb-8">
           <img
             src="/images/logo/dealmart_logo_horizontal_transparent.svg"
@@ -45,17 +45,17 @@ export function AdminLoginForm({ redirectTarget }: { redirectTarget: string }) {
             className="h-12 w-auto mx-auto mb-5 brightness-0 invert"
           />
           <span className="text-[11px] font-black tracking-widest text-[#F1B20B] uppercase block mb-1">
-            Console d'Administration
+            Admin Management Console
           </span>
           <h1 className="font-heading font-black text-2xl sm:text-3xl text-white tracking-tight">
-            Espace de Gestion Interne
+            Internal Operations Portal
           </h1>
           <p className="text-xs text-gray-400 mt-1.5">
-            Veuillez renseigner vos accès pour gérer la boutique {siteConfig.name}.
+            Please enter your administrator credentials to manage {siteConfig.name}.
           </p>
         </div>
 
-        {/* Boîte de Connexion */}
+        {/* Login Box */}
         <div className="bg-[#1E293B] border border-gray-700/80 rounded-3xl p-8 shadow-2xl">
           {error && (
             <div className="bg-red-950/80 border border-red-500/50 text-red-200 p-3.5 rounded-xl text-xs mb-6 flex items-center gap-2.5">
@@ -67,7 +67,7 @@ export function AdminLoginForm({ redirectTarget }: { redirectTarget: string }) {
           <form onSubmit={handleSubmit} className="space-y-4 text-xs">
             <div>
               <label className="block text-gray-300 font-bold mb-1.5 uppercase tracking-wider text-[10px]">
-                Identifiant / Adresse Email
+                Email Address
               </label>
               <div className="relative">
                 <input
@@ -76,7 +76,7 @@ export function AdminLoginForm({ redirectTarget }: { redirectTarget: string }) {
                   autoComplete="username"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Votre adresse email administrateur"
+                  placeholder="admin@dealmart.com"
                   className="w-full bg-[#0F172A] border border-gray-700 rounded-xl px-4 py-3 pl-10 text-white placeholder-gray-500 focus:outline-none focus:border-[#F1B20B] transition-colors text-xs"
                 />
                 <Icons.Mail size={16} className="absolute left-3.5 top-3.5 text-gray-500" />
@@ -86,7 +86,7 @@ export function AdminLoginForm({ redirectTarget }: { redirectTarget: string }) {
             <div>
               <div className="flex items-center justify-between mb-1.5">
                 <label className="block text-gray-300 font-bold uppercase tracking-wider text-[10px]">
-                  Mot de Passe
+                  Password
                 </label>
               </div>
               <div className="relative">
@@ -96,7 +96,7 @@ export function AdminLoginForm({ redirectTarget }: { redirectTarget: string }) {
                   autoComplete="current-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Votre mot de passe secret"
+                  placeholder="Enter your password"
                   className="w-full bg-[#0F172A] border border-gray-700 rounded-xl px-4 py-3 pl-10 pr-10 text-white placeholder-gray-500 focus:outline-none focus:border-[#F1B20B] transition-colors text-xs"
                 />
                 <Icons.Lock size={16} className="absolute left-3.5 top-3.5 text-gray-500" />
@@ -115,13 +115,13 @@ export function AdminLoginForm({ redirectTarget }: { redirectTarget: string }) {
               disabled={loading}
               className="w-full bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase tracking-wider py-3.5 rounded-xl shadow-lg transition-all cursor-pointer disabled:opacity-50 mt-4"
             >
-              {loading ? 'Connexion en cours...' : 'Accéder à la console'}
+              {loading ? 'Authenticating...' : 'Access Admin Console'}
             </button>
           </form>
         </div>
 
         <p className="text-center text-[11px] text-gray-500 mt-6">
-          {siteConfig.name} • Accès strictement réservé aux gestionnaires autorisés
+          {siteConfig.name} • Authorized management personnel only
         </p>
       </div>
     </div>

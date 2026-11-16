@@ -7,71 +7,71 @@ import { Icons } from '@/components/ui/Icons';
 const HERO_SLIDES = [
   {
     id: 1,
-    badge: 'Électronique & High-Tech',
+    badge: 'Electronics & Tech',
     badgeIcon: Icons.Sparkles,
     badgeBg: 'bg-[#F1B20B] text-[#1D2129]',
-    title: "Le meilleur de la Tech aux",
-    highlight: 'Îles Salomon',
-    subtitle: '100% Produits Authentiques & Certifiés.',
-    description: 'Smartphones dernier cri, écouteurs sans fil à réduction de bruit, chargeurs rapides et gadgets innovants au meilleur prix à Honiara.',
-    primaryCtaText: 'Explorer l\'Électronique',
-    primaryCtaLink: '/boutique?department=electronics-gadgets',
-    secondaryCtaText: 'Voir les Promotions',
+    title: 'The Best of Tech in the',
+    highlight: 'Solomon Islands',
+    subtitle: '100% Genuine & Certified Products.',
+    description: 'Latest smartphones, noise-cancelling wireless earbuds, fast chargers and innovative smart gadgets at honest prices in Honiara.',
+    primaryCtaText: 'Shop Electronics',
+    primaryCtaLink: '/boutique?category=electronics-gadgets',
+    secondaryCtaText: 'View Deals',
     secondaryCtaLink: '/boutique',
     image: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=600&q=80',
-    alt: 'Écouteurs sans fil et gadgets high-tech',
-    priceTag: 'Dès SI$ 120',
+    alt: 'Wireless earbuds and high-tech gadgets',
+    priceTag: 'From SI$ 120',
   },
   {
     id: 2,
-    badge: 'Beauté, Cosmétiques & Soins',
+    badge: 'Beauty, Cosmetics & Skincare',
     badgeIcon: Icons.Heart,
     badgeBg: 'bg-[#0054A4] text-white',
-    title: 'Prenez soin de vous au',
-    highlight: 'Quotidien',
-    subtitle: 'Gamme de soins visage et corps premium.',
-    description: 'Sérums hydratants à la vitamine C, crèmes réparatrices, soins capillaires et cosmétiques pour sublimer votre éclat naturel.',
-    primaryCtaText: 'Découvrir la Beauté',
-    primaryCtaLink: '/boutique?department=beauty-cosmetics-skincare',
-    secondaryCtaText: 'Nouveautés',
+    title: 'Elevate Your Everyday',
+    highlight: 'Self-Care Routine',
+    subtitle: 'Premium face and body care collections.',
+    description: 'Hydrating Vitamin C serums, soothing repair creams, hair care and luxury cosmetics to enhance your natural glow.',
+    primaryCtaText: 'Shop Beauty',
+    primaryCtaLink: '/boutique?category=beauty-cosmetics-skincare',
+    secondaryCtaText: 'New Arrivals',
     secondaryCtaLink: '/boutique',
     image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=600&q=80',
-    alt: 'Produits de beauté et soins cosmétiques',
-    priceTag: 'Soins dès SI$ 45',
+    alt: 'Beauty products and cosmetics',
+    priceTag: 'From SI$ 45',
   },
   {
     id: 3,
-    badge: 'Mode & Accessoires',
+    badge: 'Fashion & Accessories',
     badgeIcon: Icons.Zap,
     badgeBg: 'bg-emerald-500 text-white',
-    title: 'Style Moderne & Montres',
-    highlight: 'Élégantes',
-    subtitle: 'Accessoires de mode pour hommes et femmes.',
-    description: 'Montres chronographes, lunettes de soleil polarisées et maroquinerie contemporaine pour parfaire votre tenue en toute occasion.',
-    primaryCtaText: 'Voir la Mode',
-    primaryCtaLink: '/boutique?department=fashion-accessories',
-    secondaryCtaText: 'Tendances',
+    title: 'Modern Style & Classic',
+    highlight: 'Elegance',
+    subtitle: 'Fashion essentials for men, women and kids.',
+    description: 'Quartz timepieces, travel bags, footwear and trendy apparel designed for comfort and everyday distinction.',
+    primaryCtaText: 'Explore Fashion',
+    primaryCtaLink: '/boutique?category=fashion-accessories',
+    secondaryCtaText: 'Trending Now',
     secondaryCtaLink: '/boutique',
     image: 'https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=600&q=80',
-    alt: 'Montre chronographe élégante et accessoires',
-    priceTag: 'Style dès SI$ 85',
+    alt: 'Chronograph watch and accessories',
+    priceTag: 'From SI$ 80',
   },
   {
     id: 4,
-    badge: 'Maison, Cuisine & Déco',
+    badge: 'Home, Living & Wellness',
     badgeIcon: Icons.Home,
     badgeBg: 'bg-[#F1B20B] text-[#1D2129]',
-    title: 'Équipez votre intérieur en',
-    highlight: 'Toute Sérénité',
-    subtitle: 'Confort, bien-être et petit électroménager.',
-    description: 'Diffuseurs d\'huiles essentielles ultrasoniques, ustensiles de cuisine ergonomiques et solutions de rangement modernes pour votre foyer.',
-    primaryCtaText: 'Rayon Maison',
-    primaryCtaLink: '/boutique?department=home-kitchen-living',
-    secondaryCtaText: 'Tout le Catalogue',
+    title: 'Make Your Home Feel',
+    highlight: 'Truly Complete',
+    subtitle: 'Comfort, wellness and smart living essentials.',
+    description: 'Aroma diffusers, shiatsu massagers, practical kitchenware and home organizers designed for your family.',
+    primaryCtaText: 'Shop Home',
+    primaryCtaLink: '/boutique?category=home-kitchen-living',
+    secondaryCtaText: 'All Catalog',
     secondaryCtaLink: '/boutique',
     image: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=600&q=80',
-    alt: 'Diffuseur d\'arômes et articles maison',
-    priceTag: 'Maison dès SI$ 65',
+    alt: 'Aroma diffuser and home goods',
+    priceTag: 'From SI$ 50',
   },
 ];
 
@@ -135,24 +135,24 @@ export const HeroBanner: React.FC = () => {
               </Link>
             </div>
 
-            {/* Badges de réassurance */}
+            {/* Reassurance badges */}
             <div className="mt-8 pt-5 border-t border-gray-800/80 flex flex-wrap items-center gap-5 text-[11px] text-gray-300 font-medium">
               <div className="flex items-center gap-1.5">
                 <Icons.ShieldCheck size={15} className="text-emerald-400" />
-                <span>100% Qualité Authentique</span>
+                <span>100% Genuine Quality</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <Icons.Truck size={15} className="text-[#F1B20B]" />
-                <span>Livraison Honiara & Provinces</span>
+                <span>Fast Delivery in Honiara</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <Icons.Wallet size={15} className="text-blue-400" />
-                <span>Paiement à la livraison & Virement BSP</span>
+                <span>Cash on Delivery & BSP Transfer</span>
               </div>
             </div>
           </div>
 
-          {/* Image d'illustration de la slide */}
+          {/* Illustration image */}
           <div className="hidden md:flex absolute right-6 lg:right-12 top-1/2 -translate-y-1/2 w-72 lg:w-96 h-80 items-center justify-center">
             <div className="relative w-full h-full flex items-center justify-center">
               <img
@@ -166,23 +166,23 @@ export const HeroBanner: React.FC = () => {
             </div>
           </div>
 
-          {/* Flèches de navigation */}
+          {/* Navigation arrows */}
           <button
             onClick={() => setCurrentSlide((prev) => (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length)}
             className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center transition-colors cursor-pointer z-20"
-            aria-label="Slide précédente"
+            aria-label="Previous slide"
           >
             <Icons.ChevronLeft size={18} />
           </button>
           <button
             onClick={() => setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length)}
             className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center transition-colors cursor-pointer z-20"
-            aria-label="Slide suivante"
+            aria-label="Next slide"
           >
             <Icons.ChevronRight size={18} />
           </button>
 
-          {/* Indicateurs de pagination (Bullets) */}
+          {/* Bullets */}
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20">
             {HERO_SLIDES.map((s, idx) => (
               <button
@@ -193,7 +193,7 @@ export const HeroBanner: React.FC = () => {
                     ? 'w-7 bg-[#F1B20B]'
                     : 'w-2 bg-white/40 hover:bg-white/70'
                 }`}
-                aria-label={`Aller au slide ${idx + 1}`}
+                aria-label={`Go to slide ${idx + 1}`}
               />
             ))}
           </div>

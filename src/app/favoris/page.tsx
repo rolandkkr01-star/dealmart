@@ -14,7 +14,7 @@ export default function PublicFavorisPage() {
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Filtres & Pagination
+  // Filters & Pagination
   const [selectedBrand, setSelectedBrand] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -64,35 +64,35 @@ export default function PublicFavorisPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Fil d'Ariane */}
+      {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-xs text-gray-500 mb-6">
-        <Link href="/" className="hover:text-[#0054A4]">Accueil</Link>
+        <Link href="/" className="hover:text-[#0054A4]">Home</Link>
         <span>/</span>
-        <span className="text-gray-900 font-bold">Mes Favoris</span>
+        <span className="text-gray-900 font-bold">My Wishlist</span>
       </nav>
 
       <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-gray-200 pb-4 mb-6 gap-4">
         <div>
           <h1 className="font-heading font-black text-2xl sm:text-3xl text-[#1D2129] tracking-tight flex items-center gap-3">
             <Icons.Heart size={28} className="text-[#DC3545] fill-[#DC3545]" />
-            <span>Ma Liste de Favoris</span>
+            <span>My Saved Items</span>
           </h1>
           <p className="text-xs text-gray-500 mt-1">
-            Vos articles enregistrés (conservés automatiquement sur votre appareil).
+            Your saved wishlist products (stored automatically on your device).
           </p>
         </div>
         <span className="text-xs font-bold bg-gray-100 text-gray-800 px-3 py-1.5 rounded-full self-start sm:self-auto">
-          {wishlist.length} article(s) enregistré(s)
+          {wishlist.length} item(s) saved
         </span>
       </div>
 
-      {/* Barre de Filtres et Recherche */}
+      {/* Filter and Search Bar */}
       {wishlist.length > 0 && (
         <div className="bg-white border border-[#E2E5E8] rounded-2xl p-4 mb-6 shadow-xs flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="relative w-full md:w-80">
             <input
               type="text"
-              placeholder="Rechercher dans mes favoris..."
+              placeholder="Search in my wishlist..."
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
@@ -116,10 +116,10 @@ export default function PublicFavorisPage() {
 
           <div className="flex flex-wrap items-center gap-1.5 w-full md:w-auto">
             {[
-              { label: 'Tous', value: 'ALL' },
+              { label: 'All', value: 'ALL' },
               { label: 'Apple iPhone', value: 'IPHONE' },
               { label: 'Samsung Galaxy', value: 'SAMSUNG' },
-              { label: 'Accessoires', value: 'ACCESSOIRE' },
+              { label: 'Accessories', value: 'ACCESSOIRE' },
             ].map((tab) => (
               <button
                 key={tab.value}
@@ -143,7 +143,7 @@ export default function PublicFavorisPage() {
       {loading ? (
         <div className="p-16 text-center text-xs text-gray-500">
           <div className="w-8 h-8 border-3 border-[#F1B20B] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-          <p>Chargement de vos favoris...</p>
+          <p>Loading your wishlist...</p>
         </div>
       ) : wishlist.length === 0 ? (
         <div className="bg-white border border-[#E2E5E8] rounded-2xl p-12 text-center max-w-lg mx-auto shadow-xs">
@@ -151,21 +151,21 @@ export default function PublicFavorisPage() {
             <Icons.Heart size={32} />
           </div>
           <h3 className="font-heading font-bold text-base text-gray-900 mb-2">
-            Votre liste de favoris est vide
+            Your wishlist is empty
           </h3>
           <p className="text-xs text-gray-500 mb-6">
-            Parcourez notre catalogue et cliquez sur l'icône cœur pour sauvegarder les articles qui vous intéressent.
+            Browse our catalog and click the heart icon on any product to save items you love.
           </p>
           <Link
             href="/boutique"
             className="bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase px-6 py-3 rounded-xl inline-block shadow-sm transition-transform hover:scale-105"
           >
-            Découvrir le catalogue DealMart
+            Explore DealMart Catalog
           </Link>
         </div>
       ) : favoriteProducts.length === 0 ? (
         <div className="bg-white border border-[#E2E5E8] rounded-2xl p-12 text-center">
-          <p className="text-xs text-gray-500 mb-4">Aucun article favori ne correspond à ces critères.</p>
+          <p className="text-xs text-gray-500 mb-4">No saved items match your filter criteria.</p>
           <button
             onClick={() => {
               setSelectedBrand('ALL');
@@ -174,7 +174,7 @@ export default function PublicFavorisPage() {
             }}
             className="bg-[#F1B20B] text-[#1D2129] font-heading font-black text-xs uppercase px-6 py-2.5 rounded-xl"
           >
-            Réinitialiser les filtres
+            Reset Filters
           </button>
         </div>
       ) : (
@@ -204,7 +204,7 @@ export default function PublicFavorisPage() {
                 setCurrentPage(1);
               }}
               pageSizeOptions={[4, 8, 16, 24]}
-              itemLabel="favoris"
+              itemLabel="saved items"
             />
           </div>
         </>

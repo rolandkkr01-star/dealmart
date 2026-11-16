@@ -23,10 +23,10 @@ export const NewsletterSection: React.FC = () => {
           </div>
           <div>
             <h3 className="font-heading font-black text-lg sm:text-xl text-[#1D2129] mb-1">
-              Inscrivez-vous aux Ventes Privées
+              Subscribe to Exclusive Deals & New Drops
             </h3>
             <p className="text-xs text-gray-800 font-medium">
-              Recevez les arrivages de nouveaux stocks d'iPhones et un bon de réduction de <strong>10 000 FCFA</strong> sur votre première commande.
+              Get notified of new electronics, cosmetics, fashion arrivals and receive a <strong>10% off</strong> promo code.
             </p>
           </div>
         </div>
@@ -34,14 +34,14 @@ export const NewsletterSection: React.FC = () => {
         <div className="w-full md:w-auto max-w-md">
           {subscribed ? (
             <div className="bg-[#1D2129] text-[#F1B20B] p-4 rounded-xl text-center text-xs font-bold shadow-md">
-              🎉 Félicitations ! Votre code promo : <span className="underline text-white">COTONOU229</span>
+              🎉 Congratulations! Use your promo code: <span className="underline text-white">HONIARA2026</span>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="flex rounded-xl overflow-hidden bg-white p-1 shadow-sm border border-gray-300 focus-within:ring-2 focus-within:ring-[#0054A4]">
               <input
                 type="email"
                 required
-                placeholder="Votre adresse email (ex: nom@domaine.com)"
+                placeholder="Enter your email address..."
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="flex-1 px-4 py-2.5 text-xs text-gray-900 placeholder-gray-400 focus:outline-none"
@@ -50,7 +50,7 @@ export const NewsletterSection: React.FC = () => {
                 type="submit"
                 className="bg-[#1D2129] hover:bg-[#2C3039] text-[#F1B20B] font-heading font-bold text-xs uppercase px-5 py-2.5 rounded-lg transition-colors cursor-pointer"
               >
-                S'inscrire
+                Subscribe
               </button>
             </form>
           )}

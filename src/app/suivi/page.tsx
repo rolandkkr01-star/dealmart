@@ -23,17 +23,17 @@ export default function SuiviPage() {
         </div>
 
         <h1 className="font-heading font-black text-2xl text-gray-900 mb-2">
-          Suivi de Commande en Direct
+          Live Order Tracking
         </h1>
         <p className="text-xs text-gray-600 mb-8 leading-relaxed">
-          Entrez votre référence de commande reçue par SMS ou email lors de votre achat pour consulter son statut de préparation et de livraison en temps réel.
+          Enter your order reference received via WhatsApp, phone, or email to check its preparation and delivery status in real time.
         </p>
 
         <form onSubmit={handleSearch} className="space-y-4">
           <input
             type="text"
             required
-            placeholder="Votre référence de commande (ex: CMD-2026-XXXX)"
+            placeholder="Your order reference (e.g. DM-849201)"
             value={orderInput}
             onChange={(e) => setOrderInput(e.target.value)}
             className="w-full border-2 border-gray-300 rounded-xl p-3.5 text-center text-sm font-bold tracking-wider uppercase focus:border-[#0054A4] focus:outline-none"
@@ -43,7 +43,7 @@ export default function SuiviPage() {
             type="submit"
             className="w-full bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase tracking-wider py-4 rounded-xl shadow-md transition-all cursor-pointer"
           >
-            Rechercher ma commande
+            Track My Order
           </button>
         </form>
       </div>

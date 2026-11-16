@@ -25,27 +25,27 @@ interface TestimonialsProps {
 const DEFAULT_REVIEWS: FeaturedReviewItem[] = [
   {
     id: 'f-1',
-    name: 'Dr. Aurel Houessou',
-    city: 'Cotonou, Haie Vive',
-    comment: 'J\'ai acheté mon iPhone 15 Pro Max 256Go. Boîte scellée d\'origine vérifiée sur le site d\'Apple. Livraison reçue en moins de 2h à mon cabinet. Service impeccable !',
+    name: 'Dr. John Maetoloa',
+    city: 'Honiara, Point Cruz',
+    comment: 'Bought the Samsung S23+ for my clinic. Sealed in original factory box. Fast same-day delivery right to my office. Super reliable service!',
     rating: 5,
-    productName: 'iPhone 15 Pro Max',
+    productName: 'Samsung Galaxy S23+',
   },
   {
     id: 'f-2',
-    name: 'Sandrine Agbodjan',
-    city: 'Abomey-Calavi',
-    comment: 'Le service de troc est une merveille. J\'ai fait reprendre mon ancien S21 Ultra pour prendre le S24 Ultra avec un petit complément en MoMo. Transaction très transparente.',
+    name: 'Mary Taro',
+    city: 'Gizo, Western Province',
+    comment: 'The Sadoer coconut skincare set arrived safely by inter-island shipping. Authentic quality, good scent, and careful packaging.',
     rating: 5,
-    productName: 'Samsung Galaxy S24 Ultra',
+    productName: 'Sadoer Coconut Skincare 6-in-1',
   },
   {
     id: 'f-3',
-    name: 'Marius Koudjo',
-    city: 'Cotonou, Cadjehoun',
-    comment: `Difficile de trouver des chargeurs 20W Apple réellement authentiques à Cotonou avec toutes les contrefaçons. ${siteConfig.name} est la seule boutique en qui j'ai totale confiance.`,
+    name: 'Peter Kaumana',
+    city: 'Honiara, Kukum',
+    comment: `${siteConfig.name} is the best place to find genuine electronics and accessories in Honiara. Transparent prices in SI$ and helpful staff.`,
     rating: 5,
-    productName: 'Chargeur Apple 20W Authentique',
+    productName: 'G7 Max Smart Watch',
   }
 ];
 
@@ -57,13 +57,13 @@ export const Testimonials: React.FC<TestimonialsProps> = ({ reviews = [] }) => {
       <div className="text-center mb-8">
         <div className="inline-flex items-center gap-1.5 bg-amber-50 text-amber-900 border border-amber-200 px-3 py-1 rounded-full text-[11px] font-semibold mb-2">
           <Icons.ShieldCheck size={13} className="text-amber-700" />
-          <span>Avis Clients Vérifiés & Certifiés</span>
+          <span>Verified Customer Reviews</span>
         </div>
         <h2 className="font-heading font-black text-2xl text-[#1D2129] tracking-tight">
-          Ce que disent nos clients au Bénin
+          What Our Customers in Solomon Islands Say
         </h2>
         <p className="text-xs text-gray-500 mt-1 max-w-lg mx-auto">
-          Retours d'expérience authentiques sur nos smartphones et notre service de livraison express.
+          Authentic feedback from satisfied shoppers in Honiara and across the provinces.
         </p>
       </div>
 
@@ -111,7 +111,7 @@ export const Testimonials: React.FC<TestimonialsProps> = ({ reviews = [] }) => {
               </div>
               <span className="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded border border-emerald-200 flex items-center gap-1">
                 <Icons.Check size={10} />
-                Vérifié
+                Verified
               </span>
             </div>
           </div>

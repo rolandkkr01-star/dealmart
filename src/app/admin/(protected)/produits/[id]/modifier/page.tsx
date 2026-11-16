@@ -83,11 +83,11 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
   const [specs, setSpecs] = useState<SpecForm[]>([]);
 
   const generateSku = (brandName: string, prodName: string, colorVal?: string) => {
-    const brandCode = brandName === 'IPHONE' ? 'APL' : brandName === 'SAMSUNG' ? 'SAM' : 'ACC';
-    const nameClean = (prodName || 'PROD').replace(/[^a-zA-Z0-9]/g, '').slice(0, 5).toUpperCase();
+    const brandCode = (brandName || 'DM').replace(/[^a-zA-Z0-9]/g, '').slice(0, 3).toUpperCase() || 'DM';
+    const nameClean = (prodName || 'PROD').replace(/[^a-zA-Z0-9]/g, '').slice(0, 5).toUpperCase() || 'PROD';
     const colorClean = colorVal ? colorVal.replace(/[^a-zA-Z0-9]/g, '').slice(0, 3).toUpperCase() : 'DEF';
     const rand = Math.floor(1000 + Math.random() * 9000);
-    return `TP229-${brandCode}-${nameClean}-${colorClean}-${rand}`;
+    return `DM-${brandCode}-${nameClean}-${colorClean}-${rand}`;
   };
 
   useEffect(() => {
@@ -143,7 +143,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
             })
           );
         } else {
-          setVariants([{ storage: '', color: 'Noir Sidéral', colorCode: '#1A1E24', priceOverride: '', promoPrice: '', stock: 1, sku: generateSku(p.brand, p.name), images: [] }]);
+          setVariants([{ storage: '', color: 'Space Black', colorCode: '#1A1E24', priceOverride: '', promoPrice: '', stock: 1, sku: generateSku(p.brand, p.name), images: [] }]);
         }
 
         if (p.images && p.images.length > 0) {
@@ -173,11 +173,11 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
   }, [id]);
 
   const addVariant = () => {
-    const autoSku = generateSku(brand, name, 'Titane Naturel');
+    const autoSku = generateSku(brand, name, 'Natural Titanium');
     setVariants((prev) => [
       ...prev,
       {
-        color: 'Titane Naturel',
+        color: 'Natural Titanium',
         colorCode: '#9C968E',
         storage: '',
         priceOverride: '',
@@ -194,10 +194,10 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
       setDialogState({
         isOpen: true,
         title: 'Action impossible',
-        message: 'Vous devez conserver au moins une couleur pour ce produit.',
+        message: 'You must maintain at least one color variant for this product.',
         type: 'warning',
         isConfirmOnly: true,
-        confirmText: 'Compris',
+        confirmText: 'Understood',
       });
       return;
     }
@@ -212,7 +212,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
     setError(null);
 
     const uploadedVariantImages: VariantImage[] = [];
-    const colorName = variants[index].color || 'Couleur';
+    const colorName = variants[index].color || 'Color';
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
@@ -223,11 +223,11 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
       if (res.success && res.url) {
         uploadedVariantImages.push({
           url: res.url,
-          altText: name ? `${name} - Coloris ${colorName}` : `Photo du smartphone - ${colorName}`,
+          altText: name ? `${name} - ${colorName}` : `Product photo - ${colorName}`,
           position: variants[index].images.length + uploadedVariantImages.length,
         });
       } else {
-        setError(res.error || `Échec du téléversement pour ${file.name}`);
+        setError(res.error || `Upload failed for ${file.name}`);
       }
     }
 
@@ -289,11 +289,11 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
       if (res.success && res.url) {
         uploadedList.push({
           url: res.url,
-          altText: name ? `Photo de ${name} - Vue ${images.length + uploadedList.length + 1}` : `Photo du smartphone - Vue ${images.length + uploadedList.length + 1}`,
+          altText: name ? `${name} - View ${images.length + uploadedList.length + 1}` : `Product photo - View ${images.length + uploadedList.length + 1}`,
           position: images.length + uploadedList.length,
         });
       } else {
-        setError(res.error || `Échec du téléversement pour ${file.name}`);
+        setError(res.error || `Upload failed for ${file.name}`);
       }
     }
 
@@ -321,7 +321,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
     setError(null);
 
     if (!name || !categoryId || !basePrice || !description) {
-      setError('Veuillez remplir tous les champs obligatoires.');
+      setError('Please fill out all required fields.');
       return;
     }
 
@@ -340,7 +340,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
     }
 
     if (allImages.length === 0) {
-      setError('Veuillez ajouter au moins une image pour ce produit.');
+      setError('Please add at least one image for this product.');
       return;
     }
 
@@ -395,7 +395,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
         router.push(`/admin/login?redirect=/admin/produits/${id}/modifier`);
         return;
       }
-      setError(res.error || 'Erreur lors de la mise à jour du produit.');
+      setError(res.error || 'Failed to update product.');
     }
   };
 
@@ -403,7 +403,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
     return (
       <div className="p-12 text-center">
         <div className="w-8 h-8 border-2 border-[#F1B20B] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-        <p className="text-xs text-gray-500 font-bold">Chargement des données du produit...</p>
+        <p className="text-xs text-gray-500 font-bold">Loading product details...</p>
       </div>
     );
   }
@@ -421,19 +421,19 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
           className="text-xs font-bold text-gray-500 hover:text-[#0054A4] flex items-center gap-1.5"
         >
           <Icons.ArrowLeft size={16} />
-          <span>Retour aux produits</span>
+          <span>Back to Products</span>
         </Link>
         <span className="text-[10px] font-black uppercase tracking-wider bg-blue-100 text-blue-900 px-2.5 py-1 rounded-full">
-          Modifier le Produit
+          Edit Product
         </span>
       </div>
 
       <div className="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-xs">
         <h1 className="font-heading font-black text-2xl text-gray-900 mb-1">
-          Modifier : {name}
+          Edit: {name}
         </h1>
         <p className="text-xs text-gray-500 mb-6">
-          Chaque fiche correspond à une capacité précise. Modifiez les couleurs disponibles et leurs photos associées.
+          Update specifications, retail pricing, inventory stock, and color photo galleries.
         </p>
 
         {error && (
@@ -444,20 +444,20 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
         )}
 
         <form onSubmit={handleSubmit} className="space-y-8 text-xs">
-          {/* Section 1 : Informations Générales */}
+          {/* Section 1 : General Information */}
           <div className="space-y-4">
             <h2 className="font-heading font-bold text-sm text-gray-900 border-b pb-2 flex items-center gap-2">
               <Icons.Smartphone size={16} className="text-[#0054A4]" />
-              <span>1. Modèle & Caractéristiques Principales</span>
+              <span>1. Model & Core Specifications</span>
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="sm:col-span-2">
-                <label className="block font-bold text-gray-700 mb-1">Nom Complet du Produit (avec capacité) *</label>
+                <label className="block font-bold text-gray-700 mb-1">Full Product Name *</label>
                 <input
                   type="text"
                   required
-                  placeholder="Ex: iPhone 15 Pro 128 Go"
+                  placeholder="e.g. iPhone 15 Pro 128GB"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className="w-full p-3 border border-gray-300 rounded-xl font-bold text-gray-900 focus:ring-1 focus:ring-[#0054A4] focus:outline-none"
@@ -465,11 +465,11 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
               </div>
 
               <div>
-                <label className="block font-bold text-gray-700 mb-1">Marque / Fabricant *</label>
+                <label className="block font-bold text-gray-700 mb-1">Brand / Manufacturer *</label>
                 <input
                   type="text"
                   required
-                  placeholder="Ex: Apple, Samsung, Sony, Anker, CeraVe, Seiko..."
+                  placeholder="e.g. Apple, Samsung, Sony, Anker, DealMart..."
                   value={brand}
                   onChange={(e) => setBrand(e.target.value)}
                   className="w-full p-3 border border-gray-300 rounded-xl font-bold text-gray-900 focus:outline-none"
@@ -477,7 +477,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
               </div>
 
               <div>
-                <label className="block font-bold text-gray-700 mb-1">Catégorie *</label>
+                <label className="block font-bold text-gray-700 mb-1">Category *</label>
                 <select
                   value={categoryId}
                   onChange={(e) => setCategoryId(e.target.value)}
@@ -492,20 +492,20 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
               </div>
 
               <div>
-                <label className="block font-bold text-gray-700 mb-1">État de l'Appareil (Obligatoire) *</label>
+                <label className="block font-bold text-gray-700 mb-1">Item Condition *</label>
                 <select
                   value={condition}
                   onChange={(e) => setCondition(e.target.value as any)}
                   className="w-full p-3 border border-gray-300 rounded-xl bg-white font-bold text-gray-900 focus:outline-none"
                 >
-                  <option value="NEUF_SCELLE">Neuf sous scellé d'origine (Garantie 12 Mois)</option>
-                  <option value="NEUF_NON_SCELLE">Neuf non scellé / Reconditionné A+</option>
-                  <option value="OCCASION">Occasion certifiée & testée</option>
+                  <option value="NEUF_SCELLE">Brand New Factory Sealed (12 Month Warranty)</option>
+                  <option value="NEUF_NON_SCELLE">Certified Refurbished (Grade A+)</option>
+                  <option value="OCCASION">Certified Pre-Owned & Guaranteed</option>
                 </select>
               </div>
 
               <div>
-                <label className="block font-bold text-gray-700 mb-1">Garantie constructeur (en mois)</label>
+                <label className="block font-bold text-gray-700 mb-1">Warranty Period (in months)</label>
                 <input
                   type="number"
                   min="0"
@@ -517,7 +517,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block font-bold text-gray-700 mb-1">Slug URL</label>
+                <label className="block font-bold text-gray-700 mb-1">URL Slug</label>
                 <input
                   type="text"
                   value={slug}
@@ -527,7 +527,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block font-bold text-gray-700 mb-1">Description détaillée *</label>
+                <label className="block font-bold text-gray-700 mb-1">Detailed Description *</label>
                 <textarea
                   rows={4}
                   required
@@ -539,16 +539,16 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
             </div>
           </div>
 
-          {/* Section 2 : Tarification & Troc */}
+          {/* Section 2 : Pricing */}
           <div className="space-y-4">
             <h2 className="font-heading font-bold text-sm text-gray-900 border-b pb-2 flex items-center gap-2">
               <Icons.CreditCard size={16} className="text-[#0054A4]" />
-              <span>2. Tarification en FCFA & Éligibilité au Troc</span>
+              <span>2. Pricing in SI$ (Solomon Islands Dollars)</span>
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block font-bold text-gray-700 mb-1">Prix de Base (FCFA) *</label>
+                <label className="block font-bold text-gray-700 mb-1">Regular Retail Price (SI$) *</label>
                 <input
                   type="number"
                   required
@@ -561,7 +561,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
               </div>
 
               <div>
-                <label className="block font-bold text-gray-700 mb-1">Prix Promotionnel Barré (FCFA - Optionnel)</label>
+                <label className="block font-bold text-gray-700 mb-1">Discounted Promo Price (SI$ - Optional)</label>
                 <input
                   type="number"
                   min="0"
@@ -583,7 +583,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
                 />
                 <div>
                   <span className="font-bold text-gray-900 text-xs block">
-                    Mettre en avant sur la page d'accueil (Top Deals)
+                    Feature on Homepage (Top Picks / Best Sellers)
                   </span>
                 </div>
               </label>
@@ -597,23 +597,23 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
                 />
                 <div>
                   <span className="font-bold text-gray-900 text-xs block">
-                    Produit Actif (Visible par les clients)
+                    Active Product (Visible to storefront customers)
                   </span>
                 </div>
               </label>
             </div>
           </div>
 
-          {/* Section 3 : Variantes de Couleurs avec Photos Liées */}
+          {/* Section 3 : Color Variants & Photos */}
           <div className="space-y-4">
             <div className="flex items-center justify-between border-b pb-2">
               <div>
                 <h2 className="font-heading font-bold text-sm text-gray-900 flex items-center gap-2">
                   <Icons.Layers size={16} className="text-[#0054A4]" />
-                  <span>3. Couleurs Disponibles & Photos Associées ({variants.length})</span>
+                  <span>3. Color Variants & Linked Photos ({variants.length})</span>
                 </h2>
                 <p className="text-[11px] text-gray-500">
-                  Modifiez chaque couleur disponible pour ce modèle et téléversez ses photos dédiées.
+                  Manage color options, inventory stock, and color-matched photos.
                 </p>
               </div>
               <button
@@ -622,7 +622,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
                 className="bg-[#0054A4] hover:bg-[#00519E] text-white px-3.5 py-2 rounded-xl font-bold flex items-center gap-1.5 cursor-pointer shadow-xs"
               >
                 <Icons.Plus size={14} />
-                <span>Ajouter une couleur</span>
+                <span>Add Color</span>
               </button>
             </div>
 
@@ -635,12 +635,12 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
                   <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
                     <div className="sm:col-span-4">
                       <label className="block font-bold text-gray-700 mb-1">
-                        Nom de la Couleur *
+                        Color Name *
                       </label>
                       <input
                         type="text"
                         required
-                        placeholder="Ex: Titane Naturel, Noir Sidéral..."
+                        placeholder="e.g. Space Black, Titanium Gray..."
                         value={variant.color}
                         onChange={(e) => {
                           const val = e.target.value;
@@ -653,7 +653,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
                     </div>
 
                     <div className="sm:col-span-3">
-                      <label className="block font-bold text-gray-700 mb-1">Pastille de Couleur</label>
+                      <label className="block font-bold text-gray-700 mb-1">Color Swatch</label>
                       <div className="flex items-center gap-2">
                         <input
                           type="color"
@@ -700,7 +700,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
 
                     <div className="sm:col-span-2">
                       <label className="block font-medium text-gray-600 mb-1 text-[10px]">
-                        SKU ({brand})
+                        SKU
                       </label>
                       <input
                         type="text"
@@ -720,19 +720,19 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
                         type="button"
                         onClick={() => removeVariant(index)}
                         className="p-2.5 bg-red-100 hover:bg-red-200 text-red-700 rounded-xl font-bold flex items-center justify-center cursor-pointer"
-                        title="Supprimer cette couleur"
+                        title="Delete color"
                       >
                         <Icons.Trash size={16} />
                       </button>
                     </div>
                   </div>
 
-                  {/* Zone Photos Spécifiques de cette Couleur */}
+                  {/* Color-specific Photos */}
                   <div className="bg-white p-3.5 rounded-2xl border border-gray-200 space-y-2.5">
                     <div className="flex items-center justify-between">
                       <span className="font-bold text-gray-800 text-[11px] flex items-center gap-1.5">
                         <Icons.Image size={14} className="text-[#0054A4]" />
-                        <span>Photos pour la couleur <strong>« {variant.color || 'Sans titre'} »</strong> ({variant.images.length})</span>
+                        <span>Photos for <strong>"{variant.color || 'Untitled'}"</strong> ({variant.images.length})</span>
                       </span>
 
                       <div>
@@ -753,7 +753,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
                           className="bg-blue-50 hover:bg-blue-100 text-[#0054A4] px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
                         >
                           <Icons.Upload size={13} className={variantUploadingIdx === index ? 'animate-bounce' : ''} />
-                          <span>{variantUploadingIdx === index ? 'Téléversement...' : '+ Ajouter des photos'}</span>
+                          <span>{variantUploadingIdx === index ? 'Uploading...' : '+ Add Photos'}</span>
                         </button>
                       </div>
                     </div>
@@ -767,14 +767,14 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
                           >
                             <img
                               src={vImg.url}
-                              alt={vImg.altText || 'Aperçu'}
+                              alt={vImg.altText || 'Preview'}
                               className="w-full h-full object-contain"
                             />
                             <button
                               type="button"
                               onClick={() => removeVariantImage(index, imgIdx)}
                               className="absolute top-0.5 right-0.5 bg-red-600 text-white rounded-full w-4 h-4 flex items-center justify-center text-[10px] opacity-90 group-hover:opacity-100 hover:scale-110 transition-all cursor-pointer shadow-xs"
-                              title="Retirer cette photo"
+                              title="Remove photo"
                             >
                               ×
                             </button>
@@ -783,7 +783,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
                       </div>
                     ) : (
                       <p className="text-[11px] text-gray-400 italic">
-                        Aucune photo spécifique ajoutée pour cette couleur. Cliquez sur « + Ajouter des photos » ci-dessus.
+                        No photos added for this color yet. Click "+ Add Photos" above.
                       </p>
                     )}
                   </div>
@@ -792,16 +792,16 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
             </div>
           </div>
 
-          {/* Section 4 : Galerie Globale Complète */}
+          {/* Section 4 : Complete Global Gallery */}
           <div className="space-y-4">
             <div className="flex items-center justify-between border-b pb-2">
               <div>
                 <h2 className="font-heading font-bold text-sm text-gray-900 flex items-center gap-2">
                   <Icons.Image size={16} className="text-[#0054A4]" />
-                  <span>4. Galerie Globale du Produit ({images.length})</span>
+                  <span>4. Global Product Gallery ({images.length})</span>
                 </h2>
                 <p className="text-[11px] text-gray-500">
-                  Toutes les photos téléversées dans les couleurs s'ajoutent automatiquement ici.
+                  Photos uploaded to colors appear here automatically. You can also upload general product or packaging shots.
                 </p>
               </div>
             </div>
@@ -827,7 +827,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
                 <Icons.Upload size={20} className={uploading ? 'animate-bounce' : ''} />
               </div>
               <p className="font-heading font-bold text-xs text-gray-900">
-                {uploading ? 'Téléversement en cours...' : 'Ajouter d\'autres photos d\'ensemble (JPG, PNG, WEBP)'}
+                {uploading ? 'Uploading...' : 'Upload general product photos (JPG, PNG, WEBP)'}
               </p>
             </div>
 
@@ -850,7 +850,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
                       type="button"
                       onClick={() => removeImage(index)}
                       className="absolute top-1 right-1 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer shadow-xs"
-                      title="Supprimer de la galerie"
+                      title="Remove from gallery"
                     >
                       ×
                     </button>
@@ -860,12 +860,12 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
             )}
           </div>
 
-          {/* Section 5 : Spécifications Techniques */}
+          {/* Section 5 : Technical Specifications */}
           <div className="space-y-4">
             <div className="flex items-center justify-between border-b pb-2">
               <h2 className="font-heading font-bold text-sm text-gray-900 flex items-center gap-2">
                 <Icons.Sliders size={16} className="text-[#0054A4]" />
-                <span>5. Spécifications Techniques ({specs.length})</span>
+                <span>5. Technical Specifications ({specs.length})</span>
               </h2>
               <button
                 type="button"
@@ -873,7 +873,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
                 className="bg-gray-100 hover:bg-gray-200 text-gray-800 px-3 py-1.5 rounded-lg font-bold flex items-center gap-1 cursor-pointer"
               >
                 <Icons.Plus size={14} />
-                <span>Ajouter une ligne</span>
+                <span>Add Specification</span>
               </button>
             </div>
 
@@ -882,7 +882,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
                 <div key={index} className="flex gap-2 items-center">
                   <input
                     type="text"
-                    placeholder="Caractéristique"
+                    placeholder="Feature"
                     value={spec.key}
                     onChange={(e) => {
                       const val = e.target.value;
@@ -892,7 +892,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
                   />
                   <input
                     type="text"
-                    placeholder="Valeur"
+                    placeholder="Value"
                     value={spec.value}
                     onChange={(e) => {
                       const val = e.target.value;
@@ -912,13 +912,13 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
             </div>
           </div>
 
-          {/* Boutons d'Action */}
+          {/* Action Buttons */}
           <div className="pt-6 border-t flex flex-col sm:flex-row items-center justify-end gap-3">
             <Link
               href="/admin/produits"
               className="w-full sm:w-auto px-6 py-3 border border-gray-300 rounded-xl text-gray-700 font-bold hover:bg-gray-50 text-center"
             >
-              Annuler
+              Cancel
             </Link>
             <button
               type="submit"
@@ -928,12 +928,12 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
               {submitting ? (
                 <>
                   <div className="w-4 h-4 border-2 border-[#1D2129] border-t-transparent rounded-full animate-spin" />
-                  <span>Enregistrement en cours...</span>
+                  <span>Saving Changes...</span>
                 </>
               ) : (
                 <>
                   <Icons.Check size={16} />
-                  <span>Enregistrer les Modifications</span>
+                  <span>Save Changes</span>
                 </>
               )}
             </button>

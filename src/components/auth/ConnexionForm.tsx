@@ -35,10 +35,10 @@ export function ConnexionForm({ redirectTarget }: { redirectTarget: string }) {
         <div className="text-center mb-6">
           <Icons.BrandCart size={44} className="text-[#1D2129] mx-auto mb-2" />
           <h1 className="font-heading font-black text-2xl text-gray-900">
-            Espace Client
+            Customer Sign In
           </h1>
           <p className="text-xs text-gray-500 mt-1">
-            Connectez-vous pour suivre vos commandes et gérer vos trocs.
+            Sign in to track orders, manage addresses, and view your wishlist.
           </p>
         </div>
 
@@ -49,13 +49,13 @@ export function ConnexionForm({ redirectTarget }: { redirectTarget: string }) {
           </div>
         )}
 
-        {/* Bouton Google OAuth */}
+        {/* Google OAuth button */}
         <a
           href={`/api/auth/google?redirect=${encodeURIComponent(redirectTarget)}`}
           className="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-bold text-xs py-3 rounded-xl shadow-xs transition-all mb-4 cursor-pointer"
         >
           <Icons.Google size={18} />
-          <span>Continuer avec Google</span>
+          <span>Continue with Google</span>
         </a>
 
         <div className="relative my-5">
@@ -63,31 +63,31 @@ export function ConnexionForm({ redirectTarget }: { redirectTarget: string }) {
             <div className="w-full border-t border-gray-200"></div>
           </div>
           <div className="relative flex justify-center text-xs">
-            <span className="bg-white px-3 text-gray-400 font-medium">ou par email et mot de passe</span>
+            <span className="bg-white px-3 text-gray-400 font-medium">or with email and password</span>
           </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4 text-xs">
           <div>
-            <label className="block text-gray-700 font-bold mb-1">Adresse Email</label>
+            <label className="block text-gray-700 font-bold mb-1">Email Address</label>
             <input
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Votre adresse email (ex: nom@domaine.com)"
+              placeholder="e.g. name@dealmart.sb"
               className="w-full border border-gray-300 rounded-xl px-3.5 py-2.5 text-xs focus:ring-1 focus:ring-[#0054A4] focus:outline-none"
             />
           </div>
 
           <div>
             <div className="flex items-center justify-between mb-1">
-              <label className="block text-gray-700 font-bold">Mot de passe</label>
+              <label className="block text-gray-700 font-bold">Password</label>
               <Link
                 href="/mot-de-passe-oublie"
                 className="text-[11px] font-bold text-[#0054A4] hover:underline"
               >
-                Mot de passe oublié ?
+                Forgot password?
               </Link>
             </div>
             <input
@@ -95,7 +95,7 @@ export function ConnexionForm({ redirectTarget }: { redirectTarget: string }) {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Votre mot de passe secret"
+              placeholder="••••••••"
               className="w-full border border-gray-300 rounded-xl px-3.5 py-2.5 text-xs focus:ring-1 focus:ring-[#0054A4] focus:outline-none"
             />
           </div>
@@ -105,14 +105,14 @@ export function ConnexionForm({ redirectTarget }: { redirectTarget: string }) {
             disabled={loading}
             className="w-full bg-[#F1B20B] hover:bg-[#D99F07] text-[#1D2129] font-heading font-black text-xs uppercase py-3 rounded-xl shadow-xs transition-all cursor-pointer disabled:opacity-50 mt-2"
           >
-            {loading ? 'Connexion en cours...' : 'Se connecter'}
+            {loading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
 
         <div className="mt-6 pt-6 border-t border-gray-100 text-center text-xs text-gray-500">
-          Pas encore de compte ?{' '}
+          Don&apos;t have an account yet?{' '}
           <Link href={`/inscription?redirect=${encodeURIComponent(redirectTarget)}`} className="text-[#0054A4] font-bold hover:underline">
-            Créer un compte
+            Create an Account
           </Link>
         </div>
       </div>
